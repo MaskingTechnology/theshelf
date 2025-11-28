@@ -1,0 +1,18 @@
+{
+  "name": "@theshelf/filestore",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "test": "vitest run",
+    "test-coverage": "vitest run --coverage",
+    "lint": "eslint",
+    "review": "npm run build && npm run lint && npm run test"
+  },
+  "types": "dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "dependencies": {
+    "minio": "8.0.6"
+  }
+}

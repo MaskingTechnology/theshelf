@@ -1,0 +1,20 @@
+{
+  "name": "@theshelf/database",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "test": "vitest run",
+    "test-coverage": "vitest run --coverage",
+    "lint": "eslint",
+    "review": "npm run build && npm run lint && npm run test"
+  },
+  "types": "dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "dependencies": {
+    "@theshelf/errors": "*",
+    "mongodb": "7.0.0",
+    "sanitize-html": "2.17.0"
+  }
+}

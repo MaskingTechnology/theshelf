@@ -1,0 +1,13 @@
+{
+  "name": "@theshelf/logging",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "lint": "eslint",
+    "review": "npm run build && npm run lint"
+  },
+  "types": "dist/index.d.ts",
+  "exports": "./dist/index.js"
+}

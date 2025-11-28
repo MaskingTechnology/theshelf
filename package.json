@@ -1,0 +1,28 @@
+{
+  "name": "theshelf",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "review": "npm run review --workspaces"
+  },
+  "workspaces": [
+    "packages/**/*"
+  ],
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "@types/node": "24.10.1",
+    "@types/sanitize-html": "2.16.0",
+    "@types/web-push": "3.6.4",
+    "@vitest/coverage-v8": "4.0.11",
+    "eslint": "^9.39.1",
+    "eslint-plugin-sonarjs": "3.0.5",
+    "rimraf": "6.1.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.48.0",
+    "vitest": "4.0.11"
+  }
+}
