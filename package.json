@@ -7,7 +7,8 @@
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces --if-present",
-    "review": "npm run review --workspaces"
+    "review": "npm run review --workspaces",
+    "publish": "npm publish --workspaces"
   },
   "workspaces": [
     "packages/**/*"

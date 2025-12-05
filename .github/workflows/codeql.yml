@@ -1,0 +1,55 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'packages/**'
+      - '!packages/**/node_modules/**'
+      - '!packages/**/dist/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'packages/**'
+      - '!packages/**/node_modules/**'
+      - '!packages/**/dist/**'
+  schedule:
+    - cron: '39 10 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+        package:
+          - 'packages/authentication'
+          - 'packages/database'
+          - 'packages/eventbroker'
+          - 'packages/filestore'
+          - 'packages/http'
+          - 'packages/logging'
+          - 'packages/notification'
+          - 'packages/validation'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        source-root: ${{ matrix.package }}
+        languages: ${{ matrix.language }}
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: "/language:${{matrix.language}}"
