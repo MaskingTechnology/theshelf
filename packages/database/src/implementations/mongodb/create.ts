@@ -1,5 +1,5 @@
 
-import MongoDb from './MongoDb';
+import MongoDb from './MongoDb.js';
 
 export default function create(): MongoDb
 {

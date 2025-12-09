@@ -1,8 +1,8 @@
 
 import { EventEmitter } from 'node:events';
 
-import type { Driver } from '../../definitions/interfaces';
-import type { Event, Publication, Subscription } from '../../definitions/types';
+import type { Driver } from '../../definitions/interfaces.js';
+import type { Event, Publication, Subscription } from '../../definitions/types.js';
 
 export default class Memory implements Driver
 {

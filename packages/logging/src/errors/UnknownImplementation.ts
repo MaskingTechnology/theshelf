@@ -1,5 +1,5 @@
 
-import LogError from './LogError';
+import LogError from './LogError.js';
 
 export default class UnknownImplementation extends LogError
 {

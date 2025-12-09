@@ -1,5 +1,5 @@
 
-import AuthenticationError from './AuthenticationError';
+import AuthenticationError from './AuthenticationError.js';
 
 export default class UnknownImplementation extends AuthenticationError
 {

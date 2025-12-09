@@ -1,6 +1,6 @@
 
 /* eslint no-console: "off" */
-import type { LogProcessor } from '../../definitions/interfaces';
+import type { LogProcessor } from '../../definitions/interfaces.js';
 
 export default class Console implements LogProcessor
 {

@@ -1,5 +1,5 @@
 
-import MinioFS from './MinioFS';
+import MinioFS from './MinioFS.js';
 
 export default function create(): MinioFS
 {

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node10",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "isolatedModules": true,
     "noEmit": false,
     "declaration": true,

@@ -1,8 +1,8 @@
 
-import type { FileStore } from './definitions/interfaces';
-import UnknownImplementation from './errors/UnknownImplementation';
-import createMemoryFS from './implementations/memory/create';
-import createMinioFS from './implementations/minio/create';
+import type { FileStore } from './definitions/interfaces.js';
+import UnknownImplementation from './errors/UnknownImplementation.js';
+import createMemoryFS from './implementations/memory/create.js';
+import createMinioFS from './implementations/minio/create.js';
 
 const implementations = new Map<string, () => FileStore>([
     ['memory', createMemoryFS],

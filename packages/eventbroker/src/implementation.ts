@@ -1,7 +1,7 @@
 
-import type { Driver } from './definitions/interfaces';
-import UnknownImplementation from './errors/UnknownImplementation';
-import createMemoryBroker from './implementations/memory/create';
+import type { Driver } from './definitions/interfaces.js';
+import UnknownImplementation from './errors/UnknownImplementation.js';
+import createMemoryBroker from './implementations/memory/create.js';
 
 const implementations = new Map<string, () => Driver>([
     ['memory', createMemoryBroker]

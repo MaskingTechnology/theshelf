@@ -1,6 +1,6 @@
 
-import Logger from './Logger';
-import implementation from './implementation';
+import Logger from './Logger.js';
+import implementation from './implementation.js';
 
 const debugEnabled = process.env.LOGGING_DEBUG_ENABLED === 'true';
 const logger = new Logger(implementation, debugEnabled);

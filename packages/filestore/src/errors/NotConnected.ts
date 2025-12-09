@@ -1,5 +1,5 @@
 
-import FileSystemError from './FileSystemError';
+import FileSystemError from './FileSystemError.js';
 
 export default class NotConnected extends FileSystemError
 {

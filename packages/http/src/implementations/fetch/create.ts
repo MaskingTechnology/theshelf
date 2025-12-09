@@ -1,5 +1,5 @@
 
-import Fetch from './Fetch';
+import Fetch from './Fetch.js';
 
 export default function create(): Fetch
 {

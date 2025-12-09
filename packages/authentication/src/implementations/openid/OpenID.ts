@@ -7,10 +7,10 @@ import
 
 import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
 
-import type { IdentityProvider } from '../../definitions/interfaces';
-import type { Identity, Session } from '../../definitions/types';
-import LoginFailed from '../../errors/LoginFailed';
-import NotConnected from '../../errors/NotConnected';
+import type { IdentityProvider } from '../../definitions/interfaces.js';
+import type { Identity, Session } from '../../definitions/types.js';
+import LoginFailed from '../../errors/LoginFailed.js';
+import NotConnected from '../../errors/NotConnected.js';
 
 type OpenIDConfiguration = {
     issuer: string;

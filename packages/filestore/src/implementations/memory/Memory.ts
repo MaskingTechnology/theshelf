@@ -1,7 +1,7 @@
 
-import type { FileStore } from '../../definitions/interfaces';
-import FileNotFound from '../../errors/FileNotFound';
-import NotConnected from '../../errors/NotConnected';
+import type { FileStore } from '../../definitions/interfaces.js';
+import FileNotFound from '../../errors/FileNotFound.js';
+import NotConnected from '../../errors/NotConnected.js';
 
 export default class Memory implements FileStore
 {

@@ -1,8 +1,8 @@
 
-import Client from './Client';
-import implementation from './implementation';
+import Client from './Client.js';
+import implementation from './implementation.js';
 
 const client = new Client(implementation);
 
-export * from './definitions/constants';
+export * from './definitions/constants.js';
 export default client;

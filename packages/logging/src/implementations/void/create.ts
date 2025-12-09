@@ -1,5 +1,5 @@
 
-import Void from './Void';
+import Void from './Void.js';
 
 export default function create(): Void
 {
