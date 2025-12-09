@@ -1,6 +1,6 @@
 
-import { HTTP_METHODS } from '../../definitions/constants';
-import type { Http } from '../../definitions/interfaces';
+import { HTTP_METHODS } from '../../definitions/constants.js';
+import type { Http } from '../../definitions/interfaces.js';
 
 export default class Fetch implements Http
 {

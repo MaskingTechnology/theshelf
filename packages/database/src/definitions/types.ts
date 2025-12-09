@@ -1,5 +1,5 @@
 
-import type { QueryOperators, SortDirections } from './constants';
+import type { QueryOperators, SortDirections } from './constants.js';
 
 export type RecordType = string;
 export type RecordId = string;

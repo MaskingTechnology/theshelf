@@ -1,5 +1,5 @@
 
-import EventBrokerError from './EventBrokerError';
+import EventBrokerError from './EventBrokerError.js';
 
 export default class UnknownImplementation extends EventBrokerError
 {

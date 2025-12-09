@@ -1,5 +1,5 @@
 
-import type { Publication, Subscription } from './types';
+import type { Publication, Subscription } from './types.js';
 
 export interface Driver
 {

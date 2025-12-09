@@ -4,17 +4,17 @@
 import type { Collection, Db, Document, Filter, Sort } from 'mongodb';
 import { MongoClient } from 'mongodb';
 
-import { ID, LogicalOperators, QueryOperators, SortDirections } from '../../definitions/constants';
-import type { Driver } from '../../definitions/interfaces';
-import type { QueryMultiExpressionStatement, QueryOperator, QuerySingleExpressionStatement, RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType, RecordValue } from '../../definitions/types';
-import DatabaseError from '../../errors/DatabaseError';
-import NotConnected from '../../errors/NotConnected';
-import RecordNotCreated from '../../errors/RecordNotCreated';
-import RecordNotDeleted from '../../errors/RecordNotDeleted';
-import RecordNotFound from '../../errors/RecordNotFound';
-import RecordNotUpdated from '../../errors/RecordNotUpdated';
-import RecordsNotDeleted from '../../errors/RecordsNotDeleted';
-import RecordsNotUpdated from '../../errors/RecordsNotUpdated';
+import { ID, LogicalOperators, QueryOperators, SortDirections } from '../../definitions/constants.js';
+import type { Driver } from '../../definitions/interfaces.js';
+import type { QueryMultiExpressionStatement, QueryOperator, QuerySingleExpressionStatement, RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType, RecordValue } from '../../definitions/types.js';
+import DatabaseError from '../../errors/DatabaseError.js';
+import NotConnected from '../../errors/NotConnected.js';
+import RecordNotCreated from '../../errors/RecordNotCreated.js';
+import RecordNotDeleted from '../../errors/RecordNotDeleted.js';
+import RecordNotFound from '../../errors/RecordNotFound.js';
+import RecordNotUpdated from '../../errors/RecordNotUpdated.js';
+import RecordsNotDeleted from '../../errors/RecordsNotDeleted.js';
+import RecordsNotUpdated from '../../errors/RecordsNotUpdated.js';
 
 const UNKNOWN_ERROR = 'Unknown error';
 

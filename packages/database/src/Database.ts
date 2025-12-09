@@ -1,8 +1,8 @@
 
-import sanitize from './utilities/sanitize';
+import sanitize from './utilities/sanitize.js';
 
-import type { Driver } from './definitions/interfaces';
-import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './definitions/types';
+import type { Driver } from './definitions/interfaces.js';
+import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './definitions/types.js';
 
 export default class Database implements Driver
 {

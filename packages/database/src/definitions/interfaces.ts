@@ -1,5 +1,5 @@
 
-import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './types';
+import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './types.js';
 
 export interface Driver
 {

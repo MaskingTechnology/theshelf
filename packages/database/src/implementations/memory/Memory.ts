@@ -1,10 +1,10 @@
 
-import { LogicalOperators, QueryOperators, SortDirections } from '../../definitions/constants';
-import type { Driver } from '../../definitions/interfaces';
-import type { QueryExpression, QueryMultiExpressionStatement, QueryOperator, QuerySingleExpressionStatement, QueryStatement, RecordData, RecordField, RecordQuery, RecordSort, RecordValue } from '../../definitions/types';
-import NotConnected from '../../errors/NotConnected';
-import RecordNotFound from '../../errors/RecordNotFound';
-import RecordNotUpdated from '../../errors/RecordNotUpdated';
+import { LogicalOperators, QueryOperators, SortDirections } from '../../definitions/constants.js';
+import type { Driver } from '../../definitions/interfaces.js';
+import type { QueryExpression, QueryMultiExpressionStatement, QueryOperator, QuerySingleExpressionStatement, QueryStatement, RecordData, RecordField, RecordQuery, RecordSort, RecordValue } from '../../definitions/types.js';
+import NotConnected from '../../errors/NotConnected.js';
+import RecordNotFound from '../../errors/RecordNotFound.js';
+import RecordNotUpdated from '../../errors/RecordNotUpdated.js';
 
 type FilterFunction = (record: RecordData) => boolean;
 

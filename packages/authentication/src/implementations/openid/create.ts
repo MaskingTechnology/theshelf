@@ -1,5 +1,5 @@
 
-import OpenID from './OpenID';
+import OpenID from './OpenID.js';
 
 export default function create(): OpenID
 {

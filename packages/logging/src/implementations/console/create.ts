@@ -1,5 +1,5 @@
 
-import Console from './Console';
+import Console from './Console.js';
 
 export default function create(): Console
 {

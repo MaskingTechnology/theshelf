@@ -1,7 +1,7 @@
 
-import type { IdentityProvider } from './definitions/interfaces';
-import UnknownImplementation from './errors/UnknownImplementation';
-import createOpenID from './implementations/openid/create';
+import type { IdentityProvider } from './definitions/interfaces.js';
+import UnknownImplementation from './errors/UnknownImplementation.js';
+import createOpenID from './implementations/openid/create.js';
 
 const implementations = new Map<string, () => IdentityProvider>([
     ['openid', createOpenID],

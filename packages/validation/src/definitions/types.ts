@@ -1,5 +1,5 @@
 
-import type { FieldTypes } from './constants';
+import type { FieldTypes } from './constants.js';
 
 export type ValidationType = keyof typeof FieldTypes;
 

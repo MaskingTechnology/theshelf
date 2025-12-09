@@ -1,5 +1,5 @@
 
-import HttpError from './HttpError';
+import HttpError from './HttpError.js';
 
 export default class UnknownImplementation extends HttpError
 {

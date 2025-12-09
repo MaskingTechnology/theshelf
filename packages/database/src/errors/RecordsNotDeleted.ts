@@ -1,5 +1,5 @@
 
-import DatabaseError from './DatabaseError';
+import DatabaseError from './DatabaseError.js';
 
 export default class RecordsNotDeleted extends DatabaseError
 {
