@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/database",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -19,7 +19,6 @@
   "types": "dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "@theshelf/errors": "*",
     "mongodb": "7.0.0",
     "sanitize-html": "2.17.0"
   }
