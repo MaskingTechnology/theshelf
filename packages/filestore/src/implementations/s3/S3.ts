@@ -1,7 +1,7 @@
 
+import type { Readable } from 'node:stream';
 import type { S3ClientConfig } from '@aws-sdk/client-s3';
 import { NotFound, S3Client, HeadObjectCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, ListBucketsCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
-import { Readable } from 'node:stream';
 
 import type { FileStore } from '../../definitions/interfaces.js';
 import FileNotFound from '../../errors/FileNotFound.js';
