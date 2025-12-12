@@ -11,28 +11,38 @@ npm install @theshelf/filestore
 
 ## Implementations
 
-Currently, there are two implementations:
+Currently, there are three implementations:
 
+* **AWS** - persistent AWS S3 object storage.
 * **Memory** - non-persistent in memory storage (suited for testing).
-* **Minio** - persistent S3 compatible object storage.
+* **S3** - persistent S3 compatible object storage.
 
 ## Configuration
 
 The used implementation needs to be configured in the `.env` file.
 
 ```env
-FILE_STORE_IMPLEMENTATION="minio" # (memory | minio)
+FILE_STORE_IMPLEMENTATION="minio" # (aws | memory | s3)
 ```
 
-In case of Minio, additional configuration is required.
+In case of an S3 compatible storage, additional configuration is required.
 
 ```env
-MINIO_END_POINT="address"
-MINIO_PORT_NUMBER=9000
-MINIO_USE_SSL=true
-MINIO_ACCESS_KEY="development"
-MINIO_SECRET_KEY="secret"
+S3_END_POINT="http://objectstore.com"
+S3_ROOT_USER="development"
+S3_ROOT_PASSWORD="secret"
+S3_BUCKET_NAME="your-bucket-name"
+S3_REGION="local"
 ```
+
+In case of AWS, additional configuration is required.
+
+```env
+AWS_REGION="eu-central-1"
+AWS_BUCKET_NAME="your-bucket-name"
+```
+
+The AWS S3 client uses the **Default Credential Provider Chain** for authentication. More information can be found in the [AWS  documentation](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html).
 
 ## How to use
 

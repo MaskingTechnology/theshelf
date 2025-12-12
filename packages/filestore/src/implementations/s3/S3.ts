@@ -1,23 +1,24 @@
 
-import type { ClientOptions } from 'minio';
-import { Client } from 'minio';
+import type { S3ClientConfig } from '@aws-sdk/client-s3';
+import { NotFound, S3Client, HeadObjectCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, ListBucketsCommand, CreateBucketCommand } from '@aws-sdk/client-s3';
+import { Readable } from 'node:stream';
 
 import type { FileStore } from '../../definitions/interfaces.js';
 import FileNotFound from '../../errors/FileNotFound.js';
 import NotConnected from '../../errors/NotConnected.js';
 
-const BUCKET_NAME = 'comify';
-
-export default class MinioFS implements FileStore
+export default class S3 implements FileStore
 {
-    readonly #configuration: ClientOptions;
-    #client?: Client;
+    readonly #configuration: S3ClientConfig;
+    readonly #bucketName: string;
+    #client?: S3Client;
 
-    constructor(configuration: ClientOptions)
+    constructor(configuration: S3ClientConfig, bucketName: string)
     {
         this.#configuration = configuration;
+        this.#bucketName = bucketName;
     }
-
+    
     get connected()
     {
         return this.#client !== undefined;
@@ -25,12 +26,14 @@ export default class MinioFS implements FileStore
 
     async connect(): Promise<void>
     {
-        this.#client = new Client(this.#configuration);
+        this.#client = new S3Client(this.#configuration);
+        
+        const buckets = await this.#client.send(new ListBucketsCommand({}));
+        const bucketExists = buckets.Buckets?.some(bucket => bucket.Name === this.#bucketName);
 
-        if (await this.#client.bucketExists(BUCKET_NAME) === false)
-        {
-            await this.#client.makeBucket(BUCKET_NAME);
-        }
+        if (bucketExists === true) return;
+        
+        await this.#client.send(new CreateBucketCommand({ Bucket: this.#bucketName }));
     }
 
     async disconnect(): Promise<void>
@@ -40,6 +43,7 @@ export default class MinioFS implements FileStore
             throw new NotConnected();
         }
 
+        this.#client.destroy();
         this.#client = undefined;
     }
 
@@ -49,7 +53,7 @@ export default class MinioFS implements FileStore
 
         try
         {
-            await client.statObject(BUCKET_NAME, path);
+            await client.send(new HeadObjectCommand({ Bucket: this.#bucketName, Key: path }));
 
             return true;
         }
@@ -72,7 +76,7 @@ export default class MinioFS implements FileStore
 
         try
         {
-            await client.putObject(BUCKET_NAME, path, data);
+            await client.send(new PutObjectCommand({Bucket: this.#bucketName, Key: path, Body: data}));
         }
         catch (error)
         {
@@ -86,8 +90,21 @@ export default class MinioFS implements FileStore
 
         try
         {
-            const stream = await client.getObject(BUCKET_NAME, path);
-            const chunks = await stream.toArray();
+            const response = await client.send(new GetObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const body = response.Body;
+
+            if (body === undefined)
+            {
+                throw new FileNotFound(path);
+            }
+
+            const stream = body as Readable;
+            const chunks: Uint8Array[] = [];
+
+            for await (const chunk of stream)
+            {
+                chunks.push(chunk);
+            }
 
             return Buffer.concat(chunks);
         }
@@ -103,7 +120,7 @@ export default class MinioFS implements FileStore
 
         try
         {
-            await client.removeObject(BUCKET_NAME, path);
+            await client.send(new DeleteObjectCommand({ Bucket: this.#bucketName, Key: path }));
         }
         catch (error)
         {
@@ -113,10 +130,10 @@ export default class MinioFS implements FileStore
 
     async clear(): Promise<void>
     {
-        return;  // Deliberately not implemented
+        return; // Deliberately not implemented
     }
 
-    #getClient(): Client
+    #getClient(): S3Client
     {
         if (this.#client === undefined)
         {
@@ -128,17 +145,11 @@ export default class MinioFS implements FileStore
 
     #handleError(error: unknown, path: string): unknown
     {
-        if (error instanceof Error && this.#isNotFoundError(error))
+        if (error instanceof NotFound)
         {
             return new FileNotFound(path);
         }
 
         return error;
-    }
-
-    #isNotFoundError(error: Error): boolean
-    {
-        return error.message.startsWith('The specified key does not exist')
-            || error.message.startsWith('Not Found');
     }
 }
