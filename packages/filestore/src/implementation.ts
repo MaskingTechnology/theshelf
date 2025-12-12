@@ -2,11 +2,13 @@
 import type { FileStore } from './definitions/interfaces.js';
 import UnknownImplementation from './errors/UnknownImplementation.js';
 import createMemoryFS from './implementations/memory/create.js';
-import createMinioFS from './implementations/minio/create.js';
+import createS3FS from './implementations/s3/create.js';
+import createS3AwsFS from './implementations/s3/createAws.js';
 
 const implementations = new Map<string, () => FileStore>([
+    ['aws', createS3AwsFS],
     ['memory', createMemoryFS],
-    ['minio', createMinioFS],
+    ['s3', createS3FS],
 ]);
 
 const DEFAULT_FILE_STORE_IMPLEMENTATION = 'memory';

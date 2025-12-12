@@ -19,6 +19,6 @@
   "types": "dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "minio": "8.0.6"
+    "@aws-sdk/client-s3": "^3.948.0"
   }
 }
