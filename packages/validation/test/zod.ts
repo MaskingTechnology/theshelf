@@ -1,12 +1,12 @@
 
 import { describe, expect, it } from 'vitest';
 
-import type { ValidationSchema } from '../src';
-import validator from '../src';
+import type { ValidationSchema } from '../src/index.js';
+import validator from '../src/index.js';
 
-import { VALIDATION_SCHEMES, VALUES } from './fixtures';
+import { VALIDATION_SCHEMES, VALUES } from './fixtures/index.js';
 
-describe('integrations/validation/implementation', () =>
+describe('implementations/zod', () =>
 {
     describe('String values', () =>
     {
@@ -119,30 +119,61 @@ describe('integrations/validation/implementation', () =>
     {
         it('should accept a valid date', () =>
         {
-            const input = { date: new Date().toISOString() };
+            const input = { date: new Date().toISOString().slice(0, 10) };
 
             performValidResultCheck(input, VALIDATION_SCHEMES.DATE);
         });
 
-        it('should reject a missing required date', () =>
+        it('should reject a missing required datetime', () =>
         {
             const input = { date: undefined };
 
             performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE, VALUES.MESSAGES.INVALID_DATE);
         });
 
-        it('should reject a value that is not a valid date', () =>
+        it('should reject a value that is not a valid datetime', () =>
         {
             const input = { date: new Date('invalid') };
 
             performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE, VALUES.MESSAGES.INVALID_DATE);
         });
 
-        it('should reject a value that is not a date', () =>
+        it('should reject a value that is not a datetime', () =>
         {
-            const input = { date: '2021-01-01' };
+            const input = { date: new Date().toISOString() };
 
             performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE, VALUES.MESSAGES.INVALID_DATE);
+        });
+    });
+
+    describe('DateTime values', () =>
+    {
+        it('should accept a valid datetime', () =>
+        {
+            const input = { datetime: new Date().toISOString() };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.DATETIME);
+        });
+
+        it('should reject a missing required datetime', () =>
+        {
+            const input = { datetime: undefined };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATE);
+        });
+
+        it('should reject a value that is not a valid datetime', () =>
+        {
+            const input = { datetime: new Date('invalid') };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATE);
+        });
+
+        it('should reject a value that is not a datetime', () =>
+        {
+            const input = { datetime: '2021-01-01' };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATE);
         });
     });
 
@@ -358,7 +389,8 @@ describe('integrations/validation/implementation', () =>
                 string: 'ABCD',
                 number: 10,
                 email: 'xyz@def.com',
-                date: new Date().toISOString(),
+                date: new Date().toISOString().slice(0, 10),
+                datetime: new Date().toISOString(),
                 boolean: false
             };
 
@@ -373,7 +405,7 @@ describe('integrations/validation/implementation', () =>
                 id: '123e4567-e89b-12d3-a456-426614174002',
                 string: 'abcd',
                 email: 'def@def.com',
-                date: new Date().toISOString(),
+                datetime: new Date().toISOString(),
                 boolean: 'false',
                 list: ['abcd', 'abcdefghij']
             };
@@ -382,11 +414,13 @@ describe('integrations/validation/implementation', () =>
             const messages = result.messages;
             const booleanMessage = messages.get('boolean');
             const listMessage = messages.get('list');
+            const dateMessage = messages.get('date');
 
             expect(result.invalid).toBe(true);
-            expect(messages.size).toBe(2);
+            expect(messages.size).toBe(3);
             expect(booleanMessage).toBe(VALUES.MESSAGES.INVALID_BOOLEAN);
             expect(listMessage).toBe(VALUES.MESSAGES.INVALID_LIST);
+            expect(dateMessage).toBe(VALUES.MESSAGES.INVALID_DATE);
         });
     });
 });

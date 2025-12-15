@@ -1,7 +1,7 @@
 
-import type { ValidationSchema } from '../../src';
+import type { ValidationSchema } from '../../src/index.js';
 
-import { VALUES } from './values.fixture';
+import { VALUES } from './values.fixture.js';
 
 export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
 {
@@ -41,6 +41,15 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
         date: {
             message: VALUES.MESSAGES.INVALID_DATE,
             DATE: {
+                required: true
+            }
+        }
+    },
+
+    DATETIME: {
+        datetime: {
+            message: VALUES.MESSAGES.INVALID_DATE,
+            DATETIME: {
                 required: true
             }
         }
@@ -147,6 +156,12 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
         date: {
             message: VALUES.MESSAGES.INVALID_DATE,
             DATE: {
+                required: true
+            }
+        },
+        datetime: {
+            message: VALUES.MESSAGES.INVALID_DATETIME,
+            DATETIME: {
                 required: true
             }
         },
