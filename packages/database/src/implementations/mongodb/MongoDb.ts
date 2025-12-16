@@ -132,7 +132,7 @@ export default class MongoDB implements Driver
 
         if (entry === null)
         {
-            throw new RecordNotFound(`Record ${type} found: ${id}`);
+            throw new RecordNotFound(`Record ${type} not found: ${id}`);
         }
 
         return this.#buildRecordData(entry as Document, fields);
