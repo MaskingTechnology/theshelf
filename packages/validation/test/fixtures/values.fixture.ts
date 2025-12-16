@@ -7,6 +7,7 @@ export const VALUES =
         INVALID_NUMBER: 'Invalid number',
         INVALID_BOOLEAN: 'Invalid boolean',
         INVALID_DATE: 'Invalid date',
+        INVALID_DATETIME: 'Invalid datetime',
         INVALID_ID: 'Invalid id',
         INVALID_EMAIL: 'Invalid email',
         INVALID_LIST: 'Invalid list',

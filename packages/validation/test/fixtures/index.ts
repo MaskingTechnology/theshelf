@@ -1,3 +1,3 @@
 
-export * from './validationSchemes.fixture';
-export * from './values.fixture';
+export * from './validationSchemes.fixture.js';
+export * from './values.fixture.js';

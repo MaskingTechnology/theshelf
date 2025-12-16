@@ -26,6 +26,7 @@ export type ArrayProperties = DefaultProperties & {
 
 export type BooleanProperties = DefaultProperties;
 export type DateProperties = DefaultProperties;
+export type DateTimeProperties = DefaultProperties;
 export type UUIDProperties = DefaultProperties;
 export type EmailProperties = DefaultProperties;
 
@@ -42,6 +43,7 @@ export type ValidationTypes = {
     NUMBER: NumberProperties;
     BOOLEAN: BooleanProperties;
     DATE: DateProperties;
+    DATETIME: DateTimeProperties;
     UUID: UUIDProperties;
     EMAIL: EmailProperties;
     ARRAY: ArrayProperties;

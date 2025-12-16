@@ -4,6 +4,7 @@ const FieldTypes = {
     NUMBER: 'number',
     BOOLEAN: 'boolean',
     DATE: 'date',
+    DATETIME: 'datetime',
     UUID: 'uuid',
     EMAIL: 'email',
     ARRAY: 'array',
