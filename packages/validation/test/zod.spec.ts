@@ -124,21 +124,21 @@ describe('implementations/zod', () =>
             performValidResultCheck(input, VALIDATION_SCHEMES.DATE);
         });
 
-        it('should reject a missing required datetime', () =>
+        it('should reject a missing required date', () =>
         {
             const input = { date: undefined };
 
             performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE, VALUES.MESSAGES.INVALID_DATE);
         });
 
-        it('should reject a value that is not a valid datetime', () =>
+        it('should reject a value that is not a valid date', () =>
         {
             const input = { date: new Date('invalid') };
 
             performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE, VALUES.MESSAGES.INVALID_DATE);
         });
 
-        it('should reject a value that is not a datetime', () =>
+        it('should reject a value that is not a date', () =>
         {
             const input = { date: new Date().toISOString() };
 
