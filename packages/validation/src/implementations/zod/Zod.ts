@@ -23,6 +23,7 @@ export default class Zod implements Validator
         this.#validations.set(FieldTypes.NUMBER, (value: ValidationTypes['NUMBER']) => this.#validateNumber(value));
         this.#validations.set(FieldTypes.BOOLEAN, (value: ValidationTypes['BOOLEAN']) => this.#validateBoolean(value));
         this.#validations.set(FieldTypes.DATE, (value: ValidationTypes['DATE']) => this.#validateDate(value));
+        this.#validations.set(FieldTypes.DATETIME, (value: ValidationTypes['DATETIME']) => this.#validateDateTime(value));
         this.#validations.set(FieldTypes.UUID, (value: ValidationTypes['UUID']) => this.#validateUuid(value));
         this.#validations.set(FieldTypes.EMAIL, (value: ValidationTypes['EMAIL']) => this.#validateEmail(value));
         this.#validations.set(FieldTypes.ARRAY, (value: ValidationTypes['ARRAY']) => this.#validateArray(value));
@@ -108,6 +109,13 @@ export default class Zod implements Validator
     }
 
     #validateDate(value: ValidationTypes['DATE'])
+    {
+        const validation = z.iso.date();
+
+        return this.#checkRequired(value, validation);
+    }
+
+    #validateDateTime(value: ValidationTypes['DATE'])
     {
         const validation = z.iso.datetime();
 
