@@ -12,6 +12,7 @@ export const VALUES =
         INVALID_EMAIL: 'Invalid email',
         INVALID_LIST: 'Invalid list',
         INVALID_URL: 'Invalid url',
+        INVALID_ENUM: 'Invalid value',
         INVALID_FIELD: 'Invalid field'
     },
 

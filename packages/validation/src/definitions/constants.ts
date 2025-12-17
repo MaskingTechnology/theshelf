@@ -8,7 +8,8 @@ const FieldTypes = {
     UUID: 'uuid',
     EMAIL: 'email',
     ARRAY: 'array',
-    URL: 'url'
+    URL: 'url',
+    ENUM: 'enum'
 };
 
 Object.freeze(FieldTypes);

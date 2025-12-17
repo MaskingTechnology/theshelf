@@ -34,6 +34,12 @@ export type URLProperties = DefaultProperties & {
     protocols?: string[];
 };
 
+// values are optional, because making them required
+// kills the typescript checking in the Zod implementation
+export type EnumProperties = DefaultProperties & {
+    values?: string[];
+};
+
 export type Message = {
     message: string;
 };
@@ -48,6 +54,7 @@ export type ValidationTypes = {
     EMAIL: EmailProperties;
     ARRAY: ArrayProperties;
     URL: URLProperties;
+    ENUM: EnumProperties;
 };
 
 export type Validation = Partial<ValidationTypes | Message>;
