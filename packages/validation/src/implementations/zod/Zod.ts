@@ -28,6 +28,7 @@ export default class Zod implements Validator
         this.#validations.set(FieldTypes.EMAIL, (value: ValidationTypes['EMAIL']) => this.#validateEmail(value));
         this.#validations.set(FieldTypes.ARRAY, (value: ValidationTypes['ARRAY']) => this.#validateArray(value));
         this.#validations.set(FieldTypes.URL, (value: ValidationTypes['URL']) => this.#validateUrl(value));
+        this.#validations.set(FieldTypes.ENUM, (value: ValidationTypes['ENUM']) => this.#validateEnum(value));
     }
 
     validate(data: unknown, schema: ValidationSchema): ValidationResult
@@ -158,6 +159,15 @@ export default class Zod implements Validator
 
             validation = validation.regex(new RegExp(`^(${expression}):.*`));
         }
+
+        return this.#checkRequired(value, validation);
+    }
+
+    #validateEnum(value: ValidationTypes['ENUM'])
+    {
+        const validation = value.values === undefined
+            ? z.enum([])
+            : z.enum(value.values);
 
         return this.#checkRequired(value, validation);
     }

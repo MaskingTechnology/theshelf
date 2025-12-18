@@ -112,6 +112,16 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
         }
     },
 
+    ENUM: {
+        enum: {
+            message: VALUES.MESSAGES.INVALID_ENUM,
+            ENUM: {
+                required: true,
+                values: ["A", "B", "C"]
+            }
+        }
+    },
+
     OPTIONAL: {
         string: {
             message: VALUES.MESSAGES.INVALID_STRING,

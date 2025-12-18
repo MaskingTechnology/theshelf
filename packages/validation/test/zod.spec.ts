@@ -293,6 +293,30 @@ describe('implementations/zod', () =>
         });
     });
 
+    describe('Enum values', () =>
+    {
+        it('should accept a valid value', () =>
+        {
+            const input = { enum: 'A' };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.ENUM);
+        });
+
+        it('should reject a missing required value', () =>
+        {
+            const input = { enum: undefined };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.ENUM, VALUES.MESSAGES.INVALID_ENUM);
+        });
+
+        it('should reject a value not part of the enum', () =>
+        {
+            const input = { enum: 'D' };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.ENUM, VALUES.MESSAGES.INVALID_ENUM);
+        });
+    });
+
     describe('Array values', () =>
     {
         it('should accept a valid array', () =>
