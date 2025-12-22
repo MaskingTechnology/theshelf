@@ -1,6 +1,6 @@
 
-import type { RecordSort} from '../../src';
-import { SortDirections } from '../../src';
+import type { RecordSort } from '../../src/index.js';
+import { SortDirections } from '../../src/index.js';
 
 export const SORTS: Record<string, RecordSort> =
 {

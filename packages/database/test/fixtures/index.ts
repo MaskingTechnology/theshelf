@@ -1,7 +1,8 @@
 
-export * from './databases.fixture';
-export * from './queries.fixture';
-export * from './records.fixture';
-export * from './results.fixture';
-export * from './sorts.fixture';
-export * from './values.fixture';
+export * from './databases.fixture.js';
+export * from './queries.fixture.js';
+export * from './records.fixture.js';
+export * from './results.fixture.js';
+export * from './sorts.fixture.js';
+export * from './values.fixture.js';
+

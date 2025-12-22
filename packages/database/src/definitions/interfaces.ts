@@ -8,12 +8,11 @@ export interface Driver
     connect(): Promise<void>;
     disconnect(): Promise<void>;
     createRecord(type: RecordType, data: RecordData): Promise<RecordId>;
-    readRecord(type: RecordType, id: RecordId, fields?: RecordField[]): Promise<RecordData>;
-    findRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>;
+    readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>;
     searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>;
-    updateRecord(type: RecordType, id: RecordId, data: RecordData): Promise<void>;
-    updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<void>;
-    deleteRecord(type: RecordType, id: RecordId): Promise<void>;
-    deleteRecords(type: RecordType, query: RecordQuery): Promise<void>;
+    updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>;
+    updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>;
+    deleteRecord(type: RecordType, query: RecordQuery): Promise<number>;
+    deleteRecords(type: RecordType, query: RecordQuery): Promise<number>;
     clear(): Promise<void>;
 }

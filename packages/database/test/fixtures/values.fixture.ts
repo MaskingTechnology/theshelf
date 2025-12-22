@@ -3,7 +3,16 @@ export const VALUES =
 {
     IDS:
     {
-        NON_EXISTING: 'non-existing'
+        NON_EXISTING: 'non-existing',
+
+        APPLE: '1',
+        PEAR: '2',
+
+        MARGHERITA: '1',
+        CALZONE: '2',
+        PEPPERONI: '3',
+        VEGETARIAN: '4',
+        HAWAII: '5'
     },
 
     FIELDS:
