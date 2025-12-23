@@ -1,3 +1,5 @@
+name: "Publish"
+
 on:
   workflow_dispatch:
 
@@ -21,8 +23,8 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: 🚀 Publish Package
-        run: npm publish
+      - name: 🚀 Publish Packages
+        run: npm run publish
 
       - name: ✅ Publish Complete
         run: echo "Package published and tagged successfully."
