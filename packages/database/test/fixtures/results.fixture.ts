@@ -1,7 +1,7 @@
 
-import type { RecordData } from '../../src';
+import type { RecordData } from '../../src/index.js';
 
-import { RECORDS } from './records.fixture';
+import { RECORDS } from './records.fixture.js';
 
 const { MARGHERITA, CALZONE, PEPPERONI, VEGETARIAN, HAWAII } = RECORDS.PIZZAS;
 

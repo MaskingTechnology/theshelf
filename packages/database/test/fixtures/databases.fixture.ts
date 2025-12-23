@@ -1,7 +1,7 @@
 
-import database from '../../src';
+import database from '../../src/index.js';
 
-import { RECORD_TYPES, RECORDS } from './records.fixture';
+import { RECORD_TYPES, RECORDS } from './records.fixture.js';
 
 await database.connect();
 

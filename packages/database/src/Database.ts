@@ -32,14 +32,9 @@ export default class Database implements Driver
         return this.#driver.createRecord(type, cleanData);
     }
 
-    readRecord(type: RecordType, id: RecordId, fields?: RecordField[]): Promise<RecordData>
+    readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
     {
-        return this.#driver.readRecord(type, id, fields);
-    }
-
-    findRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
-    {
-        return this.#driver.findRecord(type, query, fields, sort);
+        return this.#driver.readRecord(type, query, fields, sort);
     }
 
     searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
@@ -47,26 +42,26 @@ export default class Database implements Driver
         return this.#driver.searchRecords(type, query, fields, sort, limit, offset);
     }
 
-    updateRecord(type: RecordType, id: RecordId, data: RecordData): Promise<void>
+    updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
         const cleanData = sanitize(data);
 
-        return this.#driver.updateRecord(type, id, cleanData);
+        return this.#driver.updateRecord(type, query, cleanData);
     }
 
-    updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<void>
+    updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
         const cleanData = sanitize(data);
 
         return this.#driver.updateRecords(type, query, cleanData);
     }
 
-    deleteRecord(type: RecordType, id: RecordId): Promise<void>
+    deleteRecord(type: RecordType, query: RecordQuery): Promise<number>
     {
-        return this.#driver.deleteRecord(type, id);
+        return this.#driver.deleteRecord(type, query);
     }
 
-    deleteRecords(type: RecordType, query: RecordQuery): Promise<void>
+    deleteRecords(type: RecordType, query: RecordQuery): Promise<number>
     {
         return this.#driver.deleteRecords(type, query);
     }

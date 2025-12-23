@@ -1,10 +1,8 @@
 
 import { LogicalOperators, QueryOperators, SortDirections } from '../../definitions/constants.js';
 import type { Driver } from '../../definitions/interfaces.js';
-import type { QueryExpression, QueryMultiExpressionStatement, QueryOperator, QuerySingleExpressionStatement, QueryStatement, RecordData, RecordField, RecordQuery, RecordSort, RecordValue } from '../../definitions/types.js';
+import type { QueryExpression, QueryMultiExpressionStatement, QueryOperator, QuerySingleExpressionStatement, RecordData, RecordField, RecordQuery, RecordSort, RecordValue } from '../../definitions/types.js';
 import NotConnected from '../../errors/NotConnected.js';
-import RecordNotFound from '../../errors/RecordNotFound.js';
-import RecordNotUpdated from '../../errors/RecordNotUpdated.js';
 
 type FilterFunction = (record: RecordData) => boolean;
 
@@ -55,26 +53,14 @@ export default class Memory implements Driver
         return record.id as string;
     }
 
-    async readRecord(type: string, id: string, fields?: string[]): Promise<RecordData>
-    {
-        const record = this.#fetchRecord(type, id);
-
-        if (record === undefined)
-        {
-            throw new RecordNotFound();
-        }
-
-        return this.#buildRecordData(record, fields);
-    }
-
-    async findRecord(type: string, query: QueryStatement, fields?: string[], sort?: RecordSort): Promise<RecordData | undefined>
+    async readRecord(type: string, query: RecordQuery, fields?: string[], sort?: RecordSort): Promise<RecordData | undefined>
     {
         const result = await this.searchRecords(type, query, fields, sort, 1, 0);
 
         return result[0];
     }
 
-    async searchRecords(type: string, query: QueryStatement, fields?: string[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
+    async searchRecords(type: string, query: RecordQuery, fields?: string[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
     {
         const records = this.#fetchRecords(type, query);
 
@@ -84,39 +70,47 @@ export default class Memory implements Driver
         return limitedRecords.map(record => this.#buildRecordData(record, fields));
     }
 
-    async updateRecord(type: string, id: string, data: RecordData): Promise<void>
+    async updateRecord(type: string, query: RecordQuery, data: RecordData): Promise<number>
     {
-        const record = this.#fetchRecord(type, id);
+        const record = this.#fetchRecord(type, query);
 
         if (record === undefined)
         {
-            throw new RecordNotUpdated();
+            return 0;
         }
 
         this.#updateRecordData(record, data);
+
+        return 1;
     }
 
-    async updateRecords(type: string, query: QueryStatement, data: RecordData): Promise<void>
+    async updateRecords(type: string, query: RecordQuery, data: RecordData): Promise<number>
     {
         const records = this.#fetchRecords(type, query);
 
         records.forEach(record => this.#updateRecordData(record, data));
+
+        return records.length;
     }
 
-    async deleteRecord(type: string, id: string): Promise<void>
+    async deleteRecord(type: string, query: RecordQuery): Promise<number>
     {
+        const filterFunction = this.#buildFilterFunction(query);
+
         const collection = this.#getCollection(type);
-        const index = collection.findIndex(record => record.id === id);
+        const index = collection.findIndex(filterFunction);
 
         if (index === -1)
         {
-            throw new RecordNotFound();
+            return 0;
         }
 
         collection.splice(index, 1);
+
+        return 1;
     }
 
-    async deleteRecords(type: string, query: QueryStatement): Promise<void>
+    async deleteRecords(type: string, query: RecordQuery): Promise<number>
     {
         const collection = this.#getCollection(type);
         const records = this.#fetchRecords(type, query);
@@ -126,6 +120,8 @@ export default class Memory implements Driver
             .sort((a, b) => b - a); // Reverse the order of indexes to delete from the end to the beginning
 
         indexes.forEach(index => collection.splice(index, 1));
+
+        return indexes.length;
     }
 
     async clear(): Promise<void>
@@ -133,14 +129,15 @@ export default class Memory implements Driver
         this.#memory.clear();
     }
 
-    #fetchRecord(type: string, id: string)
+    #fetchRecord(type: string, query: RecordQuery): RecordData | undefined
     {
         const collection = this.#getCollection(type);
+        const filterFunction = this.#buildFilterFunction(query);
 
-        return collection.find(object => object.id === id);
+        return collection.find(filterFunction);
     }
 
-    #fetchRecords(type: string, query: QueryStatement)
+    #fetchRecords(type: string, query: RecordQuery): RecordData[]
     {
         const collection = this.#getCollection(type);
         const filterFunction = this.#buildFilterFunction(query);
@@ -148,7 +145,7 @@ export default class Memory implements Driver
         return collection.filter(filterFunction);
     }
 
-    #updateRecordData(record: RecordData, data: RecordData)
+    #updateRecordData(record: RecordData, data: RecordData): void
     {
         for (const key of Object.keys(data))
         {

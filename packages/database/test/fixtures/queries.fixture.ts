@@ -1,7 +1,8 @@
 
-import type { RecordQuery } from '../../src';
+import type { RecordQuery } from '../../src/index.js';
 
-import { RECORDS } from './records.fixture';
+import { RECORDS } from './records.fixture.js';
+import { VALUES } from './values.fixture.js';
 
 const { CALZONE, VEGETARIAN, HAWAII } = RECORDS.PIZZAS;
 
@@ -80,5 +81,9 @@ export const QUERIES: Record<string, RecordQuery> =
                 { 'name': { EQUALS: 'Not existing' } },
                 { 'size': { EQUALS: 21 } }
             ]
-    }
+    },
+
+    MARGHERITA: { id: { EQUALS: VALUES.IDS.MARGHERITA } },
+    PEAR: { id: { EQUALS: VALUES.IDS.PEAR } },
+    APPLE: { id: { EQUALS: VALUES.IDS.APPLE } }
 };
