@@ -3,6 +3,9 @@
   "private": false,
   "version": "0.0.3",
   "type": "module",
+  "repository": {
+    "url": "https://github.com/MaskingTechnology/theshelf"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
