@@ -8,7 +8,8 @@
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces --if-present",
     "review": "npm run review --workspaces",
-    "publish": "npm publish --workspaces"
+    "publish": "npm publish --workspaces",
+    "version": "npm version $VERSION --no-git-tag-version --workspaces"
   },
   "workspaces": [
     "packages/**/*"
