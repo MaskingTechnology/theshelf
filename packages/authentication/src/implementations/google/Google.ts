@@ -4,8 +4,10 @@ import
     authorizationCodeGrant, buildAuthorizationUrl,
     calculatePKCECodeChallenge, discovery,
     fetchUserInfo,
-    randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
+    randomNonce, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
 } from 'openid-client';
+
+import crypto from 'node:crypto';
 
 import type { Configuration, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
 
@@ -22,6 +24,16 @@ type GoogleConfiguration = {
     accessType: string;
     organizationDomain: string;
 };
+
+type Payload = {
+    jti: string;
+    nonce: string;
+    iat: number;
+    exp: number;
+};
+
+const SECRET = crypto.randomUUID() + crypto.randomUUID();
+const TTL = 30000;
 
 export default class OpenID implements IdentityProvider
 {
@@ -63,6 +75,9 @@ export default class OpenID implements IdentityProvider
         const access_type = this.#providerConfiguration.accessType;
         const hd = this.#providerConfiguration.organizationDomain;
 
+        const payload = this.#createPayload();
+        const state = this.#calculateSignature(payload);
+
         const parameters: Record<string, string> = {
             redirect_uri,
             scope,
@@ -70,7 +85,9 @@ export default class OpenID implements IdentityProvider
             code_challenge_method,
             access_type,
             hd,
-            prompt: 'consent'
+            prompt: 'consent',
+            nonce: payload.nonce,
+            state
         };
 
         const clientConfiguration = this.#getClientConfiguration();
@@ -89,8 +106,12 @@ export default class OpenID implements IdentityProvider
             url.searchParams.set(key, value as string);
         }
 
+        const payload = this.#getPayload(data.state);
+
         const tokens = await authorizationCodeGrant(clientConfiguration, url, {
             pkceCodeVerifier: this.#codeVerifier,
+            expectedNonce: payload.nonce,
+            expectedState: data.state as string,
             idTokenExpected: true
         });
 
@@ -162,5 +183,60 @@ export default class OpenID implements IdentityProvider
         }
 
         return claims;
+    }
+
+    #createPayload(): Payload
+    {
+        return {
+            jti: crypto.randomUUID(),
+            nonce: randomNonce(),
+            iat: Date.now(),
+            exp: Date.now() + TTL
+        };
+    }
+
+    #calculateSignature(payload: Payload): string
+    {
+        const data = JSON.stringify(payload);
+
+        const value = Buffer.from(data).toString('base64url');
+        const signature = Buffer.from(crypto.createHmac("sha512", SECRET).update(data).digest()).toString('base64url');
+
+        return `${value}.${signature}`;
+    }
+
+    #getPayload(state: unknown): Payload
+    {
+        if (typeof state !== 'string')
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        if (state.includes('.') === false)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        const [value, signature] = state.split('.');
+
+        const decodedValue = Buffer.from(value, 'base64').toString('utf8');
+        const decodedSignature = Buffer.from(signature, 'base64');
+
+        const check = Buffer.from(crypto.createHmac("sha512", SECRET).update(decodedValue).digest());
+
+        if (crypto.timingSafeEqual(check, decodedSignature) === false)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        const payload = JSON.parse(decodedValue);
+        const now = Date.now();
+
+        if (payload.iat > now || payload.exp < now)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        return payload;
     }
 }
