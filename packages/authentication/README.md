@@ -23,6 +23,7 @@ npm install @theshelf/authentication
 Currently, there is only one implementation:
 
 * **OpenID** - persistent document storage.
+* **Google** - authentication via Google accounts
 
 ## Configuration
 
@@ -42,6 +43,19 @@ OPENID_CLIENT_SECRET=""
 OPENID_REDIRECT_PATH="https://application.com/login"
 OPENID_ALLOW_INSECURE_REQUESTS=false
 ```
+
+In case of Google, the following configuration is required.
+
+```env
+GOOGLE_ISSUER="https://accounts.google.com"
+GOOGLE_CLIENT_ID="google-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET=""
+GOOGLE_REDIRECT_PATH="https://application.com/login"
+GOOGLE_ACCESS_TYPE="offline"
+GOOGLE_ORGANIZATION_DOMAIN="yourdomain.com"
+```
+
+The ACCESS_TYPE can be either `online` or `offline`. The default is `offline`, which provides refresh tokens. The ORGANIZATION_DOMAIN can be used to restrict login to a specific Google Workspace domain.
 
 ## How to use
 
