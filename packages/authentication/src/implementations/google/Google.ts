@@ -1,33 +1,36 @@
 
 import
 {
-    allowInsecureRequests, authorizationCodeGrant, buildAuthorizationUrlWithPAR, calculatePKCECodeChallenge, discovery,
-    fetchUserInfo, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
+    authorizationCodeGrant, buildAuthorizationUrl,
+    calculatePKCECodeChallenge, discovery,
+    fetchUserInfo,
+    randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
 } from 'openid-client';
 
-import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
+import type { Configuration, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
 
 import type { IdentityProvider } from '../../definitions/interfaces.js';
 import type { Identity, Session } from '../../definitions/types.js';
 import LoginFailed from '../../errors/LoginFailed.js';
 import NotConnected from '../../errors/NotConnected.js';
 
-type OpenIDConfiguration = {
+type GoogleConfiguration = {
     issuer: string;
     clientId: string;
     clientSecret: string;
     redirectPath: string;
-    allowInsecureRequests: boolean;
+    accessType: string;
+    organizationDomain: string;
 };
 
 export default class OpenID implements IdentityProvider
 {
-    readonly #providerConfiguration: OpenIDConfiguration;
+    readonly #providerConfiguration: GoogleConfiguration;
     #clientConfiguration?: Configuration;
 
     readonly #codeVerifier = randomPKCECodeVerifier();
 
-    constructor(configuration: OpenIDConfiguration)
+    constructor(configuration: GoogleConfiguration)
     {
         this.#providerConfiguration = configuration;
     }
@@ -42,9 +45,8 @@ export default class OpenID implements IdentityProvider
         const issuer = new URL(this.#providerConfiguration.issuer);
         const clientId = this.#providerConfiguration.clientId;
         const clientSecret = this.#providerConfiguration.clientSecret;
-        const requestOptions = this.#getRequestOptions();
 
-        this.#clientConfiguration = await discovery(issuer, clientId, clientSecret, undefined, requestOptions);
+        this.#clientConfiguration = await discovery(issuer, clientId, clientSecret);
     }
 
     async disconnect(): Promise<void>
@@ -58,16 +60,21 @@ export default class OpenID implements IdentityProvider
         const scope = 'openid profile email';
         const code_challenge = await calculatePKCECodeChallenge(this.#codeVerifier);
         const code_challenge_method = 'S256';
+        const access_type = this.#providerConfiguration.accessType;
+        const hd = this.#providerConfiguration.organizationDomain;
 
         const parameters: Record<string, string> = {
             redirect_uri,
             scope,
             code_challenge,
-            code_challenge_method
+            code_challenge_method,
+            access_type,
+            hd,
+            prompt: 'consent'
         };
 
         const clientConfiguration = this.#getClientConfiguration();
-        const redirectTo = await buildAuthorizationUrlWithPAR(clientConfiguration, parameters);
+        const redirectTo = buildAuthorizationUrl(clientConfiguration, parameters);
 
         return redirectTo.href;
     }
@@ -139,22 +146,10 @@ export default class OpenID implements IdentityProvider
     {
         if (this.#clientConfiguration === undefined)
         {
-            throw new NotConnected('OpenID client not connected');
+            throw new NotConnected('Google client not connected');
         }
 
         return this.#clientConfiguration;
-    }
-
-    #getRequestOptions(): DiscoveryRequestOptions
-    {
-        const options: DiscoveryRequestOptions = {};
-
-        if (this.#providerConfiguration.allowInsecureRequests)
-        {
-            options.execute = [allowInsecureRequests];
-        }
-
-        return options;
     }
 
     #getClaims(tokens: TokenEndpointResponse & TokenEndpointResponseHelpers): IDToken
