@@ -1,10 +1,12 @@
 
 import type { IdentityProvider } from './definitions/interfaces.js';
 import UnknownImplementation from './errors/UnknownImplementation.js';
+import createGoogle from './implementations/google/create.js';
 import createOpenID from './implementations/openid/create.js';
 
 const implementations = new Map<string, () => IdentityProvider>([
     ['openid', createOpenID],
+    ['google', createGoogle]
 ]);
 
 const DEFAULT_AUTHENTICATION_IMPLEMENTATION = 'openid';
