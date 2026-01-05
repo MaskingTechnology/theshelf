@@ -1,16 +1,10 @@
 
-import http from '../../src/index.js';
-import { HttpMethods } from '../../src/definitions/constants.js';
+import http, { HttpMethods } from '../../src/index.js';
 
-import { mockDriver } from './driver.mock.js';
 import { RESPONSES } from './responses.fixture.js';
 import { URLS } from './urls.fixture.js';
 
-http.driver = mockDriver;
-
-export { http };
-
-function withCache(): void
+function reset(): void
 {
     http.clearCache();
 
@@ -22,4 +16,4 @@ function withCache(): void
     http.setCache(HttpMethods.HEAD, URLS.CACHED, RESPONSES.CACHED);
 }
 
-export const HTTP_CLIENTS = { withCache };
+export const CACHE = { reset };

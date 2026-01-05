@@ -2,6 +2,7 @@
 import Database from './Database.js';
 
 export * from './definitions/constants.js';
+export type * from './definitions/interfaces.js';
 export type * from './definitions/types.js';
 
 export { default as DatabaseError } from './errors/DatabaseError.js';

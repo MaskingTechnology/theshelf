@@ -1,6 +1,7 @@
 
 import Http from './Http.js';
 
+export * from './definitions/constants.js';
 export type * from './definitions/constants.js';
 export type * from './definitions/interfaces.js';
 

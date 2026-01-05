@@ -1,16 +1,21 @@
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import notificationService, { SubscriptionNotFound } from '../src/index.js';
 
-import { NOTIFICATION_SERVICES, VALUES } from './fixtures/index.js';
+import { DRIVERS, VALUES } from './fixtures/index.js';
 
 beforeEach(async () =>
 {
-    await NOTIFICATION_SERVICES.withRecipient();
+    notificationService.driver = await DRIVERS.withRecipient();
 });
 
-describe('integrations/notification/implementation', () =>
+afterEach(async () =>
+{
+    await notificationService.disconnect();
+});
+
+describe('notificationService', () =>
 {
     describe('.subscribe(path)', () =>
     {

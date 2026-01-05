@@ -43,11 +43,6 @@ export default class Memory implements Driver
         emitter.off(subscription.name, subscription.handler);
     }
 
-    async clear(): Promise<void>
-    {
-        this.#emitters.clear();
-    }
-
     #getEmitter(event: Event): EventEmitter
     {
         if (this.#emitters.has(event.channel) === false)

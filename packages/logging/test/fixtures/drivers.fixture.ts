@@ -1,4 +1,5 @@
 
+import type { Driver } from '../../src/index.js';
 import { MemoryDriver } from '../../src/index.js';
 
 function empty()
@@ -6,7 +7,7 @@ function empty()
     return new MemoryDriver();
 }
 
-function withMessages()
+function withMessages(): Driver
 {
     const driver = new MemoryDriver();
     

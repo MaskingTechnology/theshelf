@@ -69,9 +69,4 @@ export default class Memory implements Driver
 
         return this.#files;
     }
-
-    async clear(): Promise<void>
-    {
-        this.#files.clear();
-    }
 }

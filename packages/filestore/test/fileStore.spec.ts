@@ -1,16 +1,21 @@
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import fileStore, { FileNotFound } from '../src/index.js';
 
-import { FILES, FILE_STORES, VALUES } from './fixtures/index.js';
+import { FILES, DRIVERS, VALUES } from './fixtures/index.js';
 
 beforeEach(async () =>
 {
-    await FILE_STORES.withFile();
+    fileStore.driver = await DRIVERS.withFile();
 });
 
-describe('integrations/filestore/implementation', () =>
+afterEach(async () =>
+{
+    await fileStore.disconnect();
+});
+
+describe('fileStore', () =>
 {
     describe('.hasFile(path)', () =>
     {

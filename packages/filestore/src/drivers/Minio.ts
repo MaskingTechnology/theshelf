@@ -111,11 +111,6 @@ export default class Minio implements Driver
         }
     }
 
-    async clear(): Promise<void>
-    {
-        return;  // Deliberately not implemented
-    }
-
     #getClient(): Client
     {
         if (this.#client === undefined)

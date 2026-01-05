@@ -44,9 +44,4 @@ export default class EventBroker implements Driver
     {
         return this.driver.unsubscribe(subscription);
     }
-
-    clear(): Promise<void>
-    {
-        return this.driver.clear();
-    }
 }

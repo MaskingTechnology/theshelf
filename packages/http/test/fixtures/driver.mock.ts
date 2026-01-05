@@ -1,5 +1,5 @@
 
-import type { Driver } from '../../src/definitions/interfaces.js';
+import type { Driver } from '../../src/index.js';
 
 import { RESPONSES } from './responses.fixture.js';
 

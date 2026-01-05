@@ -1,14 +1,21 @@
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
-import { HTTP_CLIENTS, RESPONSES, URLS, http } from './fixtures/index.js';
+import http from '../src/index.js';
+
+import { CACHE, RESPONSES, URLS, mockDriver } from './fixtures/index.js';
+
+beforeAll(() =>
+{
+    http.driver = mockDriver;
+});
 
 beforeEach(() =>
 {
-    HTTP_CLIENTS.withCache();
+    CACHE.reset();
 });
 
-describe('integrations/http/Client', () =>
+describe('http', () =>
 {
     describe('.get', () =>
     {

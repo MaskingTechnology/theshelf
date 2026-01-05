@@ -48,9 +48,4 @@ export default class FileStore implements Driver
     {
         return this.driver.deleteFile(path);
     }
-
-    clear(): Promise<void>
-    {
-        return this.driver.clear();
-    }
 }

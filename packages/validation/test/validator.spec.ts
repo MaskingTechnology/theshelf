@@ -6,7 +6,7 @@ import validator from '../src/index.js';
 
 import { VALIDATION_SCHEMES, VALUES } from './fixtures/index.js';
 
-describe('implementations/zod', () =>
+describe('validator', () =>
 {
     describe('String values', () =>
     {

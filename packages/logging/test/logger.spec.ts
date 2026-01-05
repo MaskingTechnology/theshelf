@@ -4,7 +4,7 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { MemoryDriver } from '../src/index.js';
 import logger, { LogLevels } from '../src/index.js';
 
-import { DRIVERS } from './fixtures/index.js';
+import { DRIVERS, VALUES, RESULTS } from './fixtures/index.js';
 
 beforeEach(() =>
 {
@@ -115,82 +115,70 @@ describe('logger', () =>
 
         it('should convert primative values', async () =>
         {
-            logger.logInfo('text');
-            logger.logInfo(true);
-            logger.logInfo(3.14);
+            logger.logInfo(VALUES.TEXT);
+            logger.logInfo(VALUES.BOOLEAN);
+            logger.logInfo(VALUES.NUMBER);
 
             const logs = (logger.driver as MemoryDriver).logs;
 
             expect(logs).toHaveLength(3);
-            expect(logs[0].message).toEqual('text');
-            expect(logs[1].message).toEqual('true');
-            expect(logs[2].message).toEqual('3.14');
+            expect(logs[0].message).toEqual(RESULTS.TEXT);
+            expect(logs[1].message).toEqual(RESULTS.BOOLEAN);
+            expect(logs[2].message).toEqual(RESULTS.NUMBER);
         });
 
         it('should convert no values', async () =>
         {
-            logger.logInfo(undefined);
-            logger.logInfo(null);
+            logger.logInfo(VALUES.UNDEFINED);
+            logger.logInfo(VALUES.NULL);
 
             const logs = (logger.driver as MemoryDriver).logs;
 
             expect(logs).toHaveLength(2);
-            expect(logs[0].message).toEqual('undefined');
-            expect(logs[1].message).toEqual('null');
+            expect(logs[0].message).toEqual(RESULTS.UNDEFINED);
+            expect(logs[1].message).toEqual(RESULTS.NULL);
         });
 
         it('should convert a function value', async () =>
         {
-            function dummy() {}
-
-            logger.logInfo(dummy);
+            logger.logInfo(VALUES.FUNCTION);
 
             const logs = (logger.driver as MemoryDriver).logs;
             
             expect(logs).toHaveLength(1);
-            expect(logs[0].message).toEqual('function');
+            expect(logs[0].message).toEqual(RESULTS.FUNCTION);
         });
 
         it('should convert an array value', async () =>
         {
-            const array = ['text', true, 3.14];
-
-            logger.logInfo(array);
+            logger.logInfo(VALUES.ARRAY);
 
             const logs = (logger.driver as MemoryDriver).logs;
             
             expect(logs).toHaveLength(1);
-            expect(logs[0].message).toEqual('text true 3.14');
+            expect(logs[0].message).toEqual(RESULTS.ARRAY);
         });
 
         it('should convert an object value', async () =>
         {
-            const object = { a: 'text', b: true, c: 3.14 };
-
-            logger.logInfo(object);
+            logger.logInfo(VALUES.OBJECT);
 
             const logs = (logger.driver as MemoryDriver).logs;
-            const expected = JSON.stringify(object);
             
             expect(logs).toHaveLength(1);
-            expect(logs[0].message).toEqual(expected);
+            expect(logs[0].message).toEqual(RESULTS.OBJECT);
         });
 
         it('should convert an error value', async () =>
         {
-            const stackError = new Error('Stack');
-
-            const messageError = new Error('Message');
-            messageError.stack = undefined;
-
-            logger.logInfo(stackError);
-            logger.logInfo(messageError);
+            logger.logInfo(VALUES.ERROR_STACK);
+            logger.logInfo(VALUES.ERROR_MESSAGE);
 
             const logs = (logger.driver as MemoryDriver).logs;
             
             expect(logs).toHaveLength(2);
-            expect(logs[0].message).toEqual(stackError.stack);
-            expect(logs[1].message).toEqual(messageError.message);
+            expect(logs[0].message).toEqual(RESULTS.ERROR_STACK);
+            expect(logs[1].message).toEqual(RESULTS.ERROR_MESSAGE);
         });
     });
 });
