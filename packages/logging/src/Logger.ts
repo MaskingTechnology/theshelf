@@ -82,7 +82,7 @@ export default class Logger implements Driver
     {
         const messageString = this.#createMessage(message);
 
-        return this.driver.logError(messageString);
+        return this.driver.logFatal(messageString);
     }
 
     #createMessage(message: unknown[]): string
