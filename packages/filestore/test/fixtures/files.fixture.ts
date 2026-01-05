@@ -1,5 +1,5 @@
 
-import { VALUES } from './values.fixture';
+import { VALUES } from './values.fixture.js';
 
 export const FILES =
 {

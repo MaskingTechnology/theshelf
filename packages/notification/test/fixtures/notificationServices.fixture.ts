@@ -1,7 +1,7 @@
 
-import notificationService from '../../src';
+import notificationService from '../../src/index.js';
 
-import { VALUES } from './values.fixture';
+import { VALUES } from './values.fixture.js';
 
 notificationService.connect();
 

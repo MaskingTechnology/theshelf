@@ -1,5 +1,5 @@
 
-import { EVENTS } from './events.fixture';
+import { EVENTS } from './events.fixture.js';
 
 const DATA =
 {

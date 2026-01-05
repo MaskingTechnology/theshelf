@@ -1,5 +1,5 @@
 
-import eventBroker from '../../src';
+import eventBroker from '../../src/index.js';
 
 await eventBroker.connect();
 

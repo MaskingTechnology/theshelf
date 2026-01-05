@@ -1,5 +1,5 @@
 
-export * from './fileStores.fixture';
-export * from './files.fixture';
-export * from './values.fixture';
+export * from './fileStores.fixture.js';
+export * from './files.fixture.js';
+export * from './values.fixture.js';
 

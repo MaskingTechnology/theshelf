@@ -10,9 +10,7 @@ const FieldTypes = {
     ARRAY: 'array',
     URL: 'url',
     ENUM: 'enum'
-};
-
-Object.freeze(FieldTypes);
+} as const;
 
 const MAX_EMAIL_LENGTH = 320;
 const MAX_URL_LENGTH = 2083;

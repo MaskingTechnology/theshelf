@@ -1,48 +1,88 @@
 
-import type { LogProcessor } from './definitions/interfaces.js';
+import { LogLevels } from './definitions/constants.js';
+import type { LogLevel } from './definitions/constants.js';
+import type { Driver } from './definitions/interfaces.js';
 
-export default class Logger implements LogProcessor
+import Void from './drivers/Void.js';
+
+export default class Logger implements Driver
 {
-    readonly #processor: LogProcessor;
-    readonly #debugEnabled: boolean;
+    #driver: Driver = new Void();
+    #logLevel: LogLevel = LogLevels.DEBUG;
 
-    constructor(processor: LogProcessor, debugEnabled = false)
+    set driver(driver: Driver)
     {
-        this.#processor = processor;
-        this.#debugEnabled = debugEnabled;
+        this.#driver = driver;
     }
 
-    logInfo(...message: unknown[]): Promise<void>
+    get driver(): Driver
     {
-        const messageString = this.#createMessage(message);
-
-        return this.#processor.logInfo(messageString);
+        return this.#driver;
     }
 
-    logWarn(...message: unknown[]): Promise<void>
+    set logLevel(level: LogLevel)
     {
-        const messageString = this.#createMessage(message);
-
-        return this.#processor.logWarn(messageString);
+        this.#logLevel = level;
     }
 
-    logError(...message: unknown[]): Promise<void>
+    get logLevel()
     {
-        const messageString = this.#createMessage(message);
-
-        return this.#processor.logError(messageString);
+        return this.#logLevel;
     }
 
     logDebug(...message: unknown[]): Promise<void>
     {
-        if (this.#debugEnabled === false)
+        if (this.#logLevel > LogLevels.DEBUG)
         {
             return Promise.resolve();
         }
 
         const messageString = this.#createMessage(message);
 
-        return this.#processor.logDebug(messageString);
+        return this.driver.logDebug(messageString);
+    }
+
+    logInfo(...message: unknown[]): Promise<void>
+    {
+        if (this.#logLevel > LogLevels.INFO)
+        {
+            return Promise.resolve();
+        }
+
+        const messageString = this.#createMessage(message);
+
+        return this.driver.logInfo(messageString);
+    }
+
+    logWarn(...message: unknown[]): Promise<void>
+    {
+        if (this.#logLevel > LogLevels.WARN)
+        {
+            return Promise.resolve();
+        }
+
+        const messageString = this.#createMessage(message);
+
+        return this.driver.logWarn(messageString);
+    }
+
+    logError(...message: unknown[]): Promise<void>
+    {
+        if (this.#logLevel > LogLevels.ERROR)
+        {
+            return Promise.resolve();
+        }
+
+        const messageString = this.#createMessage(message);
+
+        return this.driver.logError(messageString);
+    }
+
+    logFatal(...message: unknown[]): Promise<void>
+    {
+        const messageString = this.#createMessage(message);
+
+        return this.driver.logError(messageString);
     }
 
     #createMessage(message: unknown[]): string

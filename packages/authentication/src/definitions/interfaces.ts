@@ -1,7 +1,7 @@
 
 import type { Session } from './types.js';
 
-export interface IdentityProvider
+export interface Driver
 {
     get connected(): boolean;
 

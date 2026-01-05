@@ -1,5 +1,5 @@
 
-export const HTTP_METHODS =
+export const HttpMethods =
 {
     GET: 'GET',
     POST: 'POST',
@@ -7,6 +7,7 @@ export const HTTP_METHODS =
     PATCH: 'PATCH',
     DELETE: 'DELETE',
     HEAD: 'HEAD'
-};
+} as const;
 
-Object.freeze(HTTP_METHODS);
+type Keys = keyof typeof HttpMethods;
+export type HttpMethod = typeof HttpMethods[Keys];

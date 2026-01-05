@@ -1,4 +1,4 @@
 
-export * from './httpClients.fixture';
-export * from './responses.fixture';
-export * from './urls.fixture';
+export * from './httpClients.fixture.js';
+export * from './responses.fixture.js';
+export * from './urls.fixture.js';

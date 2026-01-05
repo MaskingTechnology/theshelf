@@ -1,8 +1,13 @@
 
 import Logger from './Logger.js';
-import implementation from './implementation.js';
 
-const debugEnabled = process.env.LOGGING_DEBUG_ENABLED === 'true';
-const logger = new Logger(implementation, debugEnabled);
+export * from './definitions/constants.js';
+export type * from './definitions/constants.js';
+export type * from './definitions/interfaces.js';
 
-export default logger;
+export { default as LogError } from './errors/LogError.js';
+
+export { default as ConsoleDriver } from './drivers/Console.js';
+export { default as VoidDriver } from './drivers/Void.js';
+
+export default new Logger();

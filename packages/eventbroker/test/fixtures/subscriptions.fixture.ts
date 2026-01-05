@@ -1,6 +1,6 @@
 
-import type { Event } from '../../src';
-import eventBroker from '../../src';
+import type { Event } from '../../src/index.js';
+import eventBroker from '../../src/index.js';
 
 export function createSubscription<T>(event: Event): Promise<T>
 {

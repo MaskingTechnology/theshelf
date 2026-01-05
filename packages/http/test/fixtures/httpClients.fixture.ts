@@ -1,23 +1,25 @@
 
-import Client from '../../src/Client';
-import { HTTP_METHODS } from '../../src/definitions/constants';
+import http from '../../src/index.js';
+import { HttpMethods } from '../../src/definitions/constants.js';
 
-import { implementation } from './implementation.mock';
-import { RESPONSES } from './responses.fixture';
-import { URLS } from './urls.fixture';
+import { mockDriver } from './driver.mock.js';
+import { RESPONSES } from './responses.fixture.js';
+import { URLS } from './urls.fixture.js';
 
-export const httpClient = new Client(implementation);
+http.driver = mockDriver;
+
+export { http };
 
 function withCache(): void
 {
-    httpClient.clearCache();
+    http.clearCache();
 
-    httpClient.setCache(HTTP_METHODS.GET, URLS.CACHED, RESPONSES.CACHED);
-    httpClient.setCache(HTTP_METHODS.POST, URLS.CACHED, RESPONSES.CACHED);
-    httpClient.setCache(HTTP_METHODS.PUT, URLS.CACHED, RESPONSES.CACHED);
-    httpClient.setCache(HTTP_METHODS.PATCH, URLS.CACHED, RESPONSES.CACHED);
-    httpClient.setCache(HTTP_METHODS.DELETE, URLS.CACHED, RESPONSES.CACHED);
-    httpClient.setCache(HTTP_METHODS.HEAD, URLS.CACHED, RESPONSES.CACHED);
+    http.setCache(HttpMethods.GET, URLS.CACHED, RESPONSES.CACHED);
+    http.setCache(HttpMethods.POST, URLS.CACHED, RESPONSES.CACHED);
+    http.setCache(HttpMethods.PUT, URLS.CACHED, RESPONSES.CACHED);
+    http.setCache(HttpMethods.PATCH, URLS.CACHED, RESPONSES.CACHED);
+    http.setCache(HttpMethods.DELETE, URLS.CACHED, RESPONSES.CACHED);
+    http.setCache(HttpMethods.HEAD, URLS.CACHED, RESPONSES.CACHED);
 }
 
 export const HTTP_CLIENTS = { withCache };

@@ -1,3 +1,3 @@
 
-export * from './notificationServices.fixture';
-export * from './values.fixture';
+export * from './notificationServices.fixture.js';
+export * from './values.fixture.js';

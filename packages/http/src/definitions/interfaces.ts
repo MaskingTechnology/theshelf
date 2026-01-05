@@ -1,5 +1,5 @@
 
-export interface Http
+export interface Driver
 {
     get(url: string, headers?: Record<string, string>): Promise<Response>;
 

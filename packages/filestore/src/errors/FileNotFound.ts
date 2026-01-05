@@ -1,7 +1,7 @@
 
-import FileSystemError from './FileSystemError.js';
+import FileStoreError from './FileStoreError.js';
 
-export default class FileNotFound extends FileSystemError
+export default class FileNotFound extends FileStoreError
 {
     constructor(path?: string)
     {

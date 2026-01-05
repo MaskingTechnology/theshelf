@@ -1,8 +1,8 @@
 
-import fileStore from '../../src';
+import fileStore from '../../src/index.js';
 
-import { FILES } from './files.fixture';
-import { VALUES } from './values.fixture';
+import { FILES } from './files.fixture.js';
+import { VALUES } from './values.fixture.js';
 
 await fileStore.connect();
 

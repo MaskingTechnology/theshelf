@@ -1,5 +1,5 @@
 
-export interface FileStore
+export interface Driver
 {
     get connected(): boolean;
 
