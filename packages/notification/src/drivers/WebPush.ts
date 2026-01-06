@@ -6,7 +6,7 @@ import type { Driver } from '../definitions/interfaces.js';
 import NotConnected from '../errors/NotConnected.js';
 import SubscriptionNotFound from '../errors/SubscriptionNotFound.js';
 
-type VapidDetails = {
+type WebPushConfiguration = { // Vapid details
     subject: string;
     publicKey: string;
     privateKey: string;
@@ -14,10 +14,10 @@ type VapidDetails = {
 
 export default class WebPush implements Driver
 {
-    readonly #configuration: VapidDetails;
+    readonly #configuration: WebPushConfiguration;
     #subscriptions?: Map<string, PushSubscription>;
 
-    constructor(configuration: VapidDetails)
+    constructor(configuration: WebPushConfiguration)
     {
         this.#configuration = configuration;
     }

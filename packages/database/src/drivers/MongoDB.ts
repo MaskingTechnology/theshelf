@@ -47,6 +47,11 @@ const LOGICAL_OPERATORS: Record<string, string> =
 
 const MONGO_ID = '_id';
 
+type MongoDBConfiguration = {
+    connectionString: string;
+    databaseName: string;
+};
+
 export default class MongoDB implements Driver
 {
     readonly #connectionString: string;
@@ -56,10 +61,10 @@ export default class MongoDB implements Driver
     #database?: Db;
     #connected = false;
 
-    constructor(connectionString: string, databaseName: string)
+    constructor(configuration: MongoDBConfiguration)
     {
-        this.#connectionString = connectionString;
-        this.#databaseName = databaseName;
+        this.#connectionString = configuration.connectionString;
+        this.#databaseName = configuration.databaseName;
     }
 
     get connected() { return this.#connected; }

@@ -9,31 +9,50 @@ The logging package provides a universal interaction layer with an actual loggin
 npm install @theshelf/logging
 ```
 
-## Implementations
+## Drivers
 
-Currently, there are two implementations:
+Currently, there are three drivers available:
 
-* **Void** - dummy implementation that doesn't log anything (suited for testing).
-* **Console** - implementation based on the Node.js console.
-
-## Configuration
-
-The used implementation needs to be configured in the `.env` file with the debug enabled setting.
-
-```env
-LOGGING_IMPLEMENTATION="console" # (void | console)
-LOGGING_DEBUG_ENABLED=true
-```
+* **Void** - dummy driver that doesn't log anything (suited for testing).
+* **Memory** - in memory logging (suited for testing).
+* **Console** - driver based on the Node.js console.
 
 ## How to use
 
-An instance of the configured logger implementation can be imported for performing logging operations.
+The instance of the logger needs to be imported and one of the drivers must be set.
 
 ```ts
-import logger from '@theshelf/logging';
+import logger, { VoidDriver | MemoryDriver | ConsoleDriver as SelectedDriver } from '@theshelf/logging';
+
+// Set the driver before performing any operation (the Void driver is used by default)
+logger.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the logger instance
 ```
+
+### Configuration
+
+The logger instance has a configurable log level.
+
+```ts
+import { LogLevels } from '@theshelf/logging';
+
+logger.logLevel = LogLevels.DEBUG; // default level
+```
+
+Other levels are: `INFO` | `WARN` | `ERROR` | `FATAL`.
+
+### Void driver
+
+No configuration options.
+
+### Memory driver
+
+No configuration options.
+
+### Console driver
+
+No configuration options.
 
 ### Operations
 

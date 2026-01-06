@@ -11,43 +11,48 @@ This package is based on a push notification model.
 npm install @theshelf/notification
 ```
 
-## Implementations
+## Drivers
 
-Currently, there are two implementations:
+Currently, there are two drivers available:
 
 * **Memory** - non-persistent in memory notifications (suited for testing).
 * **WebPush** - web browser based push notifications.
 
-## Configuration
-
-The used implementation needs to be configured in the `.env` file with the debug enabled setting.
-
-```env
-NOTIFICATION_IMPLEMENTATION="webpush" # (memory | webpush)
-```
-
-In case of WebPush, additional configuration is required.
-
-```env
-WEBPUSH_VAPID_SUBJECT="..."
-WEBPUSH_VAPID_PUBLIC_KEY="..."
-WEBPUSH_VAPID_PRIVATE_KEY="..."
-```
-
 ## How to use
 
-An instance of the configured notification service implementation can be imported for performing notification operations.
+The instance of the notification service needs to be imported and one of the drivers must be set.
 
 ```ts
-import notificationService from '@theshelf/notification';
+import notificationService, { FetchDriver as SelectedDriver } from '@theshelf/notification';
 
 // Perform operations with the notificationService instance
+```
+
+### Configuration
+
+The notification service instance does not have any configuration options.
+
+#### Memory driver
+
+No configuration options.
+
+#### WebPush driver
+
+```ts
+type WebPushConfiguration = { // Vapid details
+    subject: string;
+    publicKey: string;
+    privateKey: string;
+};
 ```
 
 ### Operations
 
 ```ts
-import notificationService from '@theshelf/notification';
+import notificationService, { MemoryDriver | WebPushDriver as SelectedDriver } from '@theshelf/notification';
+
+// Set the driver before performing any operation (the Memory driver is used by default)
+fileStore.driver = new SelectedDriver(/* configuration */);
 
 // Open connection
 await notificationService.connect();
