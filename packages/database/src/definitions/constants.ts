@@ -5,13 +5,13 @@ export const LogicalOperators =
 {
     AND: 'AND',
     OR: 'OR'
-};
+} as const;
 
 export const SortDirections =
 {
     ASCENDING: 'ASCENDING',
     DESCENDING: 'DESCENDING'
-};
+} as const;
 
 export const QueryOperators =
 {
@@ -26,8 +26,4 @@ export const QueryOperators =
     CONTAINS: 'CONTAINS', // "%LIKE%"
     STARTS_WITH: 'STARTS_WITH', // "LIKE%"
     ENDS_WITH: 'ENDS_WITH' // "%LIKE"
-};
-
-Object.freeze(LogicalOperators);
-Object.freeze(SortDirections);
-Object.freeze(QueryOperators);
+} as const;

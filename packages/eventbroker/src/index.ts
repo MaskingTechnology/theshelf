@@ -1,9 +1,9 @@
 
 import EventBroker from './EventBroker.js';
-import implementation from './implementation.js';
 
-const eventBroker = new EventBroker(implementation);
+export type * from './definitions/interfaces.js';
+export type * from './definitions/types.js';
 
-export * from './definitions/types.js';
-export type { EventBroker };
-export default eventBroker;
+export { default as MemoryDriver } from './drivers/Memory.js';
+
+export default new EventBroker();

@@ -9,74 +9,77 @@ The HTTP package provides a universal interaction layer with an HTTP client inpl
 npm install @theshelf/http
 ```
 
-## Implementations
+## Drivers
 
-Currently, there is only one implementation:
+Currently, there is only one driver available:
 
 * **Fetch** - Node.js fetch implementation.
 
-## Configuration
-
-The used implementation needs to be configured in the `.env` file.
-
-```env
-HTTP_IMPLEMENTATION="fetch"
-```
-
 ## How to use
 
-An instance of the configured HTTP client implementation can be imported for performing HTTP operations.
+The instance of the HTTP needs to be imported and one of the drivers must be set.
 
 ```ts
-import httpClient from '@theshelf/http';
+import http, { FetchDriver as SelectedDriver } from '@theshelf/http';
 
-// Perform operations with the httpClient instance
+// Set the driver before performing any operation (the Fetch driver is used by default)
+http.driver = new SelectedDriver(/* configuration */);
+
+// Perform operations with the http instance
 ```
+
+### Configuration
+
+The HTTP instance does not have any configuration options.
+
+#### Fetch driver
+
+No configuration options.
 
 ### Operations
 
 ```ts
-import httpClient, { HTTP_METHODS } from '@theshelf/http';
+import http, { HTTP_METHODS } from '@theshelf/http';
 
 // Set a cached response
 const response: Response = new Response();
-httpClient.setCache(HTTP_METHODS.GET, url, response);
+http.setCache(HTTP_METHODS.GET, url, response);
 
 // Get a cached response
-const response: Response | undefined = httpClient.getCache(HTTP_METHODS.GET, url);
+const response: Response | undefined = http.getCache(HTTP_METHODS.GET, url);
 
 // Remove a cached response
-httpClient.removeCache(method: string, url: string)
+http.removeCache(HTTP_METHODS.GET, url)
 
 // Clear all cache
-httpClient.clearCache()
+http.clearCache()
 
 // Perform a GET request
-const response: Response = await httpClient.get(url);
+const response: Response = await http.get(url);
 
 // Perform a GET request with optional headers
 const headers: Record<string, string> = { 'Accept': 'application/json' };
-const response: Response = await httpClient.get(url, headers);
+const response: Response = await http.get(url, headers);
 
 // Perform a POST request with optional headers
 const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-const response: Response = await httpClient.post(url, data, headers);
+const response: Response = await http.post(url, data, headers);
 
 // Perform a PUT request with optional headers
 const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-const response: Response = await httpClient.put(url, data, headers);
+const response: Response = await http.put(url, data, headers);
 
 // Perform a PATCH request with optional headers
 const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-const response: Response = await httpClient.patch(url, data, headers);
+const response: Response = await http.patch(url, data, headers);
 
 // Perform a DELETE request with optional headers
 const headers: Record<string, string> = { };
-const response: Response = await httpClient.delete(url, headers);
+const response: Response = await http.delete(url, headers);
 
 // Perform a HEAD request with optional headers
 const headers: Record<string, string> = { };
-const response: Response = await httpClient.head(url, headers);
+const response: Response = await http.head(url, headers);
 ```
 
 ### Response model

@@ -1,10 +1,10 @@
 
-import FileSystemError from './FileSystemError.js';
+import FileStoreError from './FileStoreError.js';
 
-export default class NotConnected extends FileSystemError
+export default class NotConnected extends FileStoreError
 {
     constructor(message?: string)
     {
-        super(message ?? 'File system not connected');
+        super(message ?? 'File store not connected');
     }
 }

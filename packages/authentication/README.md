@@ -18,53 +18,53 @@ This package is based on the following authentication flow:
 npm install @theshelf/authentication
 ```
 
-## Implementations
+## Drivers
 
-Currently, there is only one implementation:
+Currently, there are two drivers available:
 
 * **OpenID** - persistent document storage.
 * **Google** - authentication via Google accounts
 
-## Configuration
-
-The used implementation needs to be configured in the `.env` file, together with the client URL.
-
-```env
-AUTHENTICATION_IMPLEMENTATION="openid"
-AUTHENTICATION_CLIENT_URI="https://application.com/authenticate"
-```
-
-In case of OpenID, additional configuration is required.
-
-```env
-OPENID_ISSUER="https://identityprovider.com"
-OPENID_CLIENT_ID="openid"
-OPENID_CLIENT_SECRET=""
-OPENID_REDIRECT_PATH="https://application.com/login"
-OPENID_ALLOW_INSECURE_REQUESTS=false
-```
-
-In case of Google, the following configuration is required.
-
-```env
-GOOGLE_ISSUER="https://accounts.google.com"
-GOOGLE_CLIENT_ID="google-client-id.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET=""
-GOOGLE_REDIRECT_PATH="https://application.com/login"
-GOOGLE_ACCESS_TYPE="offline"
-GOOGLE_ORGANIZATION_DOMAIN="yourdomain.com"
-```
-
-The ACCESS_TYPE can be either `online` or `offline`. The default is `offline`, which provides refresh tokens. The ORGANIZATION_DOMAIN can be used to restrict login to a specific Google Workspace domain.
-
 ## How to use
 
-An instance of the configured identity provider implementation can be imported for performing authentication operations.
+The instance of the identity provider needs to be imported and one of the drivers must be set.
 
 ```ts
-import identityProvider from '@theshelf/authentication';
+import identityProvider, { OpenIDDriver | GoogleDriver as SelectedDriver } from '@theshelf/authentication';
+
+// Set the driver before performing any operation
+identityProvider.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the identityProvider instance
+```
+
+### Configuration
+
+The identity provider instance does not have any configuration options.
+
+#### OpenID driver
+
+```ts
+type OpenIDConfiguration = {
+    issuer: string; // URL to the provider
+    clientId: string; // provided by the provider
+    clientSecret: string; // provided by the provider
+    redirectPath: string; // e.g. "https://application.com/login"
+    allowInsecureRequests: boolean; // only set to false in development
+};
+```
+
+#### Google driver
+
+```ts
+type GoogleConfiguration = {
+    issuer: string; // "https://accounts.google.com"
+    clientId: string; // provided by Google
+    clientSecret: string; // provided by Google
+    redirectPath: string; // e.g. "https://application.com/login"
+    accessType: string; // "online" | "offline"
+    organizationDomain: string; // "application.com"
+};
 ```
 
 ### Operations

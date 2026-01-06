@@ -1,0 +1,76 @@
+
+import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+
+import notificationService, { SubscriptionNotFound } from '../src/index.js';
+
+import { DRIVERS, VALUES } from './fixtures/index.js';
+
+beforeEach(async () =>
+{
+    notificationService.driver = await DRIVERS.withRecipient();
+});
+
+afterEach(async () =>
+{
+    await notificationService.disconnect();
+});
+
+describe('notificationService', () =>
+{
+    describe('.subscribe(path)', () =>
+    {
+        it('should create a new subscription', async () =>
+        {
+            const subscriptions = notificationService.subscriptions;
+
+            await notificationService.subscribe(VALUES.RECIPIENTS.SECOND, undefined);
+
+            expect(subscriptions.has(VALUES.RECIPIENTS.SECOND)).toBeTruthy();
+        });
+
+        it('should override an existing subscription', async () =>
+        {
+            const subscriptions = notificationService.subscriptions;
+
+            await notificationService.subscribe(VALUES.RECIPIENTS.FIRST, undefined);
+
+            expect(subscriptions.has(VALUES.RECIPIENTS.FIRST)).toBeTruthy();
+        });
+    });
+
+    describe('.unsubscribe(path)', () =>
+    {
+        it('should remove an existing subscription', async () =>
+        {
+            const subscriptions = notificationService.subscriptions;
+
+            await notificationService.unsubscribe(VALUES.RECIPIENTS.FIRST);
+
+            expect(subscriptions.has(VALUES.RECIPIENTS.FIRST)).toBeFalsy();
+        });
+
+        it('should not remove a non-existing subscription', async () =>
+        {
+            const promise = notificationService.unsubscribe(VALUES.RECIPIENTS.UNKNOWN);
+            await expect(promise).rejects.toStrictEqual(new SubscriptionNotFound(VALUES.RECIPIENTS.UNKNOWN));
+        });
+    });
+
+    describe('.sendNotification(path)', () =>
+    {
+        it('should send a notification to an existing subscription', async () =>
+        {
+            const notifications = notificationService.subscriptions.get(VALUES.RECIPIENTS.FIRST) as unknown[];
+
+            await notificationService.sendNotification(VALUES.RECIPIENTS.FIRST, VALUES.NOTIFICATION.TITLE, VALUES.NOTIFICATION.BODY);
+
+            expect(notifications).toHaveLength(1);
+        });
+
+        it('should not send a notification to a non-existing subscription', async () =>
+        {
+            const promise = notificationService.sendNotification(VALUES.RECIPIENTS.UNKNOWN, VALUES.NOTIFICATION.TITLE, VALUES.NOTIFICATION.BODY);
+            await expect(promise).rejects.toStrictEqual(new SubscriptionNotFound(VALUES.RECIPIENTS.UNKNOWN));
+        });
+    });
+});

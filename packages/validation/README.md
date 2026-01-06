@@ -9,29 +9,32 @@ The validation package provides a universal interaction layer with an actual dat
 npm install @theshelf/validation
 ```
 
-## Implementations
+## Drivers
 
-Currently, there is only one implementation:
+Currently, there is only one driver available:
 
-* **Zod** - implementation for the currently popular Zod library.
-
-## Configuration
-
-The used implementation needs to be configured in the `.env` file.
-
-```env
-VALIDATION_IMPLEMENTATION="zod"
-```
+* **Zod** - driver for the currently popular Zod library.
 
 ## How to use
 
-An instance of the configured validator implementation can be imported for performing validation operations.
+The instance of the validator needs to be imported and one of the drivers must be set.
 
 ```ts
-import validator from '@theshelf/validation';
+import validator, { Zod as SelectedDriver } from '@theshelf/validation';
+
+// Set the driver before performing any operation (the Zod driver is used by default)
+validator.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the validator instance
 ```
+
+### Configuration
+
+The validator instance does not have any configuration options.
+
+#### Zod driver
+
+No configuration options.
 
 ### Operations
 

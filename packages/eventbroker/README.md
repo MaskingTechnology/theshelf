@@ -11,31 +11,34 @@ This package is based on a publish / subscribe model.
 npm install @theshelf/eventbroker
 ```
 
-## Implementations
+## Driver
 
-Currently, there is only one implementation:
+Currently, there is only one driver available:
 
 * **Memory** - non-persistent event broker based on the Node.js `EventEmitter`.
 
-We have plans to add a Kafka implementation later on.
-
-## Configuration
-
-The used implementation needs to be configured in the `.env` file.
-
-```env
-EVENT_BROKER_IMPLEMENTATION="memory"
-```
+We have plans to add a Kafka driver later on.
 
 ## How to use
 
-An instance of the configured event broker implementation can be imported for performing event operations.
+The instance of the event broker needs to be imported and one of the drivers must be set.
 
 ```ts
-import eventBroker from '@theshelf/eventbroker';
+import eventBroker, { MemoryDriver as SelectedDriver } from '@theshelf/eventbroker';
+
+// Set the driver before performing any operation (the Memory driver is used by default)
+eventBroker.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the eventBroker instance
 ```
+
+### Configuration
+
+The event broker instance does not have any configuration options.
+
+#### Memory driver
+
+No configuration options.
 
 ### Operations
 

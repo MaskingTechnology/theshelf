@@ -1,5 +1,5 @@
 
-export interface NotificationService
+export interface Driver
 {
     get connected(): boolean;
 

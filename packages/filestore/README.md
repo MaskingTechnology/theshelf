@@ -9,64 +9,61 @@ The file store package provides a universal interaction layer with an actual fil
 npm install @theshelf/filestore
 ```
 
-## Implementations
+## Drivers
 
-Currently, there are two implementations:
+Currently, there are two drivers available:
 
 * **Memory** - non-persistent in memory storage (suited for testing).
 * **Minio** - persistent S3 compatible object storage.
 
-## Configuration
-
-The used implementation needs to be configured in the `.env` file.
-
-```env
-FILE_STORE_IMPLEMENTATION="minio" # (memory | minio)
-```
-
-In case of Minio, additional configuration is required.
-
-```env
-MINIO_END_POINT="address"
-MINIO_PORT_NUMBER=9000
-MINIO_USE_SSL=true
-MINIO_ACCESS_KEY="development"
-MINIO_SECRET_KEY="secret"
-```
-
 ## How to use
 
-An instance of the configured file storage implementation can be imported for performing file operations.
+The instance of the file store needs to be imported and one of the drivers must be set.
 
 ```ts
-import fileStorage from '@theshelf/filestorage';
+import fileStore, { MemoryDriver | MinioDriver as SelectedDriver } from '@theshelf/fileStore';
 
-// Perform operations with the fileStorage instance
+// Set the driver before performing any operation (the Memory driver is used by default)
+fileStore.driver = new SelectedDriver(/* configuration */);
+
+// Perform operations with the fileStore instance
 ```
+
+### Configuration
+
+The file store instance does not have any configuration options.
+
+#### Memory driver
+
+No configuration options.
+
+#### Minio driver
+
+The `ClientOptions` from the 'minio' package.
 
 ### Operations
 
 ```ts
-import fileStorage from '@theshelf/filestorage';
+import fileStore from '@theshelf/fileStore';
 
 // Open connection
-await fileStorage.connect();
+await fileStore.connect();
 
 // Close connection
-await fileStorage.disconnect();
+await fileStore.disconnect();
 
 // Check if a file exists
-const exists: boolean = await fileStorage.hasFile('path/to/file.txt');
+const exists: boolean = await fileStore.hasFile('path/to/file.txt');
 
 // Write a file to the storage
 const data: Buffer = Buffer.from('Something interesting');
-await fileStorage.writeFile('path/to/file.txt', data);
+await fileStore.writeFile('path/to/file.txt', data);
 
 // Read a file from storage
 // Throws FileNotFound if not found
-const data: Buffer = await fileStorage.readFile('path/to/file.txt');
+const data: Buffer = await fileStore.readFile('path/to/file.txt');
 
 // Delete a file from storage
 // Throws FileNotFound if not found
-await fileStorage.deleteFile('path/to/file.txt');
+await fileStore.deleteFile('path/to/file.txt');
 ```

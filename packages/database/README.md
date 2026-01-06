@@ -11,36 +11,41 @@ This integration is based on simple CRUD operations and purposely does NOT suppo
 npm install @theshelf/database
 ```
 
-## Implementations
+## Drivers
 
-Currently, there are two implementations:
+Currently, there are two drivers available:
 
-* **Memory** - non-persistent in memory storage  (suited for testing).
+* **Memory** - non-persistent in memory storage (suited for testing).
 * **MongoDB** - persistent document storage.
-
-## Configuration
-
-The used implementation needs to be configured in the `.env` file.
-
-```env
-DATABASE_IMPLEMENTATION="mongodb" # (memory | mongodb)
-```
-
-In case of MongoDB, additional configuration is required.
-
-```env
-MONGODB_CONNECTION_STRING="mongodb://username:password@address:27017"
-MONGODB_DATABASE_NAME="mydb"
-```
 
 ## How to use
 
-An instance of the configured implementation can be imported for performing database operations.
+The instance of the database needs to be imported and one of the drivers must be set.
 
 ```ts
-import database from '@theshelf/database';
+import database, { MemoryDriver | MongoDriver as SelectedDriver } from '@theshelf/database';
+
+// Set the driver before performing any operation (the Memory driver is used by default)
+database.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the database instance
+```
+
+### Configuration
+
+The database instance does not have any configuration options.
+
+#### Memory driver
+
+No configuration options.
+
+#### MongoDB driver
+
+```ts
+type MongoDBConfiguration = {
+    connectionString: string; // e.g. "mongodb://development:development@localhost:27017"
+    databaseName: string; // e.g. "mydb"
+};
 ```
 
 ### Operations
