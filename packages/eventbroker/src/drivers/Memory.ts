@@ -20,6 +20,8 @@ export default class Memory implements Driver
     async disconnect(): Promise<void>
     {
         this.#connected = false;
+
+        this.#emitters.clear();
     }
 
     async publish<T>(publication: Publication<T>): Promise<void>

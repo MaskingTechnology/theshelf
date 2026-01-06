@@ -19,12 +19,12 @@ export default class FileStore implements Driver
 
     get connected() { return this.driver.connected; }
 
-    async connect(): Promise<void>
+    connect(): Promise<void>
     {
         return this.driver.connect();
     }
 
-    async disconnect(): Promise<void>
+    disconnect(): Promise<void>
     {
         return this.driver.disconnect();
     }

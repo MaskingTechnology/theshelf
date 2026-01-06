@@ -28,17 +28,17 @@ export default class IdentityProvider implements Driver
         return this.driver.connected;
     }
 
-    async connect(): Promise<void>
+    connect(): Promise<void>
     {
         return this.driver.connect();
     }
 
-    async disconnect(): Promise<void>
+    disconnect(): Promise<void>
     {
         return this.driver.disconnect();
     }
 
-    async getLoginUrl(origin: string): Promise<string>
+    getLoginUrl(origin: string): Promise<string>
     {
         return this.driver.getLoginUrl(origin);
     }

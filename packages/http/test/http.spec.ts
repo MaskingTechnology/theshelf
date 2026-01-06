@@ -106,14 +106,14 @@ describe('http', () =>
     {
         it('should give a cached result', async () =>
         {
-            const result = await http.get(URLS.CACHED);
+            const result = await http.head(URLS.CACHED);
 
             expect(result).toEqual(RESPONSES.CACHED);
         });
 
         it('should give a non-cached result from its implementation', async () =>
         {
-            const result = await http.get(URLS.NOT_CACHED);
+            const result = await http.head(URLS.NOT_CACHED);
 
             expect(result).toEqual(RESPONSES.NOT_CACHED);
         });

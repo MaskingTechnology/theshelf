@@ -1,7 +1,7 @@
 
 import AuthenticationError from './AuthenticationError.js';
 
-export default class NoProvider extends AuthenticationError
+export default class NoDriver extends AuthenticationError
 {
     constructor()
     {

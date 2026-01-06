@@ -23,7 +23,10 @@ Currently, there are two drivers available:
 The instance of the notification service needs to be imported and one of the drivers must be set.
 
 ```ts
-import notificationService, { FetchDriver as SelectedDriver } from '@theshelf/notification';
+import notificationService, { MemoryDriver | WebPushDriver as SelectedDriver } from '@theshelf/notification';
+
+// Set the driver before performing any operation (the Memory driver is used by default)
+notificationService.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the notificationService instance
 ```
@@ -49,10 +52,7 @@ type WebPushConfiguration = { // Vapid details
 ### Operations
 
 ```ts
-import notificationService, { MemoryDriver | WebPushDriver as SelectedDriver } from '@theshelf/notification';
-
-// Set the driver before performing any operation (the Memory driver is used by default)
-fileStore.driver = new SelectedDriver(/* configuration */);
+import notificationService from '@theshelf/notification';
 
 // Open connection
 await notificationService.connect();

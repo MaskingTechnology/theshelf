@@ -14,7 +14,7 @@ type Session = {
     requester?: unknown;
     identity: Identity;
     accessToken: Token;
-    refreshToken: Token;
+    refreshToken?: Token;
     expires: Date;
 };
 

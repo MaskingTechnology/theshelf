@@ -2,7 +2,7 @@
 import type { Driver } from '../../src/index.js';
 import { MemoryDriver } from '../../src/index.js';
 
-function empty()
+function empty(): Driver
 {
     return new MemoryDriver();
 }

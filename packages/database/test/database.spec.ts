@@ -215,7 +215,7 @@ describe('implementation', () =>
             expect(records[1].size).toBe(VALUES.SIZE.size);
         });
 
-        it('should not updates records when no records match the query', async () =>
+        it('should not update records that not match the query', async () =>
         {
             const count = await database.updateRecords(RECORD_TYPES.PIZZAS, QUERIES.NO_MATCH, {});
 

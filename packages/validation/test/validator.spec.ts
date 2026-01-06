@@ -224,7 +224,7 @@ describe('validator', () =>
             performInvalidResultCheck(input, VALIDATION_SCHEMES.EMAIL, VALUES.MESSAGES.INVALID_EMAIL);
         });
 
-        it('should reject a value to be a valid email', () =>
+        it('should reject a value that is not a valid email', () =>
         {
             const input = { email: 'abcd@' };
 

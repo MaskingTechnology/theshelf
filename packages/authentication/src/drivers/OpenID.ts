@@ -10,6 +10,7 @@ import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResp
 import type { Driver } from '../definitions/interfaces.js';
 import type { Identity, Session } from '../definitions/types.js';
 import LoginFailed from '../errors/LoginFailed.js';
+import RefreshFailed from '../errors/RefreshFailed.js';
 import NotConnected from '../errors/NotConnected.js';
 
 type OpenIDConfiguration = {
@@ -56,6 +57,7 @@ export default class OpenID implements Driver
     {
         const redirect_uri = new URL(this.#providerConfiguration.redirectPath, origin).href;
         const scope = 'openid profile email';
+
         const code_challenge = await calculatePKCECodeChallenge(this.#codeVerifier);
         const code_challenge_method = 'S256';
 
@@ -79,7 +81,7 @@ export default class OpenID implements Driver
 
         for (const [key, value] of Object.entries(data))
         {
-            url.searchParams.set(key, value as string);
+            url.searchParams.set(key, String(value));
         }
 
         const tokens = await authorizationCodeGrant(clientConfiguration, url, {
@@ -106,13 +108,18 @@ export default class OpenID implements Driver
         return {
             identity: identity,
             accessToken: tokens.access_token,
-            refreshToken: tokens.refresh_token as string,
+            refreshToken: tokens.refresh_token,
             expires: new Date(expires)
         };
     }
 
     async refresh(session: Session): Promise<Session>
     {
+        if (session.refreshToken === undefined)
+        {
+            throw new RefreshFailed('Missing refresh token');
+        }
+
         const config = this.#getClientConfiguration();
         const tokens = await refreshTokenGrant(config, session.refreshToken);
 
@@ -123,7 +130,7 @@ export default class OpenID implements Driver
             requester: session.requester,
             identity: session.identity,
             accessToken: tokens.access_token,
-            refreshToken: tokens.refresh_token as string,
+            refreshToken: tokens.refresh_token,
             expires: new Date(expires)
         };
     }
@@ -132,7 +139,7 @@ export default class OpenID implements Driver
     {
         const config = this.#getClientConfiguration();
 
-        return tokenRevocation(config, session.refreshToken);
+        return tokenRevocation(config, session.refreshToken ?? session.accessToken);
     }
 
     #getClientConfiguration(): Configuration

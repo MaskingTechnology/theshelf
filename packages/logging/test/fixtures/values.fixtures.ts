@@ -18,7 +18,7 @@ export const VALUES =
     OBJECT: { a: 'text', b: true, c: 3.14 },
     ERROR_STACK: stackError,
     ERROR_MESSAGE: messageError
-};
+} as const;
 
 export const RESULTS =
 {

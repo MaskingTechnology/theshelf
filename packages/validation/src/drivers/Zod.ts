@@ -68,7 +68,7 @@ export default class Zod implements Driver
         {
             if (key === 'message') continue;
 
-            const validator = this.#validations.get(key.toLocaleLowerCase());
+            const validator = this.#validations.get(key.toLowerCase());
 
             if (validator === undefined)
             {
@@ -116,7 +116,7 @@ export default class Zod implements Driver
         return this.#checkRequired(value, validation);
     }
 
-    #validateDateTime(value: ValidationTypes['DATE'])
+    #validateDateTime(value: ValidationTypes['DATETIME'])
     {
         const validation = z.iso.datetime();
 

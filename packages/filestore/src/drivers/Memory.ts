@@ -1,7 +1,6 @@
 
 import type { Driver } from '../definitions/interfaces.js';
 import FileNotFound from '../errors/FileNotFound.js';
-import NotConnected from '../errors/NotConnected.js';
 
 export default class Memory implements Driver
 {
@@ -18,27 +17,23 @@ export default class Memory implements Driver
     async disconnect(): Promise<void>
     {
         this.#connected = false;
+
+        this.#files.clear();
     }
 
     async hasFile(path: string): Promise<boolean>
     {
-        const files = this.#getFiles();
-
-        return files.has(path);
+        return this.#files.has(path);
     }
 
     async writeFile(path: string, data: Buffer): Promise<void>
     {
-        const files = this.#getFiles();
-
-        files.set(path, data);
+        this.#files.set(path, data);
     }
 
     async readFile(path: string): Promise<Buffer>
     {
-        const files = this.#getFiles();
-
-        const data = files.get(path);
+        const data = this.#files.get(path);
 
         if (data === undefined)
         {
@@ -50,23 +45,11 @@ export default class Memory implements Driver
 
     async deleteFile(path: string): Promise<void>
     {
-        const files = this.#getFiles();
-
-        if (files.has(path) === false)
+        if (this.#files.has(path) === false)
         {
             throw new FileNotFound(path);
         }
 
-        files.delete(path);
-    }
-
-    #getFiles(): Map<string, Buffer>
-    {
-        if (this.#files === undefined)
-        {
-            throw new NotConnected();
-        }
-
-        return this.#files;
+        this.#files.delete(path);
     }
 }

@@ -13,8 +13,6 @@ import type {
     RecordValue
 } from '../definitions/types.js';
 
-import NotConnected from '../errors/NotConnected.js';
-
 type FilterFunction = (record: RecordData) => boolean;
 
 const OPERATORS: Record<string, string> =
@@ -37,7 +35,7 @@ export default class Memory implements Driver
 {
     readonly #memory = new Map<string, RecordData[]>();
     #connected = false;
-    recordId = 0;
+    #recordId = 0;
 
     get connected() { return this.#connected; }
 
@@ -286,16 +284,11 @@ export default class Memory implements Driver
 
     #createId(): string
     {
-        return (++this.recordId).toString().padStart(8, '0');
+        return (++this.#recordId).toString().padStart(8, '0');
     }
 
     #getCollection(type: string): RecordData[]
     {
-        if (this.#memory === undefined)
-        {
-            throw new NotConnected();
-        }
-
         let collection = this.#memory.get(type);
 
         if (collection === undefined)

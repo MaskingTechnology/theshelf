@@ -23,7 +23,7 @@ The instance of the HTTP needs to be imported and one of the drivers must be set
 import http, { FetchDriver as SelectedDriver } from '@theshelf/http';
 
 // Set the driver before performing any operation (the Fetch driver is used by default)
-fileStore.driver = new SelectedDriver(/* configuration */);
+http.driver = new SelectedDriver(/* configuration */);
 
 // Perform operations with the http instance
 ```
@@ -36,7 +36,7 @@ The HTTP instance does not have any configuration options.
 
 No configuration options.
 
-### Operations driver
+### Operations
 
 ```ts
 import http, { HTTP_METHODS } from '@theshelf/http';
@@ -49,7 +49,7 @@ http.setCache(HTTP_METHODS.GET, url, response);
 const response: Response | undefined = http.getCache(HTTP_METHODS.GET, url);
 
 // Remove a cached response
-http.removeCache(method: string, url: string)
+http.removeCache(HTTP_METHODS.GET, url)
 
 // Clear all cache
 http.clearCache()

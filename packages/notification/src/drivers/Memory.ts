@@ -24,6 +24,8 @@ export default class Memory implements Driver
 
     async connect(): Promise<void>
     {
+        if (this.connected) return;
+        
         this.#subscriptions = new Map();
     }
 
