@@ -15,6 +15,7 @@ type WebPushConfiguration = { // Vapid details
 export default class WebPush implements Driver
 {
     readonly #configuration: WebPushConfiguration;
+    
     #subscriptions?: Map<string, PushSubscription>;
 
     constructor(configuration: WebPushConfiguration)

@@ -10,47 +10,45 @@ type Notification = {
 
 export default class Memory implements Driver
 {
-    #subscriptions?: Map<string, Notification[]>;
+    #subscriptions: Map<string, Notification[]> = new Map();
 
-    get connected(): boolean
-    {
-        return this.#subscriptions !== undefined;
-    }
+    #connected: boolean = false;
+
+    get connected() { return this.#connected; }
 
     get subscriptions(): Map<string, Notification[]>
     {
-        return this.#getSubscriptions();
+        if (this.#connected === false)
+        {
+            throw new NotConnected();
+        }
+
+        return this.#subscriptions;
     }
 
     async connect(): Promise<void>
     {
-        if (this.connected) return;
-        
-        this.#subscriptions = new Map();
+        this.#connected = true;
     }
 
     async disconnect(): Promise<void>
     {
-        this.#subscriptions = undefined;
+        this.#connected = false;
     }
 
     async subscribe(recipientId: string): Promise<void>
     {
-        const subscriptions = this.#getSubscriptions();
-
-        subscriptions.set(recipientId, []);
+        this.subscriptions.set(recipientId, []);
     }
 
     async unsubscribe(recipientId: string): Promise<void>
     {
-        const subscriptions = this.#getSubscriptions();
-
-        if (subscriptions.has(recipientId) === false)
+        if (this.subscriptions.has(recipientId) === false)
         {
             throw new SubscriptionNotFound(recipientId);
         }
 
-        subscriptions.delete(recipientId);
+        this.subscriptions.delete(recipientId);
     }
 
     async sendNotification(recipientId: string, title: string, body: string): Promise<void>
@@ -60,20 +58,14 @@ export default class Memory implements Driver
         subscription.push({ title, body });
     }
 
-    #getSubscriptions(): Map<string, Notification[]>
+    clear(): void
     {
-        if (this.#subscriptions === undefined)
-        {
-            throw new NotConnected();
-        }
-
-        return this.#subscriptions;
+        this.subscriptions.clear();
     }
 
     #getSubscription(recipientId: string): Notification[]
     {
-        const subscriptions = this.#getSubscriptions();
-        const subscription = subscriptions.get(recipientId);
+        const subscription = this.subscriptions.get(recipientId);
 
         if (subscription === undefined)
         {
