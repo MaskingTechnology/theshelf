@@ -16,7 +16,7 @@ afterEach(async () =>
     await database.disconnect();
 });
 
-describe('implementation', () =>
+describe('Database', () =>
 {
     describe('.readRecord', () =>
     {

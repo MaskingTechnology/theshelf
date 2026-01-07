@@ -18,13 +18,13 @@ Currently, there are two drivers available:
 
 ## How to use
 
-The instance of the file store needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import fileStore, { MemoryDriver | MinioDriver as SelectedDriver } from '@theshelf/fileStore';
+import FileStore, { MemoryDriver | MinioDriver as SelectedDriver } from '@theshelf/fileStore';
 
-// Set the driver before performing any operation (the Memory driver is used by default)
-fileStore.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const fileStore = new FileStore(driver);
 
 // Perform operations with the fileStore instance
 ```
@@ -44,8 +44,6 @@ The `ClientOptions` from the 'minio' package.
 ### Operations
 
 ```ts
-import fileStore from '@theshelf/fileStore';
-
 // Open connection
 await fileStore.connect();
 

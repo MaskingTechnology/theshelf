@@ -29,12 +29,12 @@ export default class Database implements Driver
         return this.connectionState === ConnectionStates.CONNECTED;
     }
 
-    async connect(): Promise<void>
+    connect(): Promise<void>
     {
         return this.#connectionManager.connect();
     }
 
-    async disconnect(): Promise<void>
+    disconnect(): Promise<void>
     {
         return this.#connectionManager.disconnect();
     }
