@@ -14,5 +14,4 @@ export interface Driver
     updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>;
     deleteRecord(type: RecordType, query: RecordQuery): Promise<number>;
     deleteRecords(type: RecordType, query: RecordQuery): Promise<number>;
-    clear(): Promise<void>;
 }

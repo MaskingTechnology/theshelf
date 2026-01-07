@@ -20,20 +20,18 @@ Currently, there are two drivers available:
 
 ## How to use
 
-The instance of the database needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import database, { MemoryDriver | MongoDriver as SelectedDriver } from '@theshelf/database';
+import Database, { MemoryDriver | MongoDBDriver as SelectedDriver } from '@theshelf/database';
 
-// Set the driver before performing any operation (the Memory driver is used by default)
-database.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const database = new Database(driver);
 
 // Perform operations with the database instance
 ```
 
 ### Configuration
-
-The database instance does not have any configuration options.
 
 #### Memory driver
 
@@ -51,7 +49,7 @@ type MongoDBConfiguration = {
 ### Operations
 
 ```ts
-import database, { RecordData, RecordQuery, RecordSort, SortDirections } from '@theshelf/database';
+import { RecordData, RecordQuery, RecordSort, SortDirections } from '@theshelf/database';
 
 // Open connection
 await database.connect();

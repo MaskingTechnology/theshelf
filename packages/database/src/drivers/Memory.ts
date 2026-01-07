@@ -37,7 +37,7 @@ export default class Memory implements Driver
     #connected = false;
     #recordId = 0;
 
-    get connected() { return this.#connected; }
+    get connected(): boolean { return this.#connected; }
 
     async connect(): Promise<void>
     {
@@ -131,11 +131,6 @@ export default class Memory implements Driver
         indexes.forEach(index => collection.splice(index, 1));
 
         return indexes.length;
-    }
-
-    async clear(): Promise<void>
-    {
-        this.#memory.clear();
     }
 
     #fetchRecord(type: string, query: RecordQuery): RecordData | undefined

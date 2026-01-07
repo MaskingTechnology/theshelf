@@ -2,13 +2,13 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
 import type { RecordData } from '../src/index.js';
-import database from '../src/index.js';
 
-import { DRIVERS, QUERIES, RECORDS, RECORD_TYPES, RESULTS, SORTS, VALUES } from './fixtures/index.js';
+import { database, DATABASES, QUERIES, RECORDS, RECORD_TYPES, RESULTS, SORTS, VALUES } from './fixtures/index.js';
 
 beforeEach(async () =>
 {
-    database.driver = await DRIVERS.withEverything();
+    await database.connect();
+    await DATABASES.withEverything();
 });
 
 afterEach(async () =>
