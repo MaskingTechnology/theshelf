@@ -1,74 +1,42 @@
 
 import sanitize from './utilities/sanitize.js';
 
-import { States } from './definitions/constants.js';
-import type { State } from './definitions/constants.js';
+import { ConnectionStates } from './definitions/constants.js';
+import type { ConnectionState } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
 import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './definitions/types.js';
 
+import ConnectionManager from './ConnectionManager.js';
+
 export default class Database implements Driver
 {
-    #driver: Driver;
-    #state: State = States.DISCONNECTED;
+    readonly #driver: Driver;
+    readonly #connectionManager: ConnectionManager;
 
     constructor(driver: Driver)
     {
         this.#driver = driver;
+        this.#connectionManager = new ConnectionManager(driver);
+    }
+
+    get connectionState(): ConnectionState
+    {
+        return this.#connectionManager.state;
     }
 
     get connected(): boolean
     {
-        return this.#state === States.CONNECTED;
+        return this.connectionState === ConnectionStates.CONNECTED;
     }
 
     async connect(): Promise<void>
     {
-        if (this.#state !== States.DISCONNECTED)
-        {
-            return;
-        }
-
-        this.#state = States.CONNECTING;
-
-        try
-        {
-            await this.#driver.connect();
-
-            this.#state = this.#driver.connected
-                ? States.CONNECTED
-                : States.DISCONNECTED;
-        }
-        catch (error)
-        {
-            this.#state = States.DISCONNECTED;
-            
-            throw error;
-        }
+        return this.#connectionManager.connect();
     }
 
     async disconnect(): Promise<void>
     {
-        if (this.#state !== States.CONNECTED)
-        {
-            return;
-        }
-
-        this.#state = States.DISCONNECTING;
-
-        try
-        {
-        await this.#driver.disconnect();
-
-        this.#state = this.#driver.connected
-            ? States.CONNECTED
-            : States.DISCONNECTED;
-        }
-        catch (error)
-        {
-            this.#state = States.CONNECTED;
-
-            throw error;
-        }
+        return this.#connectionManager.disconnect();
     }
 
     createRecord(type: RecordType, data: RecordData): Promise<RecordId>
