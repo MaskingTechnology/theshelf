@@ -2,22 +2,15 @@
 import { HttpMethods } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
 
-import Fetch from './drivers/Fetch.js';
-
 export default class Http implements Driver
 {
-    #driver: Driver = new Fetch();
+    readonly #driver: Driver;
 
     readonly #cache = new Map<string, Response>();
 
-    set driver(driver: Driver)
+    constructor(driver: Driver)
     {
         this.#driver = driver;
-    }
-
-    get driver(): Driver
-    {
-        return this.#driver;
     }
 
     setCache(method: string, url: string, response: Response): void
@@ -49,37 +42,37 @@ export default class Http implements Driver
     async get(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return this.getCache(HttpMethods.GET, url)
-            ?? this.driver.get(url, headers);
+            ?? this.#driver.get(url, headers);
     }
 
     async post(url: string, body: unknown, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return this.getCache(HttpMethods.POST, url)
-            ?? this.driver.post(url, body, headers);
+            ?? this.#driver.post(url, body, headers);
     }
 
     async put(url: string, body: unknown, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return this.getCache(HttpMethods.PUT, url)
-            ?? this.driver.put(url, body, headers);
+            ?? this.#driver.put(url, body, headers);
     }
 
     async patch(url: string, body: unknown, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return this.getCache(HttpMethods.PATCH, url)
-            ?? this.driver.patch(url, body, headers);
+            ?? this.#driver.patch(url, body, headers);
     }
 
     async delete(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return this.getCache(HttpMethods.DELETE, url)
-            ?? this.driver.delete(url, headers);
+            ?? this.#driver.delete(url, headers);
     }
 
     async head(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return this.getCache(HttpMethods.HEAD, url)
-            ?? this.driver.head(url, headers);
+            ?? this.#driver.head(url, headers);
     }
 
     #createCacheId(method: string, url: string): string

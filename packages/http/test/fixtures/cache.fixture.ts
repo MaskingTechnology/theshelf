@@ -1,6 +1,7 @@
 
-import http, { HttpMethods } from '../../src/index.js';
+import { HttpMethods } from '../../src/index.js';
 
+import { http } from './http.fixture.js';
 import { RESPONSES } from './responses.fixture.js';
 import { URLS } from './urls.fixture.js';
 

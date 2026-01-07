@@ -17,20 +17,18 @@ Currently, there is only one driver available:
 
 ## How to use
 
-The instance of the HTTP needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import http, { FetchDriver as SelectedDriver } from '@theshelf/http';
+import Http, { FetchDriver as SelectedDriver } from '@theshelf/http';
 
-// Set the driver before performing any operation (the Fetch driver is used by default)
-http.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const http = new Http(driver);
 
 // Perform operations with the http instance
 ```
 
 ### Configuration
-
-The HTTP instance does not have any configuration options.
 
 #### Fetch driver
 
@@ -39,7 +37,7 @@ No configuration options.
 ### Operations
 
 ```ts
-import http, { HTTP_METHODS } from '@theshelf/http';
+import { HTTP_METHODS } from '@theshelf/http';
 
 // Set a cached response
 const response: Response = new Response();
