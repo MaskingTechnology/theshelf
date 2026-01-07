@@ -3,7 +3,7 @@ import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { SubscriptionNotFound } from '../src/index.js';
 
-import { notificationService, NOTIFICATIONS, VALUES } from './fixtures/index.js';
+import { notificationService, SEEDS, VALUES } from './fixtures/index.js';
 
 beforeAll(async () =>
 {
@@ -17,7 +17,7 @@ afterAll(async () =>
 
 beforeEach(async () =>
 {
-    await NOTIFICATIONS.withRecipient();
+    await SEEDS.withRecipient();
 });
 
 describe('NotificationService', () =>

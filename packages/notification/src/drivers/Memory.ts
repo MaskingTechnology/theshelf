@@ -10,11 +10,11 @@ type Notification = {
 
 export default class Memory implements Driver
 {
-    #subscriptions: Map<string, Notification[]> = new Map();
+    #subscriptions = new Map<string, Notification[]>();
 
-    #connected: boolean = false;
+    #connected = false;
 
-    get connected() { return this.#connected; }
+    get connected(): boolean { return this.#connected; }
 
     get subscriptions(): Map<string, Notification[]>
     {

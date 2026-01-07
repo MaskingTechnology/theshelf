@@ -8,11 +8,9 @@ const notificationService = new NotificationService(driver);
 
 async function withRecipient(): Promise<void>
 {
-    //driver.clear();
-    
-    await driver.subscribe(VALUES.RECIPIENTS.FIRST);
+    await notificationService.subscribe(VALUES.RECIPIENTS.FIRST, undefined);
 }
 
 export { notificationService };
 
-export const NOTIFICATIONS = { withRecipient };
+export const SEEDS = { withRecipient };
