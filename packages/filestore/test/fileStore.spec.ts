@@ -1,22 +1,26 @@
 
-import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { FileNotFound } from '../src/index.js';
 
-import { fileStore, FILES, FILE_STORES, VALUES } from './fixtures/index.js';
+import { fileStore, SEEDS, FILES, VALUES } from './fixtures/index.js';
 
-beforeEach(async () =>
+beforeAll(async () =>
 {
     await fileStore.connect();
-    await FILE_STORES.withFile();
 });
 
-afterEach(async () =>
+afterAll(async () =>
 {
     await fileStore.disconnect();
 });
 
-describe('fileStore', () =>
+beforeEach(async () =>
+{
+    await SEEDS.withFile();
+});
+
+describe('FileStore', () =>
 {
     describe('.hasFile(path)', () =>
     {

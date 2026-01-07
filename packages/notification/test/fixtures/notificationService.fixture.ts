@@ -8,6 +8,8 @@ const notificationService = new NotificationService(driver);
 
 async function withRecipient(): Promise<void>
 {
+    driver.clear();
+    
     await notificationService.subscribe(VALUES.RECIPIENTS.FIRST, undefined);
 }
 

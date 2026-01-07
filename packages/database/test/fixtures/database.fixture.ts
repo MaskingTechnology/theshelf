@@ -6,8 +6,6 @@ import { RECORD_TYPES, RECORDS } from './records.fixture.js';
 const driver = new MemoryDriver();
 const database = new Database(driver);
 
-await database.connect();
-
 async function clear()
 {
     await Promise.all([
@@ -34,4 +32,4 @@ async function withEverything(): Promise<void>
 
 export { database };
 
-export const DATABASES = { withEverything };
+export const SEEDS = { withEverything };

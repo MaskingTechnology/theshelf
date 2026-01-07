@@ -10,7 +10,7 @@ beforeEach(() =>
     driver.clear();
 });
 
-describe('logger', () =>
+describe('Logger', () =>
 {
     describe('levels', () =>
     {

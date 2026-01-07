@@ -8,7 +8,7 @@ beforeEach(() =>
     CACHE.reset();
 });
 
-describe('http', () =>
+describe('Http', () =>
 {
     describe('.get', () =>
     {

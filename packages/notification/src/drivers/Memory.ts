@@ -34,6 +34,7 @@ export default class Memory implements Driver
     async disconnect(): Promise<void>
     {
         this.#connected = false;
+        this.#subscriptions.clear();
     }
 
     async subscribe(recipientId: string): Promise<void>

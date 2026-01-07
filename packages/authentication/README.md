@@ -40,8 +40,6 @@ const identityProvider = new IdentityProvider(driver);
 
 ### Configuration
 
-The identity provider instance does not have any configuration options.
-
 #### OpenID driver
 
 ```ts

@@ -1,19 +1,23 @@
 
-import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import type { RecordData } from '../src/index.js';
 
-import { database, DATABASES, QUERIES, RECORDS, RECORD_TYPES, RESULTS, SORTS, VALUES } from './fixtures/index.js';
+import { database, SEEDS, QUERIES, RECORDS, RECORD_TYPES, RESULTS, SORTS, VALUES } from './fixtures/index.js';
+
+beforeAll(async () =>
+{
+    await database.connect();
+});
+
+afterAll(async () =>
+{
+    await database.disconnect();
+});
 
 beforeEach(async () =>
 {
-    await database.connect();
-    await DATABASES.withEverything();
-});
-
-afterEach(async () =>
-{
-    await database.disconnect();
+    await SEEDS.withEverything();
 });
 
 describe('Database', () =>

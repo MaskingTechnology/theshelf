@@ -1,16 +1,21 @@
 
-import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
-import { createSubscription, eventBroker, EVENTS, PUBLICATIONS } from './fixtures/index.js';
+import { createSubscription, eventBroker, SEEDS, EVENTS, PUBLICATIONS } from './fixtures/index.js';
 
-beforeEach(async () =>
+beforeAll(async () =>
 {
     await eventBroker.connect();
 });
 
-afterEach(async () =>
+afterAll(async () =>
 {
     await eventBroker.disconnect();
+});
+
+beforeEach(() =>
+{
+    SEEDS.empty();
 });
 
 describe('EventBroker', () =>

@@ -13,6 +13,8 @@ import type {
     RecordValue
 } from '../definitions/types.js';
 
+import NotConnected from '../errors/NotConnected.js';
+
 type FilterFunction = (record: RecordData) => boolean;
 
 const OPERATORS: Record<string, string> =
@@ -34,10 +36,21 @@ const LOGICAL_OPERATORS: Record<string, string> =
 export default class Memory implements Driver
 {
     readonly #memory = new Map<string, RecordData[]>();
+
     #connected = false;
     #recordId = 0;
 
     get connected(): boolean { return this.#connected; }
+
+    get memory(): Map<string, RecordData[]>
+    {
+        if (this.#connected === false)
+        {
+            throw new NotConnected();
+        }
+
+        return this.#memory;
+    }
 
     async connect(): Promise<void>
     {
@@ -47,6 +60,7 @@ export default class Memory implements Driver
     async disconnect(): Promise<void>
     {
         this.#connected = false;
+        this.#memory.clear();
     }
 
     async createRecord(type: string, data: RecordData): Promise<string>
@@ -131,6 +145,11 @@ export default class Memory implements Driver
         indexes.forEach(index => collection.splice(index, 1));
 
         return indexes.length;
+    }
+
+    clear(): void
+    {
+        this.memory.clear();
     }
 
     #fetchRecord(type: string, query: RecordQuery): RecordData | undefined
@@ -284,13 +303,15 @@ export default class Memory implements Driver
 
     #getCollection(type: string): RecordData[]
     {
-        let collection = this.#memory.get(type);
+        const memory = this.memory;
+
+        let collection = memory.get(type);
 
         if (collection === undefined)
         {
             collection = [];
 
-            this.#memory.set(type, collection);
+            memory.set(type, collection);
         }
 
         return collection;
@@ -300,7 +321,6 @@ export default class Memory implements Driver
     {
         if (fields === undefined)
         {
-
             return { ...data };
         }
 

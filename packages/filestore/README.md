@@ -31,8 +31,6 @@ const fileStore = new FileStore(driver);
 
 ### Configuration
 
-The file store instance does not have any configuration options.
-
 #### Memory driver
 
 No configuration options.

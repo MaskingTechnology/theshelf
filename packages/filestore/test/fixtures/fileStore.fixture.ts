@@ -14,4 +14,4 @@ async function withFile(): Promise<void>
 
 export { fileStore };
 
-export const FILE_STORES = { withFile };
+export const SEEDS = { withFile };

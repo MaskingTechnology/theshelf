@@ -4,13 +4,25 @@ import { EventEmitter } from 'node:events';
 import type { Driver } from '../definitions/interfaces.js';
 import type { Event, Publication, Subscription } from '../definitions/types.js';
 
+import NotConnected from '../errors/NotConnected.js';
+
 export default class Memory implements Driver
 {
     readonly #emitters = new Map<string, EventEmitter>();
 
     #connected = false;
 
-    get connected() { return this.#connected; }
+    get connected(): boolean { return this.#connected; }
+
+    get emitters(): Map<string, EventEmitter>
+    {
+        if (this.#connected === false)
+        {
+            throw new NotConnected();
+        }
+
+        return this.#emitters;
+    }
 
     async connect(): Promise<void>
     {
@@ -20,7 +32,6 @@ export default class Memory implements Driver
     async disconnect(): Promise<void>
     {
         this.#connected = false;
-
         this.#emitters.clear();
     }
 
@@ -45,13 +56,20 @@ export default class Memory implements Driver
         emitter.off(subscription.name, subscription.handler);
     }
 
+    clear(): void
+    {
+        this.emitters.clear();
+    }
+
     #getEmitter(event: Event): EventEmitter
     {
-        if (this.#emitters.has(event.channel) === false)
+        const emitters = this.emitters;
+
+        if (emitters.has(event.channel) === false)
         {
-            this.#emitters.set(event.channel, new EventEmitter());
+            emitters.set(event.channel, new EventEmitter());
         }
 
-        return this.#emitters.get(event.channel) as EventEmitter;
+        return emitters.get(event.channel) as EventEmitter;
     }
 }

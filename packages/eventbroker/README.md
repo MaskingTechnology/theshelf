@@ -34,8 +34,6 @@ const eventBroker = new EventBroker(driver);
 
 ### Configuration
 
-The event broker instance does not have any configuration options.
-
 #### Memory driver
 
 No configuration options.
