@@ -1,13 +1,11 @@
 
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
 
-import eventBroker from '../src/index.js';
-
-import { createSubscription, DRIVERS, EVENTS, PUBLICATIONS } from './fixtures/index.js';
+import { createSubscription, eventBroker, EVENTS, PUBLICATIONS } from './fixtures/index.js';
 
 beforeEach(async () =>
 {
-    eventBroker.driver = await DRIVERS.empty();
+    await eventBroker.connect();
 });
 
 afterEach(async () =>
@@ -15,7 +13,7 @@ afterEach(async () =>
     await eventBroker.disconnect();
 });
 
-describe('integrations/eventbroker/implementation', () =>
+describe('EventBroker', () =>
 {
     describe('publish and subscribe', () =>
     {
