@@ -1,5 +1,6 @@
 
 /* eslint no-console: "off" */
+
 import type { Driver } from '../definitions/interfaces.js';
 
 export default class Console implements Driver

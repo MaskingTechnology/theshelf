@@ -8,5 +8,4 @@ export const LogLevels =
     FATAL: 4
 } as const;
 
-type Keys = keyof typeof LogLevels;
-export type LogLevel = typeof LogLevels[Keys];
+export type LogLevel = typeof LogLevels[keyof typeof LogLevels];

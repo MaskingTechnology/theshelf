@@ -1,33 +1,30 @@
 
+/* eslint @typescript-eslint/no-unused-vars: "off" */
+
 import type { Driver } from '../definitions/interfaces.js';
 
 export default class Void implements Driver
 {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     logDebug(message: string): Promise<void>
     {
         return Promise.resolve();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     logInfo(message: string): Promise<void>
     {
         return Promise.resolve();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     logWarn(message: string): Promise<void>
     {
         return Promise.resolve();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     logError(message: string): Promise<void>
     {
         return Promise.resolve();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     logFatal(message: string): Promise<void>
     {
         return Promise.resolve();
