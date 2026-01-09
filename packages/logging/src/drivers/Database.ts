@@ -1,6 +1,6 @@
 
 import type Database from '@theshelf/database';
-import { RecordType } from '@theshelf/database';
+import type { RecordType } from '@theshelf/database';
 
 import type { Driver } from '../definitions/interfaces.js';
 
