@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "type": "module",
   "repository": {
-    "url": "https://github.com/MaskingTechnology/theshelf"
+    "url": "git+https://github.com/MaskingTechnology/theshelf.git"
   },
   "scripts": {
     "build": "tsc",
