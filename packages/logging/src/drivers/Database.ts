@@ -6,10 +6,10 @@ import type { Driver } from '../definitions/interfaces.js';
 
 export default class DatabaseDriver implements Driver
 {
-    readonly #recordType: RecordType;
     readonly #database: Database;
+    readonly #recordType: RecordType;
 
-    constructor(recordType: RecordType, database: Database)
+    constructor(database: Database, recordType: RecordType)
     {
         this.#recordType = recordType;
         this.#database = database;

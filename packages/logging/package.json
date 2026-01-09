@@ -20,5 +20,14 @@
     "dist"
   ],
   "types": "dist/index.d.ts",
-  "exports": "./dist/index.js"
+  "exports": "./dist/index.js",
+  "peerDependencies": {
+    "@theshelf/database": "^0.2.1"
+  },
+  "peerDependenciesMeta": {
+    "@theshelf/database":
+    {
+      "optional": true
+    }
+  }
 }

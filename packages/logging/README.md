@@ -62,7 +62,7 @@ No configuration options.
 The database driver requires a database and a table name to log messages into.
 
 ```ts
-import { database } from 'custom-database-implementation';
+import { Database } from '@theshelf/database';
 
 const driver = new DatabaseDriver('logs', database);
 const logger = new Logger(driver);
