@@ -66,7 +66,7 @@ import Database from '@theshelf/database';
 
 const database = new Database({ /* configuration */ });
 
-const driver = new DatabaseDriver('logs', database);
+const driver = new DatabaseDriver(database, 'logs');
 const logger = new Logger(driver);
 ```
 
