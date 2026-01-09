@@ -16,6 +16,7 @@ Currently, there are three drivers available:
 * **Void** - dummy driver that doesn't log anything (suited for testing).
 * **Memory** - in memory logging (suited for testing).
 * **Console** - driver based on the Node.js console.
+* **Database** - driver that logs messages into a database.
 
 ## How to use
 
@@ -55,6 +56,17 @@ No configuration options.
 #### Console driver
 
 No configuration options.
+
+#### Database driver
+
+The database driver requires a database and a table name to log messages into.
+
+```ts
+import { database } from 'custom-database-implementation';
+
+const driver = new DatabaseDriver('logs', database);
+const logger = new Logger(driver);
+```
 
 ### Operations
 
