@@ -1,6 +1,4 @@
 
-import NotificationService from './NotificationService.js';
-
 export type * from './definitions/interfaces.js';
 
 export { default as NotConnected } from './errors/NotConnected.js';
@@ -9,4 +7,4 @@ export { default as SubscriptionNotFound } from './errors/SubscriptionNotFound.j
 
 export { default as MemoryDriver } from './drivers/Memory.js';
 
-export default new NotificationService();
+export { default } from './NotificationService.js';

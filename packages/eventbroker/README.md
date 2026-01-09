@@ -21,20 +21,18 @@ We have plans to add a Kafka driver later on.
 
 ## How to use
 
-The instance of the event broker needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import eventBroker, { MemoryDriver as SelectedDriver } from '@theshelf/eventbroker';
+import EventBroker, { MemoryDriver as SelectedDriver } from '@theshelf/eventbroker';
 
-// Set the driver before performing any operation (the Memory driver is used by default)
-eventBroker.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const eventBroker = new EventBroker(driver);
 
 // Perform operations with the eventBroker instance
 ```
 
 ### Configuration
-
-The event broker instance does not have any configuration options.
 
 #### Memory driver
 
@@ -43,7 +41,7 @@ No configuration options.
 ### Operations
 
 ```ts
-import eventBroker, { Publication, Subscription } from '@theshelf/eventbroker';
+import { Publication, Subscription } from '@theshelf/eventbroker';
 
 // Open connection
 await eventBroker.connect();

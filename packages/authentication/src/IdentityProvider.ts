@@ -1,60 +1,59 @@
 
+import { ConnectionStates } from './definitions/constants.js';
+import type { ConnectionState } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
 import type { Session } from './definitions/types.js';
 
-import NoDriver from './errors/NoDriver.js';
+import ConnectionManager from './ConnectionManager.js';
 
 export default class IdentityProvider implements Driver
 {
-    #driver?: Driver;
+    readonly #driver: Driver;
+    readonly #connectionManager: ConnectionManager;
 
-    set driver(driver: Driver)
+    constructor(driver: Driver)
     {
         this.#driver = driver;
+        this.#connectionManager = new ConnectionManager(driver);
     }
 
-    get driver(): Driver
+    get connectionState(): ConnectionState
     {
-        if (this.#driver === undefined)
-        {
-            throw new NoDriver();
-        }
-
-        return this.#driver;
+        return this.#connectionManager.state;
     }
 
     get connected(): boolean
     {
-        return this.driver.connected;
+        return this.connectionState === ConnectionStates.CONNECTED;
     }
 
     connect(): Promise<void>
     {
-        return this.driver.connect();
+        return this.#connectionManager.connect();
     }
 
     disconnect(): Promise<void>
     {
-        return this.driver.disconnect();
+        return this.#connectionManager.disconnect();
     }
 
     getLoginUrl(origin: string): Promise<string>
     {
-        return this.driver.getLoginUrl(origin);
+        return this.#driver.getLoginUrl(origin);
     }
 
     login(origin: string, data: Record<string, unknown>): Promise<Session>
     {
-        return this.driver.login(origin, data);
+        return this.#driver.login(origin, data);
     }
 
     refresh(session: Session): Promise<Session>
     {
-        return this.driver.refresh(session);
+        return this.#driver.refresh(session);
     }
 
     logout(session: Session): Promise<void>
     {
-        return this.driver.logout(session);
+        return this.#driver.logout(session);
     }
 }

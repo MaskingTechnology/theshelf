@@ -3,8 +3,8 @@ import DatabaseError from './DatabaseError.js';
 
 export default class NotConnected extends DatabaseError
 {
-    constructor(message?: string)
+    constructor()
     {
-        super(message ?? 'Database not connected');
+        super('Database not connected');
     }
 }

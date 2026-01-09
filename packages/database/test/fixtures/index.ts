@@ -1,5 +1,5 @@
 
-export * from './drivers.fixture.js';
+export * from './database.fixture.js';
 export * from './queries.fixture.js';
 export * from './records.fixture.js';
 export * from './results.fixture.js';

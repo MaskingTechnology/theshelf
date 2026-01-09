@@ -1,22 +1,26 @@
 
-import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import type { RecordData } from '../src/index.js';
-import database from '../src/index.js';
 
-import { DRIVERS, QUERIES, RECORDS, RECORD_TYPES, RESULTS, SORTS, VALUES } from './fixtures/index.js';
+import { database, SEEDS, QUERIES, RECORDS, RECORD_TYPES, RESULTS, SORTS, VALUES } from './fixtures/index.js';
 
-beforeEach(async () =>
+beforeAll(async () =>
 {
-    database.driver = await DRIVERS.withEverything();
+    await database.connect();
 });
 
-afterEach(async () =>
+afterAll(async () =>
 {
     await database.disconnect();
 });
 
-describe('implementation', () =>
+beforeEach(async () =>
+{
+    await SEEDS.withEverything();
+});
+
+describe('Database', () =>
 {
     describe('.readRecord', () =>
     {

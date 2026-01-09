@@ -20,20 +20,18 @@ Currently, there are two drivers available:
 
 ## How to use
 
-The instance of the notification service needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import notificationService, { MemoryDriver | WebPushDriver as SelectedDriver } from '@theshelf/notification';
+import NotificationService, { MemoryDriver | WebPushDriver as SelectedDriver } from '@theshelf/notification';
 
-// Set the driver before performing any operation (the Memory driver is used by default)
-notificationService.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const notificationService = new NotificationService(driver);
 
 // Perform operations with the notificationService instance
 ```
 
 ### Configuration
-
-The notification service instance does not have any configuration options.
 
 #### Memory driver
 

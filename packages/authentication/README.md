@@ -27,20 +27,18 @@ Currently, there are two drivers available:
 
 ## How to use
 
-The instance of the identity provider needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import identityProvider, { OpenIDDriver | GoogleDriver as SelectedDriver } from '@theshelf/authentication';
+import IdentityProvider, { OpenIDDriver | GoogleDriver as SelectedDriver } from '@theshelf/authentication';
 
-// Set the driver before performing any operation
-identityProvider.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const identityProvider = new IdentityProvider(driver);
 
 // Perform operations with the identityProvider instance
 ```
 
 ### Configuration
-
-The identity provider instance does not have any configuration options.
 
 #### OpenID driver
 
@@ -70,7 +68,7 @@ type GoogleConfiguration = {
 ### Operations
 
 ```ts
-import identityProvider, { Session } from '@theshelf/authentication';
+import { Session } from '@theshelf/authentication';
 
 // Open connection
 await identityProvider.connect();

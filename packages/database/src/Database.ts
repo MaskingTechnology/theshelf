@@ -1,80 +1,82 @@
 
 import sanitize from './utilities/sanitize.js';
 
+import { ConnectionStates } from './definitions/constants.js';
+import type { ConnectionState } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
 import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './definitions/types.js';
 
-import Memory from './drivers/Memory.js';
+import ConnectionManager from './ConnectionManager.js';
 
 export default class Database implements Driver
 {
-    #driver: Driver = new Memory();
+    readonly #driver: Driver;
+    readonly #connectionManager: ConnectionManager;
 
-    set driver(driver: Driver)
+    constructor(driver: Driver)
     {
         this.#driver = driver;
+        this.#connectionManager = new ConnectionManager(driver);
     }
 
-    get driver(): Driver
+    get connectionState(): ConnectionState
     {
-        return this.#driver;
+        return this.#connectionManager.state;
     }
 
-    get connected() { return this.driver.connected; }
+    get connected(): boolean
+    {
+        return this.connectionState === ConnectionStates.CONNECTED;
+    }
 
     connect(): Promise<void>
     {
-        return this.driver.connect();
+        return this.#connectionManager.connect();
     }
 
     disconnect(): Promise<void>
     {
-        return this.driver.disconnect();
+        return this.#connectionManager.disconnect();
     }
 
     createRecord(type: RecordType, data: RecordData): Promise<RecordId>
     {
         const cleanData = sanitize(data);
 
-        return this.driver.createRecord(type, cleanData);
+        return this.#driver.createRecord(type, cleanData);
     }
 
     readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
     {
-        return this.driver.readRecord(type, query, fields, sort);
+        return this.#driver.readRecord(type, query, fields, sort);
     }
 
     searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
     {
-        return this.driver.searchRecords(type, query, fields, sort, limit, offset);
+        return this.#driver.searchRecords(type, query, fields, sort, limit, offset);
     }
 
     updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
         const cleanData = sanitize(data);
 
-        return this.driver.updateRecord(type, query, cleanData);
+        return this.#driver.updateRecord(type, query, cleanData);
     }
 
     updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
         const cleanData = sanitize(data);
 
-        return this.driver.updateRecords(type, query, cleanData);
+        return this.#driver.updateRecords(type, query, cleanData);
     }
 
     deleteRecord(type: RecordType, query: RecordQuery): Promise<number>
     {
-        return this.driver.deleteRecord(type, query);
+        return this.#driver.deleteRecord(type, query);
     }
 
     deleteRecords(type: RecordType, query: RecordQuery): Promise<number>
     {
-        return this.driver.deleteRecords(type, query);
-    }
-
-    clear(): Promise<void>
-    {
-        return this.driver.clear();
+        return this.#driver.deleteRecords(type, query);
     }
 }

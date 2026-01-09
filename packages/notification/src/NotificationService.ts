@@ -1,54 +1,58 @@
 
+import { ConnectionStates } from './definitions/constants.js';
+import type { ConnectionState } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
 
-import Memory from './drivers/Memory.js';
+import ConnectionManager from './ConnectionManager.js';
 
 export default class NotificationService implements Driver
 {
-    #driver: Driver = new Memory();
+    readonly #driver: Driver;
+    readonly #connectionManager: ConnectionManager;
 
-    set driver(driver: Driver)
+    constructor(driver: Driver)
     {
         this.#driver = driver;
+        this.#connectionManager = new ConnectionManager(driver);
     }
 
-    get driver(): Driver
+    get connectionState(): ConnectionState
     {
-        return this.#driver;
+        return this.#connectionManager.state;
     }
 
     get connected(): boolean
     {
-        return this.driver.connected;
+        return this.connectionState === ConnectionStates.CONNECTED;
     }
 
     get subscriptions(): Map<string, unknown>
     {
-        return this.driver.subscriptions;
+        return new Map(this.#driver.subscriptions);
     }
 
     connect(): Promise<void>
     {
-        return this.driver.connect();
+        return this.#connectionManager.connect();
     }
 
     disconnect(): Promise<void>
     {
-        return this.driver.disconnect();
+        return this.#connectionManager.disconnect();
     }
 
     subscribe(recipientId: string, subscription: unknown): Promise<void>
     {
-        return this.driver.subscribe(recipientId, subscription);
+        return this.#driver.subscribe(recipientId, subscription);
     }
 
     unsubscribe(recipientId: string): Promise<void>
     {
-        return this.driver.unsubscribe(recipientId);
+        return this.#driver.unsubscribe(recipientId);
     }
 
     sendNotification(recipientId: string, title: string, message: string): Promise<void>
     {
-        return this.driver.sendNotification(recipientId, title, message);
+        return this.#driver.sendNotification(recipientId, title, message);
     }
 }

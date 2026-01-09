@@ -3,8 +3,8 @@ import FileStoreError from './FileStoreError.js';
 
 export default class NotConnected extends FileStoreError
 {
-    constructor(message?: string)
+    constructor()
     {
-        super(message ?? 'File store not connected');
+        super('File store not connected');
     }
 }

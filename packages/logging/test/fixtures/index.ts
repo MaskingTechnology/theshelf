@@ -1,3 +1,3 @@
 
-export * from './drivers.fixture.js';
+export * from './logger.fixture.js';
 export * from './values.fixtures.js';

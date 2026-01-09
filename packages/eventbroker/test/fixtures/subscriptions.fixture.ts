@@ -1,6 +1,7 @@
 
 import type { Event } from '../../src/index.js';
-import eventBroker from '../../src/index.js';
+
+import { eventBroker } from './eventBroker.fixture.js';
 
 export function createSubscription<T>(event: Event): Promise<T>
 {

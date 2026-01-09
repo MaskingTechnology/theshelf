@@ -19,20 +19,22 @@ Currently, there are three drivers available:
 
 ## How to use
 
-The instance of the logger needs to be imported and one of the drivers must be set.
+The basic set up looks like this.
 
 ```ts
-import logger, { VoidDriver | MemoryDriver | ConsoleDriver as SelectedDriver } from '@theshelf/logging';
+import Logger, { VoidDriver | MemoryDriver | ConsoleDriver as SelectedDriver } from '@theshelf/logging';
 
-// Set the driver before performing any operation (the Void driver is used by default)
-logger.driver = new SelectedDriver(/* configuration */);
+const driver = new SelectedDriver(/* configuration */);
+const logger = new Logger(driver);
 
 // Perform operations with the logger instance
 ```
 
 ### Configuration
 
-The logger instance has a configurable log level.
+#### Logger
+
+The logger has a configurable log level.
 
 ```ts
 import { LogLevels } from '@theshelf/logging';
@@ -42,15 +44,15 @@ logger.logLevel = LogLevels.DEBUG; // default level
 
 Other levels are: `INFO` | `WARN` | `ERROR` | `FATAL`.
 
-### Void driver
+#### Void driver
 
 No configuration options.
 
-### Memory driver
+#### Memory driver
 
 No configuration options.
 
-### Console driver
+#### Console driver
 
 No configuration options.
 

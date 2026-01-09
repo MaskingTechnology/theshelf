@@ -38,4 +38,9 @@ export default class Memory implements Driver
     {
         this.#logs.push({ level: LogLevels.FATAL, message });
     }
+
+    clear(): void
+    {
+        this.#logs.splice(0);
+    }
 }

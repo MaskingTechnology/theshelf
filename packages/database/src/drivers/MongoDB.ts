@@ -67,7 +67,7 @@ export default class MongoDB implements Driver
         this.#databaseName = configuration.databaseName;
     }
 
-    get connected() { return this.#connected; }
+    get connected(): boolean { return this.#connected; }
 
     async connect(): Promise<void>
     {
@@ -184,11 +184,6 @@ export default class MongoDB implements Driver
         const result = await collection.deleteMany(mongoQuery);
 
         return result.deletedCount;
-    }
-
-    async clear(): Promise<void>
-    {
-        return; // Deliberately not implemented
     }
 
     #buildMongoQuery(query: RecordQuery): Filter<any> 

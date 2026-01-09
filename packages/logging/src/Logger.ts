@@ -3,21 +3,15 @@ import { LogLevels } from './definitions/constants.js';
 import type { LogLevel } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
 
-import Void from './drivers/Void.js';
-
 export default class Logger implements Driver
 {
-    #driver: Driver = new Void();
+    readonly #driver: Driver;
+
     #logLevel: LogLevel = LogLevels.DEBUG;
 
-    set driver(driver: Driver)
+    constructor(driver: Driver)
     {
         this.#driver = driver;
-    }
-
-    get driver(): Driver
-    {
-        return this.#driver;
     }
 
     set logLevel(level: LogLevel)
@@ -39,7 +33,7 @@ export default class Logger implements Driver
 
         const messageString = this.#createMessage(message);
 
-        return this.driver.logDebug(messageString);
+        return this.#driver.logDebug(messageString);
     }
 
     logInfo(...message: unknown[]): Promise<void>
@@ -51,7 +45,7 @@ export default class Logger implements Driver
 
         const messageString = this.#createMessage(message);
 
-        return this.driver.logInfo(messageString);
+        return this.#driver.logInfo(messageString);
     }
 
     logWarn(...message: unknown[]): Promise<void>
@@ -63,7 +57,7 @@ export default class Logger implements Driver
 
         const messageString = this.#createMessage(message);
 
-        return this.driver.logWarn(messageString);
+        return this.#driver.logWarn(messageString);
     }
 
     logError(...message: unknown[]): Promise<void>
@@ -75,14 +69,14 @@ export default class Logger implements Driver
 
         const messageString = this.#createMessage(message);
 
-        return this.driver.logError(messageString);
+        return this.#driver.logError(messageString);
     }
 
     logFatal(...message: unknown[]): Promise<void>
     {
         const messageString = this.#createMessage(message);
 
-        return this.driver.logFatal(messageString);
+        return this.#driver.logFatal(messageString);
     }
 
     #createMessage(message: unknown[]): string

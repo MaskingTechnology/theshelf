@@ -9,5 +9,4 @@ export const HttpMethods =
     HEAD: 'HEAD'
 } as const;
 
-type Keys = keyof typeof HttpMethods;
-export type HttpMethod = typeof HttpMethods[Keys];
+export type HttpMethod = typeof HttpMethods[keyof typeof HttpMethods];

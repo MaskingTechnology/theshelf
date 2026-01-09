@@ -1,17 +1,16 @@
 
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
-import type { MemoryDriver } from '../src/index.js';
-import logger, { LogLevels } from '../src/index.js';
+import { LogLevels } from '../src/index.js';
 
-import { DRIVERS, VALUES, RESULTS } from './fixtures/index.js';
+import { logger, driver, VALUES, RESULTS } from './fixtures/index.js';
 
 beforeEach(() =>
 {
-    logger.driver = DRIVERS.empty();
+    driver.clear();
 });
 
-describe('logger', () =>
+describe('Logger', () =>
 {
     describe('levels', () =>
     {
@@ -25,7 +24,7 @@ describe('logger', () =>
             await logger.logError('error');
             await logger.logFatal('fatal');
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(5);
             expect(logs[0].level).toEqual(LogLevels.DEBUG);
@@ -45,7 +44,7 @@ describe('logger', () =>
             await logger.logError('error');
             await logger.logFatal('fatal');
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(4);
             expect(logs[0].level).toEqual(LogLevels.INFO);
@@ -64,7 +63,7 @@ describe('logger', () =>
             await logger.logError('error');
             await logger.logFatal('fatal');
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(3);
             expect(logs[0].level).toEqual(LogLevels.WARN);
@@ -82,7 +81,7 @@ describe('logger', () =>
             await logger.logError('error');
             await logger.logFatal('fatal');
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(2);
             expect(logs[0].level).toEqual(LogLevels.ERROR);
@@ -99,7 +98,7 @@ describe('logger', () =>
             await logger.logError('error');
             await logger.logFatal('fatal');
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(1);
             expect(logs[0].level).toEqual(LogLevels.FATAL);
@@ -119,7 +118,7 @@ describe('logger', () =>
             await logger.logInfo(VALUES.BOOLEAN);
             await logger.logInfo(VALUES.NUMBER);
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(3);
             expect(logs[0].message).toEqual(RESULTS.TEXT);
@@ -132,7 +131,7 @@ describe('logger', () =>
             await logger.logInfo(VALUES.UNDEFINED);
             await logger.logInfo(VALUES.NULL);
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
 
             expect(logs).toHaveLength(2);
             expect(logs[0].message).toEqual(RESULTS.UNDEFINED);
@@ -143,7 +142,7 @@ describe('logger', () =>
         {
             await logger.logInfo(VALUES.FUNCTION);
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
             
             expect(logs).toHaveLength(1);
             expect(logs[0].message).toEqual(RESULTS.FUNCTION);
@@ -153,7 +152,7 @@ describe('logger', () =>
         {
             await logger.logInfo(VALUES.ARRAY);
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
             
             expect(logs).toHaveLength(1);
             expect(logs[0].message).toEqual(RESULTS.ARRAY);
@@ -163,7 +162,7 @@ describe('logger', () =>
         {
             await logger.logInfo(VALUES.OBJECT);
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
             
             expect(logs).toHaveLength(1);
             expect(logs[0].message).toEqual(RESULTS.OBJECT);
@@ -174,7 +173,7 @@ describe('logger', () =>
             await logger.logInfo(VALUES.ERROR_STACK);
             await logger.logInfo(VALUES.ERROR_MESSAGE);
 
-            const logs = (logger.driver as MemoryDriver).logs;
+            const logs = driver.logs;
             
             expect(logs).toHaveLength(2);
             expect(logs[0].message).toEqual(RESULTS.ERROR_STACK);

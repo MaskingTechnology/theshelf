@@ -2,9 +2,8 @@
 import { describe, expect, it } from 'vitest';
 
 import type { ValidationSchema } from '../src/index.js';
-import validator from '../src/index.js';
 
-import { VALIDATION_SCHEMES, VALUES } from './fixtures/index.js';
+import { validator, VALIDATION_SCHEMES, VALUES } from './fixtures/index.js';
 
 describe('validator', () =>
 {
