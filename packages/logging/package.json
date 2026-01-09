@@ -1,10 +1,10 @@
 {
   "name": "@theshelf/logging",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "repository": {
-    "url": "https://github.com/MaskingTechnology/theshelf"
+    "url": "git+https://github.com/MaskingTechnology/theshelf.git"
   },
   "scripts": {
     "build": "tsc",
@@ -20,5 +20,14 @@
     "dist"
   ],
   "types": "dist/index.d.ts",
-  "exports": "./dist/index.js"
+  "exports": "./dist/index.js",
+  "peerDependencies": {
+    "@theshelf/database": "^0.2.1"
+  },
+  "peerDependenciesMeta": {
+    "@theshelf/database":
+    {
+      "optional": true
+    }
+  }
 }

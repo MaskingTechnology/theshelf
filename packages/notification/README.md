@@ -50,8 +50,6 @@ type WebPushConfiguration = { // Vapid details
 ### Operations
 
 ```ts
-import notificationService from '@theshelf/notification';
-
 // Open connection
 await notificationService.connect();
 

@@ -16,6 +16,7 @@ Currently, there are three drivers available:
 * **Void** - dummy driver that doesn't log anything (suited for testing).
 * **Memory** - in memory logging (suited for testing).
 * **Console** - driver based on the Node.js console.
+* **Database** - driver that logs messages into a database.
 
 ## How to use
 
@@ -56,10 +57,24 @@ No configuration options.
 
 No configuration options.
 
+#### Database driver
+
+The database driver requires a [database](https://github.com/MaskingTechnology/theshelf/tree/main/packages/database) from @theshelf and a table name (record type) to log messages into.
+
+```ts
+import { database } from './your-database-instance';
+
+const recordType = 'logs';
+const driver = new DatabaseDriver(database, recordType);
+
+const logger = new Logger(driver);
+```
+
 ### Operations
 
 ```ts
-import logger from '@theshelf/logging';
+// Log debug
+await logger.logDebug(message);
 
 // Log info
 await logger.logInfo(message);
@@ -70,8 +85,8 @@ await logger.logWarn(message);
 // Log error
 await logger.logError(message);
 
-// Log debug information
-await logger.logDebug(message);
+// Log fatal
+await logger.logFatal(message);
 
 // Log multiple messages (works for all levels)
 await logger.logInfo(message1, message2, ...);

@@ -1,10 +1,10 @@
 {
   "name": "@theshelf/eventbroker",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "repository": {
-    "url": "https://github.com/MaskingTechnology/theshelf"
+    "url": "git+https://github.com/MaskingTechnology/theshelf.git"
   },
   "scripts": {
     "build": "tsc",

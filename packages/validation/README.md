@@ -39,7 +39,7 @@ No configuration options.
 ### Operations
 
 ```ts
-import validator, { ValidationSchema, ValidationResult } from '@theshelf/validation';
+import { ValidationSchema, ValidationResult } from '@theshelf/validation';
 
 const data = {
     name: 'John Doe',
