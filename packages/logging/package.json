@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/logging",
   "private": false,
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -22,11 +22,10 @@
   "types": "dist/index.d.ts",
   "exports": "./dist/index.js",
   "peerDependencies": {
-    "@theshelf/database": "^0.2.1"
+    "@theshelf/database": "^0.3.0"
   },
   "peerDependenciesMeta": {
-    "@theshelf/database":
-    {
+    "@theshelf/database": {
       "optional": true
     }
   }

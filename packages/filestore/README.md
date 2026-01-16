@@ -14,14 +14,14 @@ npm install @theshelf/filestore
 Currently, there are two drivers available:
 
 * **Memory** - non-persistent in memory storage (suited for testing).
-* **Minio** - persistent S3 compatible object storage.
+* **S3** - persistent S3 (compatible) object storage.
 
 ## How to use
 
 The basic set up looks like this.
 
 ```ts
-import FileStore, { MemoryDriver | MinioDriver as SelectedDriver } from '@theshelf/fileStore';
+import FileStore, { MemoryDriver | S3Driver as SelectedDriver } from '@theshelf/fileStore';
 
 const driver = new SelectedDriver(/* configuration */);
 const fileStore = new FileStore(driver);
@@ -35,9 +35,16 @@ const fileStore = new FileStore(driver);
 
 No configuration options.
 
-#### Minio driver
+#### S3 driver
 
-The `ClientOptions` from the 'minio' package.
+```ts
+type S3Configuration = {
+    clientConfig: S3ClientConfig;
+    bucketName: string;
+};
+```
+
+The exact configuration of the `clientConfig` depends on your S3-compatible storage provider. See the AWS SDK documentation for details.
 
 ### Operations
 

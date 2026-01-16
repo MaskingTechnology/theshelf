@@ -1,8 +1,8 @@
 
 import type { Driver } from '../definitions/interfaces.js';
 
-import NotConnected from '../errors/NotConnected.js';
 import FileNotFound from '../errors/FileNotFound.js';
+import NotConnected from '../errors/NotConnected.js';
 
 export default class Memory implements Driver
 {
