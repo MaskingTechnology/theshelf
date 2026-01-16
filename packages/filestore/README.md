@@ -21,7 +21,7 @@ Currently, there are two drivers available:
 The basic set up looks like this.
 
 ```ts
-import FileStore, { MemoryDriver | MinioDriver as SelectedDriver } from '@theshelf/fileStore';
+import FileStore, { MemoryDriver | S3Driver as SelectedDriver } from '@theshelf/fileStore';
 
 const driver = new SelectedDriver(/* configuration */);
 const fileStore = new FileStore(driver);
@@ -37,7 +37,14 @@ No configuration options.
 
 #### S3 driver
 
-Requires the `S3ClientConfig` from the AWS SDK s3-client package and the name of a bucket to use. The exact configuration depends on your S3-compatible storage provider. See the AWS SDK documentation for details.
+```ts
+type S3Configuration = {
+    clientConfig: S3ClientConfig;
+    bucketName: string;
+};
+```
+
+The exact configuration of the `clientConfig` depends on your S3-compatible storage provider. See the AWS SDK documentation for details.
 
 ### Operations
 

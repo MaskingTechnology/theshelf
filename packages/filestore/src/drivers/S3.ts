@@ -7,6 +7,11 @@ import FileNotFound from '../errors/FileNotFound.js';
 import FileStoreError from '../errors/FileStoreError.js';
 import NotConnected from '../errors/NotConnected.js';
 
+type S3Configuration = {
+    clientConfig: S3ClientConfig;
+    bucketName: string;
+};
+
 const UNKNOWN_ERROR = 'Unknown error';
 
 export default class S3 implements Driver
@@ -17,10 +22,10 @@ export default class S3 implements Driver
     #client?: S3Client;
     #connected = false;
 
-    constructor(configuration: S3ClientConfig, bucketName: string)
+    constructor(configuration: S3Configuration)
     {
-        this.#configuration = configuration;
-        this.#bucketName = bucketName;
+        this.#configuration = configuration.clientConfig;
+        this.#bucketName = configuration.bucketName;
     }
 
     get connected(): boolean { return this.#connected; }
