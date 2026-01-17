@@ -2,35 +2,52 @@
 import
 {
     allowInsecureRequests, authorizationCodeGrant, buildAuthorizationUrlWithPAR, calculatePKCECodeChallenge, discovery,
-    fetchUserInfo, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
+    fetchUserInfo, randomNonce, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
 } from 'openid-client';
+
+import crypto from 'node:crypto';
 
 import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
 
 import type { Driver } from '../definitions/interfaces.js';
 import type { Identity, Session } from '../definitions/types.js';
 import LoginFailed from '../errors/LoginFailed.js';
-import RefreshFailed from '../errors/RefreshFailed.js';
 import NotConnected from '../errors/NotConnected.js';
+import RefreshFailed from '../errors/RefreshFailed.js';
+import CacheManager from '../utils/CacheManager.js';
 
 type OpenIDConfiguration = {
     issuer: string;
     clientId: string;
     clientSecret: string;
     redirectPath: string;
+    secretKey: string;
     allowInsecureRequests: boolean;
 };
+
+type Payload = {
+    jti: string;
+    nonce: string;
+    iat: number;
+    exp: number;
+};
+
+const TTL = 30_000;
+const HMAC_ALGORITHM = 'sha512';
+const ENCODING = 'base64url';
 
 export default class OpenID implements Driver
 {
     readonly #providerConfiguration: OpenIDConfiguration;
+    readonly #key: string;
     #clientConfiguration?: Configuration;
 
-    readonly #codeVerifier = randomPKCECodeVerifier();
+    readonly #cacheManager = new CacheManager();
 
     constructor(configuration: OpenIDConfiguration)
     {
         this.#providerConfiguration = configuration;
+        this.#key = configuration.secretKey;
     }
 
     get connected(): boolean
@@ -40,6 +57,8 @@ export default class OpenID implements Driver
 
     async connect(): Promise<void>
     {
+        this.#cacheManager.start();
+
         const issuer = new URL(this.#providerConfiguration.issuer);
         const clientId = this.#providerConfiguration.clientId;
         const clientSecret = this.#providerConfiguration.clientSecret;
@@ -51,6 +70,8 @@ export default class OpenID implements Driver
     async disconnect(): Promise<void>
     {
         this.#clientConfiguration = undefined;
+
+        this.#cacheManager.stop();
     }
 
     async getLoginUrl(origin: string): Promise<string>
@@ -58,18 +79,26 @@ export default class OpenID implements Driver
         const redirect_uri = new URL(this.#providerConfiguration.redirectPath, origin).href;
         const scope = 'openid profile email';
 
-        const code_challenge = await calculatePKCECodeChallenge(this.#codeVerifier);
+        const codeVerifier = randomPKCECodeVerifier();
+        const code_challenge = await calculatePKCECodeChallenge(codeVerifier);
         const code_challenge_method = 'S256';
+
+        const payload = this.#createPayload();
+        const state = this.#calculateState(payload);
 
         const parameters: Record<string, string> = {
             redirect_uri,
             scope,
             code_challenge,
-            code_challenge_method
+            code_challenge_method,
+
+            state
         };
 
         const clientConfiguration = this.#getClientConfiguration();
         const redirectTo = await buildAuthorizationUrlWithPAR(clientConfiguration, parameters);
+
+        this.#cacheManager.set(state, codeVerifier);
 
         return redirectTo.href;
     }
@@ -84,8 +113,15 @@ export default class OpenID implements Driver
             url.searchParams.set(key, String(value));
         }
 
+        const state = this.#getState(data);
+        const payload = this.#getPayload(state);
+
+        const codeVerifier = this.#cacheManager.get(state);
+
         const tokens = await authorizationCodeGrant(clientConfiguration, url, {
-            pkceCodeVerifier: this.#codeVerifier,
+            pkceCodeVerifier: codeVerifier,
+            expectedNonce: payload.nonce,
+            expectedState: state,
             idTokenExpected: true
         });
 
@@ -174,5 +210,67 @@ export default class OpenID implements Driver
         }
 
         return claims;
+    }
+
+    #createPayload(): Payload
+    {
+        return {
+            jti: crypto.randomUUID(),
+            nonce: randomNonce(),
+            iat: Date.now(),
+            exp: Date.now() + TTL
+        };
+    }
+
+    #calculateState(payload: Payload): string
+    {
+        const data = JSON.stringify(payload);
+
+        const value = Buffer.from(data).toString(ENCODING);
+        const signature = crypto.createHmac(HMAC_ALGORITHM, this.#key).update(data).digest(ENCODING);
+
+        return `${value}.${signature}`;
+    }
+
+    #getPayload(state: string): Payload
+    {
+        const [value, signature] = state.split('.');
+
+        const decodedValue = Buffer.from(value, ENCODING).toString('utf8');
+        const decodedSignature = Buffer.from(signature, ENCODING);
+
+        const check = Buffer.from(crypto.createHmac(HMAC_ALGORITHM, this.#key).update(decodedValue).digest());
+
+        if (crypto.timingSafeEqual(check, decodedSignature) === false)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        const payload: Payload = JSON.parse(decodedValue);
+        const now = Date.now();
+
+        if (payload.iat > now || payload.exp < now)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        return payload;
+    }
+
+    #getState(data: Record<string, unknown>): string
+    {
+        const state = data.state;
+
+        if (typeof state !== 'string')
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        if (state.includes('.') === false)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        return state;
     }
 }
