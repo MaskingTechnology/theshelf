@@ -19,12 +19,12 @@
     "@types/node": "24.10.4",
     "@types/sanitize-html": "2.16.0",
     "@types/web-push": "3.6.4",
-    "@vitest/coverage-v8": "4.0.16",
+    "@vitest/coverage-v8": "4.0.17",
     "eslint": "^9.39.2",
     "eslint-plugin-sonarjs": "3.0.5",
     "rimraf": "6.1.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.51.0",
-    "vitest": "4.0.16"
+    "typescript-eslint": "8.53.0",
+    "vitest": "4.0.17"
   }
 }
