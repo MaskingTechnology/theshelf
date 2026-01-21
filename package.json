@@ -12,7 +12,15 @@
     "version": "npm version $VERSION --no-git-tag-version --workspaces"
   },
   "workspaces": [
-    "packages/**/*"
+    "packages/authentication",
+    "packages/database",
+    "packages/eventbroker",
+    "packages/filestore",
+    "packages/http",
+    "packages/logging",
+    "packages/notification",
+    "packages/validation",
+    "packages/connection"
   ],
   "devDependencies": {
     "@eslint/js": "9.39.2",
