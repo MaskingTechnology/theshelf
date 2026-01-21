@@ -1,2 +1,2 @@
 
-export * from './driver.mock.js';
+export * from './Driver.mock.js';
