@@ -27,13 +27,3 @@ export const QueryOperators =
     STARTS_WITH: 'STARTS_WITH', // "LIKE%"
     ENDS_WITH: 'ENDS_WITH' // "%LIKE"
 } as const;
-
-export const ConnectionStates =
-{
-    DISCONNECTED: 'DISCONNECTED',
-    DISCONNECTING: 'DISCONNECTING',
-    CONNECTING: 'CONNECTING',
-    CONNECTED: 'CONNECTED'
-} as const;
-
-export type ConnectionState = typeof ConnectionStates[keyof typeof ConnectionStates];
