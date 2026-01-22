@@ -30,7 +30,7 @@ describe('ConnectionManager', () =>
 
             expect(logDriver.logs).toHaveLength(0);
 
-            // Should detect parallell connect requests
+            // Should detect parallel connect requests
 
             const promise2 = manager.connect();
 
@@ -76,7 +76,7 @@ describe('ConnectionManager', () =>
             expect(logDriver.logs[1].message).toEqual('[CONNECTION][Disconnect Fixture] monitoring started');
             expect(logDriver.logs[2].message).toEqual('[CONNECTION][Disconnect Fixture] monitoring stopped');
 
-            // Should detect parallell disconnect requests
+            // Should detect parallel disconnect requests
 
             const promise2 = manager.disconnect();
 
@@ -105,7 +105,7 @@ describe('ConnectionManager', () =>
 
     describe('monitoring', () =>
     {
-        it('should periodicly check the connection and try to restore when lost', async () =>
+        it('should periodically check the connection and try to restore when lost', async () =>
         {
             const [manager, connectable] = await MANAGERS.forMonitoring();
 
