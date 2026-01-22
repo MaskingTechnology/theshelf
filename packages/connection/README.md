@@ -1,5 +1,4 @@
 
-
 # Connection | The Shelf
 
 The connection package provides connection resilience for other TheShelf packages by monitoring and restoring connections to external services. It wraps a connectable (such as a database or event broker) and manages its connection lifecycle, ensuring robust error handling and automatic recovery.
