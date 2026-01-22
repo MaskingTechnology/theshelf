@@ -1,5 +1,5 @@
 {
-  "name": "@theshelf/database",
+  "name": "@theshelf/connection",
   "private": false,
   "version": "0.3.1",
   "type": "module",
@@ -21,8 +21,7 @@
   ],
   "types": "dist/index.d.ts",
   "exports": "./dist/index.js",
-  "dependencies": {
-    "mongodb": "7.0.0",
-    "sanitize-html": "2.17.0"
+  "peerDependencies": {
+    "@theshelf/logging": "^0.3.0"
   }
 }

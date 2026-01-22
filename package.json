@@ -1,7 +1,7 @@
 {
   "name": "theshelf",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.3.1",
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
@@ -12,7 +12,15 @@
     "version": "npm version $VERSION --no-git-tag-version --workspaces"
   },
   "workspaces": [
-    "packages/**/*"
+    "packages/authentication",
+    "packages/database",
+    "packages/eventbroker",
+    "packages/filestore",
+    "packages/http",
+    "packages/logging",
+    "packages/notification",
+    "packages/validation",
+    "packages/connection"
   ],
   "devDependencies": {
     "@eslint/js": "9.39.2",
