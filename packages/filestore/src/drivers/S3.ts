@@ -36,7 +36,9 @@ export default class S3 implements Driver
         {
             this.#client = new S3Client(this.#configuration);
 
-            const buckets = await this.#client.send(new ListBucketsCommand({}));
+            const listBuckets = new ListBucketsCommand({});
+
+            const buckets = await this.#client.send(listBuckets);
             const bucketExists = buckets.Buckets?.some(bucket => bucket.Name === this.#bucketName);
 
             if (bucketExists !== true)
@@ -84,7 +86,9 @@ export default class S3 implements Driver
 
         try
         {
-            await client.send(new HeadObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const headCommand = new HeadObjectCommand({ Bucket: this.#bucketName, Key: path });
+
+            await client.send(headCommand);
 
             return true;
         }
@@ -107,7 +111,9 @@ export default class S3 implements Driver
 
         try
         {
-            await client.send(new PutObjectCommand({ Bucket: this.#bucketName, Key: path, Body: data }));
+            const putCommand = new PutObjectCommand({ Bucket: this.#bucketName, Key: path, Body: data });
+
+            await client.send(putCommand);
         }
         catch (error)
         {
@@ -121,7 +127,9 @@ export default class S3 implements Driver
 
         try
         {
-            const response = await client.send(new GetObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const getCommand = new GetObjectCommand({ Bucket: this.#bucketName, Key: path });
+
+            const response = await client.send(getCommand);
             const body = response.Body;
 
             if (body === undefined)
@@ -145,7 +153,9 @@ export default class S3 implements Driver
 
         try
         {
-            await client.send(new DeleteObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const deleteCommand = new DeleteObjectCommand({ Bucket: this.#bucketName, Key: path });
+
+            await client.send(deleteCommand);
         }
         catch (error)
         {
