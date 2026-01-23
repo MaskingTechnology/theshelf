@@ -1,7 +1,7 @@
 {
   "name": "theshelf",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
@@ -9,7 +9,7 @@
     "test": "npm run test --workspaces --if-present",
     "review": "npm run review --workspaces",
     "publish": "npm publish --workspaces",
-    "version": "npm version $VERSION --no-git-tag-version --workspaces"
+    "version": "npm version $VERSION --no-git-tag-version --workspaces --include-workspace-root=true"
   },
   "workspaces": [
     "packages/authentication",
