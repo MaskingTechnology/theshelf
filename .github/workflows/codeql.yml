@@ -1,12 +1,6 @@
 name: "CodeQL"
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'packages/**'
-      - '!packages/**/node_modules/**'
-      - '!packages/**/dist/**'
   pull_request:
     branches: [ "main" ]
     paths:

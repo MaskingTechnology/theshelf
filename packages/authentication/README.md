@@ -20,17 +20,16 @@ npm install @theshelf/authentication
 
 ## Drivers
 
-Currently, there are two drivers available:
+Currently, there is one driver available:
 
-* **OpenID** - persistent document storage.
-* **Google** - authentication via Google accounts
+* **OpenID** - general openid implementation.
 
 ## How to use
 
 The basic set up looks like this.
 
 ```ts
-import IdentityProvider, { OpenIDDriver | GoogleDriver as SelectedDriver } from '@theshelf/authentication';
+import IdentityProvider, { OpenIDDriver as SelectedDriver } from '@theshelf/authentication';
 
 const driver = new SelectedDriver(/* configuration */);
 const identityProvider = new IdentityProvider(driver);
@@ -49,19 +48,6 @@ type OpenIDConfiguration = {
     clientSecret: string; // provided by the provider
     redirectPath: string; // e.g. "https://application.com/login"
     allowInsecureRequests: boolean; // only set to false in development
-};
-```
-
-#### Google driver
-
-```ts
-type GoogleConfiguration = {
-    issuer: string; // "https://accounts.google.com"
-    clientId: string; // provided by Google
-    clientSecret: string; // provided by Google
-    redirectPath: string; // e.g. "https://application.com/login"
-    accessType: string; // "online" | "offline"
-    organizationDomain: string; // "application.com"
 };
 ```
 
