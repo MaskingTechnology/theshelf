@@ -34,12 +34,13 @@ type Payload = {
 
 const TTL = 30_000;
 const HMAC_ALGORITHM = 'sha512';
-const ENCODING = 'base64url';
+const URL_ENCODING = 'base64url';
 
 export default class OpenID implements Driver
 {
     readonly #providerConfiguration: OpenIDConfiguration;
     readonly #key: string;
+
     #clientConfiguration?: Configuration;
 
     readonly #cacheManager = new CacheManager();
@@ -91,7 +92,6 @@ export default class OpenID implements Driver
             scope,
             code_challenge,
             code_challenge_method,
-
             state
         };
 
@@ -226,8 +226,8 @@ export default class OpenID implements Driver
     {
         const data = JSON.stringify(payload);
 
-        const value = Buffer.from(data).toString(ENCODING);
-        const signature = crypto.createHmac(HMAC_ALGORITHM, this.#key).update(data).digest(ENCODING);
+        const value = Buffer.from(data).toString(URL_ENCODING);
+        const signature = crypto.createHmac(HMAC_ALGORITHM, this.#key).update(data).digest(URL_ENCODING);
 
         return `${value}.${signature}`;
     }
@@ -236,8 +236,8 @@ export default class OpenID implements Driver
     {
         const [value, signature] = state.split('.');
 
-        const decodedValue = Buffer.from(value, ENCODING).toString('utf8');
-        const decodedSignature = Buffer.from(signature, ENCODING);
+        const decodedValue = Buffer.from(value, URL_ENCODING).toString('utf8');
+        const decodedSignature = Buffer.from(signature, URL_ENCODING);
 
         const check = Buffer.from(crypto.createHmac(HMAC_ALGORITHM, this.#key).update(decodedValue).digest());
 
