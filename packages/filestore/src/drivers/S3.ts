@@ -39,9 +39,14 @@ export default class S3 implements Driver
             const buckets = await this.#client.send(new ListBucketsCommand({}));
             const bucketExists = buckets.Buckets?.some(bucket => bucket.Name === this.#bucketName);
 
-            if (bucketExists === true) return;
+            if (bucketExists !== true)
+            {
+                const createBucket = new CreateBucketCommand({ Bucket: this.#bucketName });
 
-            await this.#client.send(new CreateBucketCommand({ Bucket: this.#bucketName }));
+                await this.#client.send(createBucket);
+            }
+
+            this.#connected = true;
         }
         catch (error)
         {
@@ -49,8 +54,6 @@ export default class S3 implements Driver
 
             throw new FileStoreError('File store connection failed: ' + message);
         }
-
-        this.#connected = true;
     }
 
     async disconnect(): Promise<void>
@@ -60,9 +63,19 @@ export default class S3 implements Driver
             throw new NotConnected();
         }
 
-        this.#client.destroy();
-        this.#client = undefined;
-        this.#connected = false;
+        try
+        {
+            this.#client.destroy();
+
+            this.#client = undefined;
+            this.#connected = false;
+        }
+        catch (error)
+        {
+            const message = error instanceof Error ? error.message : UNKNOWN_ERROR;
+
+            throw new FileStoreError('File store disconnection failed: ' + message);
+        }
     }
 
     async hasFile(path: string): Promise<boolean>
