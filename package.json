@@ -1,7 +1,7 @@
 {
   "name": "theshelf",
   "private": true,
-  "version": "0.3.2",
+  "version": "0.3.3",
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
@@ -27,12 +27,12 @@
     "@types/node": "24.10.4",
     "@types/sanitize-html": "2.16.0",
     "@types/web-push": "3.6.4",
-    "@vitest/coverage-v8": "4.0.16",
+    "@vitest/coverage-v8": "4.0.18",
     "eslint": "^9.39.2",
-    "eslint-plugin-sonarjs": "3.0.5",
+    "eslint-plugin-sonarjs": "3.0.6",
     "rimraf": "6.1.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.51.0",
-    "vitest": "4.0.16"
+    "typescript-eslint": "8.54.0",
+    "vitest": "4.0.18"
   }
 }
