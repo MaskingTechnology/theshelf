@@ -11,13 +11,8 @@ import crypto from 'node:crypto';
 
 import type { Configuration, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
 
-import type { Driver } from '../definitions/interfaces.js';
-import type { Identity, Session } from '../definitions/types.js';
-import LoginFailed from '../errors/LoginFailed.js';
-import RefreshFailed from '../errors/RefreshFailed.js';
-import NotConnected from '../errors/NotConnected.js';
-
-import generateId from '../utils/generateId.js';
+import { LoginFailed, RefreshFailed, NotConnected, generateId } from '@theshelf/authentication';
+import type { Driver, Identity, Session } from '@theshelf/authentication';
 
 type GoogleConfiguration = {
     issuer: string;

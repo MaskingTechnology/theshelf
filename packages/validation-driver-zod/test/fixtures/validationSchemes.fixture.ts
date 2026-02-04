@@ -1,5 +1,5 @@
 
-import type { ValidationSchema } from '../../src/index.js';
+import type { ValidationSchema } from '../../../validation/src/index.js';
 
 import { VALUES } from './values.fixture.js';
 

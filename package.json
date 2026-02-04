@@ -21,7 +21,13 @@
     "packages/http",
     "packages/notification",
     "packages/validation",
-    "packages/connection"
+    "packages/connection",
+    "packages/authentication-driver-openid",
+    "packages/database-driver-mongodb",
+    "packages/filestore-driver-s3",
+    "packages/logging-driver-database",
+    "packages/notification-driver-webpush",
+    "packages/validation-driver-zod"
   ],
   "devDependencies": {
     "@eslint/js": "9.39.2",

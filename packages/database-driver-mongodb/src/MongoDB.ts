@@ -4,9 +4,17 @@
 import type { Collection, Db, Document, Filter, Sort } from 'mongodb';
 import { MongoClient } from 'mongodb';
 
-import { ID, LogicalOperators, QueryOperators, SortDirections } from '../definitions/constants.js';
-import type { Driver } from '../definitions/interfaces.js';
+import {
+    ID,
+    LogicalOperators,
+    QueryOperators,
+    SortDirections,
+    DatabaseError,
+    NotConnected
+} from '@theshelf/database';
+
 import type {
+    Driver,
     QueryMultiExpressionStatement,
     QueryOperator,
     QuerySingleExpressionStatement,
@@ -17,10 +25,7 @@ import type {
     RecordSort,
     RecordType,
     RecordValue
-} from '../definitions/types.js';
-
-import DatabaseError from '../errors/DatabaseError.js';
-import NotConnected from '../errors/NotConnected.js';
+} from '@theshelf/database';
 
 const UNKNOWN_ERROR = 'Unknown error';
 

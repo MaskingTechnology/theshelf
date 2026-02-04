@@ -1,5 +1,5 @@
 {
-  "name": "@theshelf/logging",
+  "name": "@theshelf/authentication-driver-openid",
   "private": false,
   "version": "0.3.2",
   "type": "module",
@@ -9,8 +9,6 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "test": "vitest run",
-    "test-coverage": "vitest run --coverage",
     "lint": "eslint",
     "review": "npm run build && npm run lint",
     "prepublishOnly": "npm run clean && npm run build"
@@ -20,5 +18,11 @@
     "dist"
   ],
   "types": "dist/index.d.ts",
-  "exports": "./dist/index.js"
+  "exports": "./dist/index.js",
+  "dependencies": {
+    "openid-client": "6.8.1"
+  },
+  "peerDependencies": {
+    "@theshelf/authentication": "^0.3.0"
+  }
 }

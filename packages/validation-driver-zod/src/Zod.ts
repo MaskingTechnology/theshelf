@@ -2,11 +2,8 @@
 import { z } from 'zod';
 import type { $ZodIssue, $ZodIssueUnrecognizedKeys } from 'zod/v4/core';
 
-import ValidationResult from '../definitions/ValidationResult.js';
-import { FieldTypes, MAX_EMAIL_LENGTH, MAX_URL_LENGTH } from '../definitions/constants.js';
-import type { Driver } from '../definitions/interfaces.js';
-import type { Message, Validation, ValidationSchema, ValidationTypes } from '../definitions/types.js';
-import UnknownValidator from '../errors/UnknownValidator.js';
+import { ValidationResult, FieldTypes, MAX_EMAIL_LENGTH, MAX_URL_LENGTH, UnknownValidator } from '@theshelf/validation';
+import type { Driver, Message, Validation, ValidationSchema, ValidationTypes } from '@theshelf/validation';
 
 type ValidatorFunction = (value: ValidationTypes[keyof ValidationTypes]) => z.ZodTypeAny;
 

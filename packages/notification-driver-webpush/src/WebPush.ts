@@ -2,9 +2,8 @@
 import type { PushSubscription } from 'web-push';
 import webpush from 'web-push';
 
-import type { Driver } from '../definitions/interfaces.js';
-import NotConnected from '../errors/NotConnected.js';
-import SubscriptionNotFound from '../errors/SubscriptionNotFound.js';
+import { NotConnected, SubscriptionNotFound } from '@theshelf/notification';
+import type { Driver } from '@theshelf/notification';
 
 type WebPushConfiguration = { // Vapid details
     subject: string;

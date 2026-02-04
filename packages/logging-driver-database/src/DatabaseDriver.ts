@@ -2,8 +2,7 @@
 import type Database from '@theshelf/database';
 import type { RecordType } from '@theshelf/database';
 
-import type { Driver } from '../definitions/interfaces.js';
-import type { Log } from '../definitions/types.js';
+import type { Driver, Log } from '@theshelf/logging';
 
 export default class DatabaseDriver implements Driver
 {

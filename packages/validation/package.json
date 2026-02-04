@@ -9,10 +9,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "test": "vitest run",
-    "test-coverage": "vitest run --coverage",
     "lint": "eslint",
-    "review": "npm run build && npm run lint && npm run test",
+    "review": "npm run build && npm run lint",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "files": [
@@ -21,9 +19,6 @@
   ],
   "types": "dist/index.d.ts",
   "exports": "./dist/index.js",
-  "dependencies": {
-    "zod": "4.1.12"
-  },
   "peerDependencies": {
     "@theshelf/logging": "^0.3.0"
   }

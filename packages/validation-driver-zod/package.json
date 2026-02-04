@@ -1,5 +1,5 @@
 {
-  "name": "@theshelf/logging",
+  "name": "@theshelf/validation-driver-zod",
   "private": false,
   "version": "0.3.2",
   "type": "module",
@@ -12,7 +12,7 @@
     "test": "vitest run",
     "test-coverage": "vitest run --coverage",
     "lint": "eslint",
-    "review": "npm run build && npm run lint",
+    "review": "npm run build && npm run lint && npm run test",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "files": [
@@ -20,5 +20,11 @@
     "dist"
   ],
   "types": "dist/index.d.ts",
-  "exports": "./dist/index.js"
+  "exports": "./dist/index.js",
+  "dependencies": {
+    "zod": "4.1.12"
+  },
+  "peerDependencies": {
+    "@theshelf/validation": "^0.3.0"
+  }
 }
