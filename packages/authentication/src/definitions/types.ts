@@ -10,6 +10,7 @@ type Identity = {
 type Token = string;
 
 type Session = {
+    id: string;
     key?: string;
     requester?: unknown;
     identity: Identity;

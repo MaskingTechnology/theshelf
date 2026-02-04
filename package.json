@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
+    "clean": "npm run clean --workspaces",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces --if-present",
     "review": "npm run review --workspaces",
@@ -12,12 +13,12 @@
     "version": "npm version $VERSION --no-git-tag-version --workspaces --include-workspace-root=true"
   },
   "workspaces": [
+    "packages/logging",
     "packages/authentication",
     "packages/database",
     "packages/eventbroker",
     "packages/filestore",
     "packages/http",
-    "packages/logging",
     "packages/notification",
     "packages/validation",
     "packages/connection"

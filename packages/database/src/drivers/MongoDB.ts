@@ -67,6 +67,8 @@ export default class MongoDB implements Driver
         this.#databaseName = configuration.databaseName;
     }
 
+    get name(): string { return MongoDB.name; }
+
     get connected(): boolean { return this.#connected; }
 
     async connect(): Promise<void>

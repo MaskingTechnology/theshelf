@@ -23,6 +23,8 @@ export default class WebPush implements Driver
         this.#configuration = configuration;
     }
 
+    get name(): string { return WebPush.name; }
+
     get connected(): boolean
     {
         return this.#subscriptions !== undefined;

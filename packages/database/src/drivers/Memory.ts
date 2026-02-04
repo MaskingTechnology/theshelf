@@ -40,6 +40,8 @@ export default class Memory implements Driver
     #connected = false;
     #recordId = 0;
 
+    get name(): string { return Memory.name; }
+
     get connected(): boolean { return this.#connected; }
 
     get memory(): Map<string, RecordData[]>

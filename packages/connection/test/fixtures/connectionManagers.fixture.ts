@@ -13,7 +13,7 @@ async function forConnect(): Promise<ReturnType>
     const connectable = new ConnectableMock(30, 0);
     const monitoringTimeout = 10000;
 
-    const manager = new ConnectionManager({ name, connectable, logger, monitoringTimeout });
+    const manager = new ConnectionManager({ name, connectable, monitoringTimeout }, logger);
 
     return [manager, connectable];
 }
@@ -24,7 +24,7 @@ async function forDisconnect(): Promise<ReturnType>
     const connectable = new ConnectableMock(0, 30);
     const monitoringTimeout = 10000;
 
-    const manager = new ConnectionManager({ name, connectable, logger, monitoringTimeout });
+    const manager = new ConnectionManager({ name, connectable, monitoringTimeout }, logger);
     await manager.connect();
 
     return [manager, connectable];
@@ -36,7 +36,7 @@ async function forMonitoring(): Promise<ReturnType>
     const connectable = new ConnectableMock(30, 0);
     const monitoringTimeout = 10;
 
-    const manager = new ConnectionManager({ name, connectable, logger, monitoringTimeout });
+    const manager = new ConnectionManager({ name, connectable, monitoringTimeout }, logger);
 
     return [manager, connectable];
 }

@@ -1,6 +1,7 @@
 
 export interface Driver
 {
+    get name(): string;
     get connected(): boolean;
 
     connect(): Promise<void>;

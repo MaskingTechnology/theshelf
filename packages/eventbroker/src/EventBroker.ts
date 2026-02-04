@@ -1,14 +1,23 @@
 
+import type Logger from '@theshelf/logging';
+
 import type { Driver } from './definitions/interfaces.js';
 import type { Publication, Subscription } from './definitions/types.js';
+import NotConnected from './errors/NotConnected.js';
 
-export default class EventBroker implements Driver
+export default class EventBroker
 {
     readonly #driver: Driver;
 
-    constructor(driver: Driver)
+    readonly #logger?: Logger;
+    readonly #logPrefix: string;
+
+    constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
+
+        this.#logger = logger?.for(EventBroker.name);
+        this.#logPrefix = `${this.#driver.name} ->`;
     }
 
     get connected(): boolean
@@ -16,28 +25,107 @@ export default class EventBroker implements Driver
         return this.#driver.connected;
     }
 
-    connect(): Promise<void>
+    async connect(): Promise<void>
     {
-        return this.#driver.connect();
+        if (this.connected === true)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        
+        try
+        {
+            await this.#driver.connect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+
+            throw error;
+        }
     }
 
-    disconnect(): Promise<void>
+    async disconnect(): Promise<void>
     {
-        return this.#driver.disconnect();
+        if (this.connected === false)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        
+        try
+        {
+            return await this.#driver.disconnect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+
+            throw error;
+        }
     }
 
-    publish<T>(publication: Publication<T>): Promise<void>
+    async publish<T>(publication: Publication<T>): Promise<void>
     {
-        return this.#driver.publish(publication);
+        this.#logger?.debug(this.#logPrefix, 'Publishing to', publication.channel, '->', publication.name);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.publish(publication);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Publish to', publication.channel, '->', publication.name, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    subscribe<T>(subscription: Subscription<T>): Promise<void>
+    async subscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        return this.#driver.subscribe(subscription);
+        this.#logger?.debug(this.#logPrefix, 'Subscribing to', subscription.channel, '->', subscription.name);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.subscribe(subscription);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Subscribe to', subscription.channel, '->', subscription.name, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    unsubscribe<T>(subscription: Subscription<T>): Promise<void>
+    async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        return this.#driver.unsubscribe(subscription);
+        this.#logger?.debug(this.#logPrefix, 'Unsubscribing from', subscription.channel, '->', subscription.name);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.unsubscribe(subscription);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Unsubscribe from', subscription.channel, '->', subscription.name, 'failed with error', error);
+
+            throw error;
+        }
+    }
+
+    #validateConnection(): void
+    {
+        if (this.connected === false)
+        {
+            throw new NotConnected();
+        }
     }
 }

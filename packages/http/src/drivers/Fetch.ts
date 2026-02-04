@@ -4,6 +4,8 @@ import type { Driver } from '../definitions/interfaces.js';
 
 export default class Fetch implements Driver
 {
+    get name(): string { return Fetch.name; }
+
     get(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
         return fetch(url, { method: HttpMethods.GET, headers });

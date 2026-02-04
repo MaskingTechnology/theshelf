@@ -31,6 +31,8 @@ export default class Zod implements Driver
         this.#validations.set(FieldTypes.ENUM, (value: ValidationTypes['ENUM']) => this.#validateEnum(value));
     }
 
+    get name(): string { return Zod.name; }
+
     validate(data: unknown, schema: ValidationSchema): ValidationResult
     {
         const validator = this.#buildValidator(schema);

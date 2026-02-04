@@ -18,11 +18,11 @@ describe('Logger', () =>
         {
             logger.logLevel = LogLevels.DEBUG;
 
-            await logger.logDebug('debug');
-            await logger.logInfo('info');
-            await logger.logWarn('warn');
-            await logger.logError('error');
-            await logger.logFatal('fatal');
+            await logger.debug('debug');
+            await logger.info('info');
+            await logger.warn('warn');
+            await logger.error('error');
+            await logger.fatal('fatal');
 
             const logs = driver.logs;
 
@@ -38,11 +38,11 @@ describe('Logger', () =>
         {
             logger.logLevel = LogLevels.INFO;
 
-            await logger.logDebug('debug');
-            await logger.logInfo('info');
-            await logger.logWarn('warn');
-            await logger.logError('error');
-            await logger.logFatal('fatal');
+            await logger.debug('debug');
+            await logger.info('info');
+            await logger.warn('warn');
+            await logger.error('error');
+            await logger.fatal('fatal');
 
             const logs = driver.logs;
 
@@ -57,11 +57,11 @@ describe('Logger', () =>
         {
             logger.logLevel = LogLevels.WARN;
 
-            await logger.logDebug('debug');
-            await logger.logInfo('info');
-            await logger.logWarn('warn');
-            await logger.logError('error');
-            await logger.logFatal('fatal');
+            await logger.debug('debug');
+            await logger.info('info');
+            await logger.warn('warn');
+            await logger.error('error');
+            await logger.fatal('fatal');
 
             const logs = driver.logs;
 
@@ -75,11 +75,11 @@ describe('Logger', () =>
         {
             logger.logLevel = LogLevels.ERROR;
 
-            await logger.logDebug('debug');
-            await logger.logInfo('info');
-            await logger.logWarn('warn');
-            await logger.logError('error');
-            await logger.logFatal('fatal');
+            await logger.debug('debug');
+            await logger.info('info');
+            await logger.warn('warn');
+            await logger.error('error');
+            await logger.fatal('fatal');
 
             const logs = driver.logs;
 
@@ -92,11 +92,11 @@ describe('Logger', () =>
         {
             logger.logLevel = LogLevels.FATAL;
 
-            await logger.logDebug('debug');
-            await logger.logInfo('info');
-            await logger.logWarn('warn');
-            await logger.logError('error');
-            await logger.logFatal('fatal');
+            await logger.debug('debug');
+            await logger.info('info');
+            await logger.warn('warn');
+            await logger.error('error');
+            await logger.fatal('fatal');
 
             const logs = driver.logs;
 
@@ -114,9 +114,9 @@ describe('Logger', () =>
 
         it('should convert primitive values', async () =>
         {
-            await logger.logInfo(VALUES.TEXT);
-            await logger.logInfo(VALUES.BOOLEAN);
-            await logger.logInfo(VALUES.NUMBER);
+            await logger.info(VALUES.TEXT);
+            await logger.info(VALUES.BOOLEAN);
+            await logger.info(VALUES.NUMBER);
 
             const logs = driver.logs;
 
@@ -128,8 +128,8 @@ describe('Logger', () =>
 
         it('should convert no values', async () =>
         {
-            await logger.logInfo(VALUES.UNDEFINED);
-            await logger.logInfo(VALUES.NULL);
+            await logger.info(VALUES.UNDEFINED);
+            await logger.info(VALUES.NULL);
 
             const logs = driver.logs;
 
@@ -140,7 +140,7 @@ describe('Logger', () =>
 
         it('should convert a function value', async () =>
         {
-            await logger.logInfo(VALUES.FUNCTION);
+            await logger.info(VALUES.FUNCTION);
 
             const logs = driver.logs;
             
@@ -150,7 +150,7 @@ describe('Logger', () =>
 
         it('should convert an array value', async () =>
         {
-            await logger.logInfo(VALUES.ARRAY);
+            await logger.info(VALUES.ARRAY);
 
             const logs = driver.logs;
             
@@ -160,7 +160,7 @@ describe('Logger', () =>
 
         it('should convert an object value', async () =>
         {
-            await logger.logInfo(VALUES.OBJECT);
+            await logger.info(VALUES.OBJECT);
 
             const logs = driver.logs;
             
@@ -170,8 +170,8 @@ describe('Logger', () =>
 
         it('should convert an error value', async () =>
         {
-            await logger.logInfo(VALUES.ERROR_STACK);
-            await logger.logInfo(VALUES.ERROR_MESSAGE);
+            await logger.info(VALUES.ERROR_STACK);
+            await logger.info(VALUES.ERROR_MESSAGE);
 
             const logs = driver.logs;
             

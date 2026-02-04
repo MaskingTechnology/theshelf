@@ -3,51 +3,40 @@ import type Database from '@theshelf/database';
 import type { RecordType } from '@theshelf/database';
 
 import type { Driver } from '../definitions/interfaces.js';
+import type { Log } from '../definitions/types.js';
 
 export default class DatabaseDriver implements Driver
 {
     readonly #database: Database;
     readonly #recordType: RecordType;
+    readonly #backup?: Driver;
 
-    constructor(database: Database, recordType: RecordType)
+    constructor(database: Database, recordType: RecordType, backup?: Driver)
     {
         this.#recordType = recordType;
         this.#database = database;
+        this.#backup = backup;
     }
 
-    logDebug(message: string): Promise<void>
+    async log(log: Log): Promise<void>
     {
-        return this.#logRecord('DEBUG', message);
+        return this.#database.connected
+            ? this.#logDatabase(log)
+            : this.#logBackup(log);
     }
 
-    logInfo(message: string): Promise<void>
+    async #logDatabase(log: Log): Promise<void>
     {
-        return this.#logRecord('INFO', message);
+        await this.#database.createRecord(this.#recordType, log);
     }
 
-    logWarn(message: string): Promise<void>
+    async #logBackup(log: Log): Promise<void>
     {
-        return this.#logRecord('WARN', message);
-    }
+        if (this.#backup === undefined)
+        {
+            return;
+        }
 
-    logError(message: string): Promise<void>
-    {
-        return this.#logRecord('ERROR', message);
-    }
-
-    logFatal(message: string): Promise<void>
-    {
-        return this.#logRecord('FATAL', message);
-    }
-
-    async #logRecord(level: string, message: string): Promise<void>
-    {
-        const data = {
-            timestamp: new Date().toISOString(),
-            level,
-            message
-        };
-
-        await this.#database.createRecord(this.#recordType, data);
+        await this.#backup.log(log);
     }
 }

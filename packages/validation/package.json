@@ -23,5 +23,8 @@
   "exports": "./dist/index.js",
   "dependencies": {
     "zod": "4.1.12"
+  },
+  "peerDependencies": {
+    "@theshelf/logging": "^0.3.0"
   }
 }

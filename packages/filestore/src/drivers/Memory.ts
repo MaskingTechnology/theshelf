@@ -10,6 +10,8 @@ export default class Memory implements Driver
 
     #connected = false;
 
+    get name(): string { return Memory.name; }
+
     get connected(): boolean { return this.#connected; }
 
     get files(): Map<string, Buffer>

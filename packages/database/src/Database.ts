@@ -1,16 +1,25 @@
 
+import type Logger from '@theshelf/logging';
+
 import sanitize from './utilities/sanitize.js';
 
 import type { Driver } from './definitions/interfaces.js';
 import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './definitions/types.js';
+import NotConnected from './errors/NotConnected.js';
 
-export default class Database implements Driver
+export default class Database
 {
     readonly #driver: Driver;
 
-    constructor(driver: Driver)
+    readonly #logger?: Logger;
+    readonly #logPrefix: string;
+
+    constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
+
+        this.#logger = logger?.for(Database.name);
+        this.#logPrefix = `${this.#driver.name} ->`;
     }
 
     get connected(): boolean
@@ -18,54 +27,185 @@ export default class Database implements Driver
         return this.#driver.connected;
     }
 
-    connect(): Promise<void>
+    async connect(): Promise<void>
     {
-        return this.#driver.connect();
+        if (this.connected === true)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        
+        try
+        {
+            await this.#driver.connect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+
+            throw error;
+        }
     }
 
-    disconnect(): Promise<void>
+    async disconnect(): Promise<void>
     {
-        return this.#driver.disconnect();
+        if (this.connected === false)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        
+        try
+        {
+            return await this.#driver.disconnect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+
+            throw error;
+        }
     }
 
-    createRecord(type: RecordType, data: RecordData): Promise<RecordId>
+    async createRecord(type: RecordType, data: RecordData): Promise<RecordId>
     {
-        const cleanData = sanitize(data);
+        this.#logger?.debug(this.#logPrefix, 'Creating record for type', type);
 
-        return this.#driver.createRecord(type, cleanData);
+        try
+        {
+            this.#validateConnection();
+        
+            const cleanData = sanitize(data);
+
+            return await this.#driver.createRecord(type, cleanData);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Create record for type', type, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
+    async readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
     {
-        return this.#driver.readRecord(type, query, fields, sort);
+        this.#logger?.debug(this.#logPrefix, 'Reading record for type', type);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.readRecord(type, query, fields, sort);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Read record for type', type, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
+    async searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
     {
-        return this.#driver.searchRecords(type, query, fields, sort, limit, offset);
+        this.#logger?.debug(this.#logPrefix, 'Searching record for type', type);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.searchRecords(type, query, fields, sort, limit, offset);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Search record for type', type, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
-        const cleanData = sanitize(data);
+        this.#logger?.debug(this.#logPrefix, 'Updating record for type', type);
 
-        return this.#driver.updateRecord(type, query, cleanData);
+        try
+        {
+            this.#validateConnection();
+
+            const cleanData = sanitize(data);
+        
+            return await this.#driver.updateRecord(type, query, cleanData);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Update record for type', type, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
-        const cleanData = sanitize(data);
+        this.#logger?.debug(this.#logPrefix, 'Updating records for type', type);
 
-        return this.#driver.updateRecords(type, query, cleanData);
+        try
+        {
+            this.#validateConnection();
+
+            const cleanData = sanitize(data);
+        
+            return await this.#driver.updateRecords(type, query, cleanData);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Update records for type', type, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    deleteRecord(type: RecordType, query: RecordQuery): Promise<number>
+    async deleteRecord(type: RecordType, query: RecordQuery): Promise<number>
     {
-        return this.#driver.deleteRecord(type, query);
+        this.#logger?.debug(this.#logPrefix, 'Deleting record for type', type);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.deleteRecord(type, query);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Delete record for type', type, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    deleteRecords(type: RecordType, query: RecordQuery): Promise<number>
+    async deleteRecords(type: RecordType, query: RecordQuery): Promise<number>
     {
-        return this.#driver.deleteRecords(type, query);
+        this.#logger?.debug(this.#logPrefix, 'Deleting records for type', type);
+
+        try
+        {
+            this.#validateConnection();
+        
+            return await this.#driver.deleteRecords(type, query);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Delete records for type', type, 'failed with error', error);
+
+            throw error;
+        }
+    }
+
+    #validateConnection(): void
+    {
+        if (this.connected === false)
+        {
+            throw new NotConnected();
+        }
     }
 }

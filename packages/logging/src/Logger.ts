@@ -2,16 +2,19 @@
 import { LogLevels } from './definitions/constants.js';
 import type { LogLevel } from './definitions/constants.js';
 import type { Driver } from './definitions/interfaces.js';
+import type { Log } from './definitions/types.js';
 
-export default class Logger implements Driver
+export default class Logger
 {
     readonly #driver: Driver;
+    readonly #source: string;
 
     #logLevel: LogLevel = LogLevels.DEBUG;
 
-    constructor(driver: Driver)
+    constructor(driver: Driver, source = 'Unknown')
     {
         this.#driver = driver;
+        this.#source = source;
     }
 
     set logLevel(level: LogLevel)
@@ -24,64 +27,88 @@ export default class Logger implements Driver
         return this.#logLevel;
     }
 
-    logDebug(...message: unknown[]): Promise<void>
+    for(source: string): Logger
+    {
+        const tracedSource = `${this.#source}.${source}`;
+
+        const logger = new Logger(this.#driver, tracedSource);
+        logger.logLevel = this.#logLevel;
+
+        return logger;
+    }
+
+    log(log: Log): Promise<void>
+    {
+        return this.#driver.log(log);
+    }
+
+    debug(...message: unknown[]): Promise<void>
     {
         if (this.#logLevel > LogLevels.DEBUG)
         {
             return Promise.resolve();
         }
 
-        const messageString = this.#createMessage(message);
+        const log = this.#createLog(LogLevels.DEBUG, message);
 
-        return this.#driver.logDebug(messageString);
+        return this.log(log);
     }
 
-    logInfo(...message: unknown[]): Promise<void>
+    info(...message: unknown[]): Promise<void>
     {
         if (this.#logLevel > LogLevels.INFO)
         {
             return Promise.resolve();
         }
 
-        const messageString = this.#createMessage(message);
+        const log = this.#createLog(LogLevels.INFO, message);
 
-        return this.#driver.logInfo(messageString);
+        return this.log(log);
     }
 
-    logWarn(...message: unknown[]): Promise<void>
+    warn(...message: unknown[]): Promise<void>
     {
         if (this.#logLevel > LogLevels.WARN)
         {
             return Promise.resolve();
         }
 
-        const messageString = this.#createMessage(message);
+        const log = this.#createLog(LogLevels.WARN, message);
 
-        return this.#driver.logWarn(messageString);
+        return this.log(log);
     }
 
-    logError(...message: unknown[]): Promise<void>
+    error(...message: unknown[]): Promise<void>
     {
         if (this.#logLevel > LogLevels.ERROR)
         {
             return Promise.resolve();
         }
 
-        const messageString = this.#createMessage(message);
+        const log = this.#createLog(LogLevels.ERROR, message);
 
-        return this.#driver.logError(messageString);
+        return this.log(log);
     }
 
-    logFatal(...message: unknown[]): Promise<void>
+    fatal(...message: unknown[]): Promise<void>
     {
-        const messageString = this.#createMessage(message);
+        const log = this.#createLog(LogLevels.FATAL, message);
 
-        return this.#driver.logFatal(messageString);
+        return this.log(log);
     }
 
-    #createMessage(message: unknown[]): string
+    #createLog(level: LogLevel, messages: unknown[]): Log
     {
-        return message.map(value => this.#interpretValue(value)).join(' ');
+        const timestamp = new Date().toISOString();
+        const source = this.#source;
+        const message = this.#createMessage(messages);
+
+        return { timestamp, level, source, message };
+    }
+
+    #createMessage(messages: unknown[]): string
+    {
+        return messages.map(message => this.#interpretValue(message)).join(' ');
     }
 
     #interpretValue(value: unknown): string

@@ -24,5 +24,8 @@
   "dependencies": {
     "mongodb": "7.0.0",
     "sanitize-html": "2.17.0"
+  },
+  "peerDependencies": {
+    "@theshelf/logging": "^0.3.0"
   }
 }

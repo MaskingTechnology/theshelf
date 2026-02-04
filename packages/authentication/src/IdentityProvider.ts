@@ -1,14 +1,23 @@
 
+import type Logger from '@theshelf/logging';
+
 import type { Driver } from './definitions/interfaces.js';
 import type { Session } from './definitions/types.js';
+import NotConnected from './errors/NotConnected.js';
 
-export default class IdentityProvider implements Driver
+export default class IdentityProvider
 {
     readonly #driver: Driver;
 
-    constructor(driver: Driver)
+    readonly #logger?: Logger;
+    readonly #logPrefix: string;
+
+    constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
+
+        this.#logger = logger?.for(IdentityProvider.name);
+        this.#logPrefix = `${this.#driver.name} ->`;
     }
 
     get connected(): boolean
@@ -16,33 +25,127 @@ export default class IdentityProvider implements Driver
         return this.#driver.connected;
     }
 
-    connect(): Promise<void>
+    async connect(): Promise<void>
     {
-        return this.#driver.connect();
+        if (this.connected === true)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        
+        try
+        {
+            await this.#driver.connect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+
+            throw error;
+        }
     }
 
-    disconnect(): Promise<void>
+    async disconnect(): Promise<void>
     {
-        return this.#driver.disconnect();
+        if (this.connected === false)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        
+        try
+        {
+            return await this.#driver.disconnect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+
+            throw error;
+        }
     }
 
-    getLoginUrl(origin: string): Promise<string>
+    async getLoginUrl(origin: string): Promise<string>
     {
-        return this.#driver.getLoginUrl(origin);
+        this.#logger?.debug(this.#logPrefix, 'Getting login URL for origin', origin);
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.getLoginUrl(origin);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Get login URL for origin', origin, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    login(origin: string, data: Record<string, unknown>): Promise<Session>
+    async login(origin: string, data: Record<string, unknown>): Promise<Session>
     {
-        return this.#driver.login(origin, data);
+        this.#logger?.debug(this.#logPrefix, 'Logging in');
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.login(origin, data);
+        }
+        catch (error)
+        {
+            // Do NOT log data, as it might contain sensitive information
+
+            this.#logger?.error(this.#logPrefix, 'Login for origin', origin, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    refresh(session: Session): Promise<Session>
+    async refresh(session: Session): Promise<Session>
     {
-        return this.#driver.refresh(session);
+        this.#logger?.debug(this.#logPrefix, 'Refreshing session');
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.refresh(session);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Refresh session for', session.id, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    logout(session: Session): Promise<void>
+    async logout(session: Session): Promise<void>
     {
-        return this.#driver.logout(session);
+        this.#logger?.debug(this.#logPrefix, 'Logging out');
+
+        try
+        {
+            this.#validateConnection();
+            
+            return await this.#driver.logout(session);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Logout session for', session.id, 'failed with error', error);
+
+            throw error;
+        }
+    }
+
+    #validateConnection(): void
+    {
+        if (this.connected === false)
+        {
+            throw new NotConnected();
+        }
     }
 }

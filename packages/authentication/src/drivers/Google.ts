@@ -17,6 +17,8 @@ import LoginFailed from '../errors/LoginFailed.js';
 import RefreshFailed from '../errors/RefreshFailed.js';
 import NotConnected from '../errors/NotConnected.js';
 
+import generateId from '../utils/generateId.js';
+
 type GoogleConfiguration = {
     issuer: string;
     clientId: string;
@@ -36,7 +38,7 @@ type Payload = {
 const SECRET = crypto.randomUUID() + crypto.randomUUID();
 const TTL = 30000;
 
-export default class OpenID implements Driver
+export default class Google implements Driver
 {
     readonly #providerConfiguration: GoogleConfiguration;
     #clientConfiguration?: Configuration;
@@ -47,6 +49,8 @@ export default class OpenID implements Driver
     {
         this.#providerConfiguration = configuration;
     }
+
+    get name(): string { return Google.name; }
 
     get connected(): boolean
     {
@@ -135,6 +139,7 @@ export default class OpenID implements Driver
         };
 
         return {
+            id: generateId(),
             identity: identity,
             accessToken: tokens.access_token,
             refreshToken: tokens.refresh_token,
@@ -156,6 +161,7 @@ export default class OpenID implements Driver
         const expires = claims.exp * 1000;
 
         return {
+            id: session.id,
             requester: session.requester,
             identity: session.identity,
             accessToken: tokens.access_token,

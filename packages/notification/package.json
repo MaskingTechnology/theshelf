@@ -23,5 +23,8 @@
   "exports": "./dist/index.js",
   "dependencies": {
     "web-push": "3.6.7"
+  },
+  "peerDependencies": {
+    "@theshelf/logging": "^0.3.0"
   }
 }

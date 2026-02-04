@@ -1,6 +1,8 @@
 
 export interface Driver
 {
+    get name(): string;
+    
     get(url: string, headers?: Record<string, string>): Promise<Response>;
 
     post(url: string, body: unknown, headers?: Record<string, string>): Promise<Response>;

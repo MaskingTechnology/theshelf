@@ -28,6 +28,8 @@ export default class S3 implements Driver
         this.#bucketName = configuration.bucketName;
     }
 
+    get name(): string { return S3.name; }
+
     get connected(): boolean { return this.#connected; }
 
     async connect(): Promise<void>

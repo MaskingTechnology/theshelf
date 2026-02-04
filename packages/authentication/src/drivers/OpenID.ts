@@ -9,9 +9,12 @@ import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResp
 
 import type { Driver } from '../definitions/interfaces.js';
 import type { Identity, Session } from '../definitions/types.js';
+
 import LoginFailed from '../errors/LoginFailed.js';
 import RefreshFailed from '../errors/RefreshFailed.js';
 import NotConnected from '../errors/NotConnected.js';
+
+import generateId from '../utils/generateId.js';
 
 type OpenIDConfiguration = {
     issuer: string;
@@ -32,6 +35,8 @@ export default class OpenID implements Driver
     {
         this.#providerConfiguration = configuration;
     }
+
+    get name(): string { return OpenID.name; }
 
     get connected(): boolean
     {
@@ -106,6 +111,7 @@ export default class OpenID implements Driver
         };
 
         return {
+            id: generateId(),
             identity: identity,
             accessToken: tokens.access_token,
             refreshToken: tokens.refresh_token,
@@ -127,6 +133,7 @@ export default class OpenID implements Driver
         const expires = claims.exp * 1000;
 
         return {
+            id: session.id,
             requester: session.requester,
             identity: session.identity,
             accessToken: tokens.access_token,

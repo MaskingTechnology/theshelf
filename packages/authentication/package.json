@@ -21,5 +21,8 @@
   "exports": "./dist/index.js",
   "dependencies": {
     "openid-client": "6.8.1"
+  },
+  "peerDependencies": {
+    "@theshelf/logging": "^0.3.0"
   }
 }

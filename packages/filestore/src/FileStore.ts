@@ -1,13 +1,22 @@
 
-import type { Driver } from './definitions/interfaces.js';
+import type Logger from '@theshelf/logging';
 
-export default class FileStore implements Driver
+import type { Driver } from './definitions/interfaces.js';
+import NotConnected from './errors/NotConnected.js';
+
+export default class FileStore
 {
     readonly #driver: Driver;
 
-    constructor(driver: Driver)
+    readonly #logger?: Logger;
+    readonly #logPrefix: string;
+
+    constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
+        
+        this.#logger = logger?.for(FileStore.name);
+        this.#logPrefix = `${this.#driver.name} ->`;
     }
 
     get connected(): boolean
@@ -15,33 +24,125 @@ export default class FileStore implements Driver
         return this.#driver.connected;
     }
 
-    connect(): Promise<void>
+    async connect(): Promise<void>
     {
-        return this.#driver.connect();
+        if (this.connected === true)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        
+        try
+        {
+            await this.#driver.connect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+
+            throw error;
+        }
     }
 
-    disconnect(): Promise<void>
+    async disconnect(): Promise<void>
     {
-        return this.#driver.disconnect();
+        if (this.connected === false)
+        {
+            return;
+        }
+
+        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        
+        try
+        {
+            return await this.#driver.disconnect();
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+
+            throw error;
+        }
     }
 
-    hasFile(path: string): Promise<boolean>
+    async hasFile(path: string): Promise<boolean>
     {
-        return this.#driver.hasFile(path);
+        this.#logger?.debug(this.#logPrefix, 'Checking has file', path);
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.hasFile(path);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Check has file', path, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    writeFile(path: string, data: Buffer): Promise<void>
+    async writeFile(path: string, data: Buffer): Promise<void>
     {
-        return this.#driver.writeFile(path, data);
+        this.#logger?.debug(this.#logPrefix, 'Writing file', path);
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.writeFile(path, data);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Write file', path, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    readFile(path: string): Promise<Buffer>
+    async readFile(path: string): Promise<Buffer>
     {
-        return this.#driver.readFile(path);
+        this.#logger?.debug(this.#logPrefix, 'Reading file', path);
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.readFile(path);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Read file', path, 'failed with error', error);
+
+            throw error;
+        }
     }
 
-    deleteFile(path: string): Promise<void>
+    async deleteFile(path: string): Promise<void>
     {
-        return this.#driver.deleteFile(path);
+        this.#logger?.debug(this.#logPrefix, 'Deleting file', path);
+
+        try
+        {
+            this.#validateConnection();
+
+            return await this.#driver.deleteFile(path);
+        }
+        catch (error)
+        {
+            this.#logger?.error(this.#logPrefix, 'Delete file', path, 'failed with error', error);
+
+            throw error;
+        }
+    }
+
+    #validateConnection(): void
+    {
+        if (this.connected === false)
+        {
+            throw new NotConnected();
+        }
     }
 }
