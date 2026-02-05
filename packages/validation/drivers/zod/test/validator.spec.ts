@@ -1,7 +1,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import type { ValidationSchema } from '../../validation/src/index.js';
+import type { ValidationSchema } from '../../validation/core/src/index.js';
 
 import { validator, VALIDATION_SCHEMES, VALUES } from './fixtures/index.js';
 

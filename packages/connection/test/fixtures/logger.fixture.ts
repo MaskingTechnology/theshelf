@@ -1,5 +1,5 @@
 
-import Logger, { MemoryDriver } from '@theshelf/logging';
+import Logger, { MemoryDriver } from '../../../logging/core/dist/index.js';
 
 export const logDriver = new MemoryDriver();
 

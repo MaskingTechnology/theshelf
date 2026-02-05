@@ -1,5 +1,5 @@
 
-import type Logger from '@theshelf/logging';
+import type Logger from '../../logging/core/dist/index.js';
 
 import { States } from './definitions/constants.js';
 import type { State } from './definitions/constants.js';
