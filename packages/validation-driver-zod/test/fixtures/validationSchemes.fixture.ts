@@ -48,7 +48,7 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
 
     DATETIME: {
         datetime: {
-            message: VALUES.MESSAGES.INVALID_DATE,
+            message: VALUES.MESSAGES.INVALID_DATETIME,
             DATETIME: {
                 required: true
             }

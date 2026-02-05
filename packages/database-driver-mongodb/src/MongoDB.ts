@@ -2,7 +2,7 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 
 import type { Collection, Db, Document, Filter, Sort } from 'mongodb';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 import {
     ID,
@@ -125,13 +125,13 @@ export default class MongoDB implements Driver
     {
         const collection = await this.#getCollection(type);
         const dataCopy = { ...data };
-        const id = dataCopy.id as RecordId;
+        const id = dataCopy.id ?? new ObjectId();
 
         delete dataCopy.id;
 
         await collection.insertOne({ _id: id, ...dataCopy });
 
-        return id;
+        return id as RecordId;
     }
 
     async readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
@@ -156,9 +156,10 @@ export default class MongoDB implements Driver
     async updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
         const mongoQuery = this.#buildMongoQuery(query);
+        const mongoData = this.#buildMongoData(data);
 
         const collection = await this.#getCollection(type);
-        const result = await collection.updateOne(mongoQuery, { $set: data });
+        const result = await collection.updateOne(mongoQuery, { $set: mongoData });
 
         return result.modifiedCount;
     }
@@ -166,9 +167,10 @@ export default class MongoDB implements Driver
     async updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
     {
         const mongoQuery = this.#buildMongoQuery(query);
+        const mongoData = this.#buildMongoData(data);
 
         const collection = await this.#getCollection(type);
-        const result = await collection.updateMany(mongoQuery, { $set: data });
+        const result = await collection.updateMany(mongoQuery, { $set: mongoData });
 
         return result.modifiedCount;
     }
@@ -236,6 +238,20 @@ export default class MongoDB implements Driver
         return mongoQuery;
     }
 
+    #buildMongoData(data: RecordData): RecordData
+    {
+        const mongoData: RecordData = {};
+
+        for (const [key, value] of Object.entries(data))
+        {
+            const mongoKey = key === ID ? MONGO_ID : key;
+
+            mongoData[mongoKey] = value;
+        }
+
+        return mongoData;
+    }
+
     #buildMongoSort(sort?: RecordSort): Sort
     {
         const mongoSort: Record<string, 1 | -1> = {};
@@ -245,10 +261,12 @@ export default class MongoDB implements Driver
             return mongoSort;
         }
 
-        for (const element in sort)
+        for (const key in sort)
         {
-            const direction = sort[element];
-            mongoSort[element] = direction === SortDirections.DESCENDING ? -1 : 1;
+            const direction = sort[key];
+            const mongoKey = key === ID ? MONGO_ID : key;
+
+            mongoSort[mongoKey] = direction === SortDirections.DESCENDING ? -1 : 1;
         }
 
         return mongoSort;
@@ -289,7 +307,11 @@ export default class MongoDB implements Driver
             fields = Object.keys(recordData);
 
             const idIndex = fields.indexOf(MONGO_ID);
-            fields[idIndex] = ID;
+
+            if (idIndex !== -1)
+            {
+                fields[idIndex] = ID;
+            }
         }
 
         for (const field of fields)

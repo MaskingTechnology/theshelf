@@ -1,11 +1,11 @@
 
 import type { S3ClientConfig } from '@aws-sdk/client-s3';
-import { CreateBucketCommand, DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, ListBucketsCommand, NotFound, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { CreateBucketCommand, DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, ListBucketsCommand, NoSuchKey, NotFound, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 import { FileNotFound, FileStoreError, NotConnected } from '@theshelf/filestore';
 import type { Driver } from '@theshelf/filestore';
 
-type S3Configuration = {
+export type S3Configuration = {
     clientConfig: S3ClientConfig;
     bucketName: string;
 };
@@ -36,7 +36,8 @@ export default class S3 implements Driver
         {
             this.#client = new S3Client(this.#configuration);
 
-            const buckets = await this.#client.send(new ListBucketsCommand({}));
+            const listBuckets = new ListBucketsCommand({});
+            const buckets = await this.#client.send(listBuckets);
             const bucketExists = buckets.Buckets?.some(bucket => bucket.Name === this.#bucketName);
 
             if (bucketExists !== true)
@@ -50,6 +51,12 @@ export default class S3 implements Driver
         }
         catch (error)
         {
+            if (this.#client !== undefined)
+            {
+                this.#client.destroy();
+                this.#client = undefined;
+            }
+
             const message = error instanceof Error ? error.message : UNKNOWN_ERROR;
 
             throw new FileStoreError('File store connection failed: ' + message);
@@ -84,7 +91,9 @@ export default class S3 implements Driver
 
         try
         {
-            await client.send(new HeadObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const headObject = new HeadObjectCommand({ Bucket: this.#bucketName, Key: path });
+
+            await client.send(headObject);
 
             return true;
         }
@@ -97,7 +106,7 @@ export default class S3 implements Driver
                 return false;
             }
 
-            throw error;
+            throw customError;
         }
     }
 
@@ -107,7 +116,9 @@ export default class S3 implements Driver
 
         try
         {
-            await client.send(new PutObjectCommand({ Bucket: this.#bucketName, Key: path, Body: data }));
+            const putObject = new PutObjectCommand({ Bucket: this.#bucketName, Key: path, Body: data });
+
+            await client.send(putObject);
         }
         catch (error)
         {
@@ -121,7 +132,8 @@ export default class S3 implements Driver
 
         try
         {
-            const response = await client.send(new GetObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const getObject = new GetObjectCommand({ Bucket: this.#bucketName, Key: path });
+            const response = await client.send(getObject);
             const body = response.Body;
 
             if (body === undefined)
@@ -145,7 +157,9 @@ export default class S3 implements Driver
 
         try
         {
-            await client.send(new DeleteObjectCommand({ Bucket: this.#bucketName, Key: path }));
+            const deleteObject = new DeleteObjectCommand({ Bucket: this.#bucketName, Key: path });
+
+            await client.send(deleteObject);
         }
         catch (error)
         {
@@ -165,7 +179,7 @@ export default class S3 implements Driver
 
     #handleError(error: unknown, path: string): unknown
     {
-        if (error instanceof NotFound)
+        if (error instanceof NotFound || error instanceof NoSuchKey)
         {
             return new FileNotFound(path);
         }

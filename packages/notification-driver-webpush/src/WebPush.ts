@@ -36,6 +36,11 @@ export default class WebPush implements Driver
 
     async connect(): Promise<void>
     {
+        if (this.connected)
+        {
+            return;
+        }
+
         this.#subscriptions = new Map();
 
         webpush.setVapidDetails(this.#configuration.subject, this.#configuration.publicKey, this.#configuration.privateKey);
@@ -67,9 +72,21 @@ export default class WebPush implements Driver
 
     async sendNotification(recipientId: string, title: string, body: string): Promise<void>
     {
-        const subscription = this.#getSubscription(recipientId);
+        try
+        {
+            const subscription = this.#getSubscription(recipientId);
 
-        await webpush.sendNotification(subscription, JSON.stringify({ title, body }));
+            await webpush.sendNotification(subscription, JSON.stringify({ title, body }));
+        }
+        catch (error)
+        {
+            if (error instanceof Error && 'statusCode' in error && error.statusCode === 410)
+            {
+                this.#subscriptions?.delete(recipientId);
+            }
+
+            throw error;
+        }
     }
 
     #getSubscriptions(): Map<string, PushSubscription>

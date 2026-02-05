@@ -154,7 +154,8 @@ export default class Zod implements Driver
 
         if (value.protocols !== undefined)
         {
-            const expression = value.protocols.join('|');
+            const escapedProtocols = value.protocols.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const expression = escapedProtocols.join('|');
 
             validation = validation.regex(new RegExp(`^(${expression}):.*`));
         }
@@ -178,7 +179,7 @@ export default class Zod implements Driver
             : validation.optional();
     }
 
-    #getMessages(issues: $ZodIssue[], scheme: ValidationSchema)
+    #getMessages(issues: $ZodIssue[], schema: ValidationSchema)
     {
         const messages = new Map<string, string>();
 
@@ -186,13 +187,15 @@ export default class Zod implements Driver
         {
             if (issue.code === 'unrecognized_keys')
             {
-                this.#mapUnrecognizedKeys(issue, scheme, messages);
+                this.#mapUnrecognizedKeys(issue, schema, messages);
 
                 continue;
             }
 
+            if (issue.path.length === 0) continue;
+
             const field = String(issue.path[0]);
-            const message = this.#getMessageByField(field, scheme);
+            const message = this.#getMessageByField(field, schema);
 
             messages.set(field, message);
         }
@@ -200,19 +203,19 @@ export default class Zod implements Driver
         return messages;
     }
 
-    #mapUnrecognizedKeys(issue: $ZodIssueUnrecognizedKeys, scheme: ValidationSchema, messages: Map<string, string>)
+    #mapUnrecognizedKeys(issue: $ZodIssueUnrecognizedKeys, schema: ValidationSchema, messages: Map<string, string>)
     {
         for (const key of issue.keys)
         {
-            const message = this.#getMessageByField(key, scheme);
+            const message = this.#getMessageByField(key, schema);
 
             messages.set(key, message);
         }
     }
 
-    #getMessageByField(path: string, scheme: ValidationSchema)
+    #getMessageByField(path: string, schema: ValidationSchema)
     {
-        const field = scheme[path] as Message;
+        const field = schema[path] as Message;
 
         return field?.message ?? 'Invalid field';
     }

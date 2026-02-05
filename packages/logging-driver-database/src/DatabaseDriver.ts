@@ -19,9 +19,19 @@ export default class DatabaseDriver implements Driver
 
     async log(log: Log): Promise<void>
     {
-        return this.#database.connected
-            ? this.#logDatabase(log)
-            : this.#logBackup(log);
+        if (this.#database.connected === false)
+        {
+            return this.#logBackup(log);
+        }
+
+        try
+        {
+            return this.#logDatabase(log);
+        }
+        catch
+        {
+            return this.#logBackup(log);
+        }
     }
 
     async #logDatabase(log: Log): Promise<void>

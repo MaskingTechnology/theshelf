@@ -158,21 +158,21 @@ describe('validator', () =>
         {
             const input = { datetime: undefined };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATE);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATETIME);
         });
 
         it('should reject a value that is not a valid datetime', () =>
         {
             const input = { datetime: new Date('invalid') };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATE);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATETIME);
         });
 
         it('should reject a value that is not a datetime', () =>
         {
             const input = { datetime: '2021-01-01' };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATE);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATETIME);
         });
     });
 
