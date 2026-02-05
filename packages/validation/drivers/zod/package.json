@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/validation-driver-zod",
   "private": false,
-  "version": "0.3.2",
+  "version": "0.4.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -20,12 +20,12 @@
     "README.md",
     "dist"
   ],
-  "types": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
     "zod": "4.1.12"
   },
   "peerDependencies": {
-    "@theshelf/validation": "^0.3.0"
+    "@theshelf/validation": "^0.4.0"
   }
 }

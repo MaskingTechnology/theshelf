@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/authentication-driver-openid",
   "private": false,
-  "version": "0.3.2",
+  "version": "0.4.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -18,12 +18,12 @@
     "README.md",
     "dist"
   ],
-  "types": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
     "openid-client": "6.8.1"
   },
   "peerDependencies": {
-    "@theshelf/authentication": "^0.3.0"
+    "@theshelf/authentication": "^0.4.0"
   }
 }
