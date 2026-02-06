@@ -19,7 +19,7 @@ import driver from '/path/to/driver';
 
 const identityProvider = new IdentityProvider(driver);
 
-// Perform operations
+// Perform operations with the identityProvider instance
 ```
 
 ## Operations
@@ -48,12 +48,13 @@ const secondSession: Session = await identityProvider.refresh(firstSession);
 await identityProvider.logout(secondSession);
 ```
 
-## Session structure
+## Types
 
 The session has the following structure.
 
 ```ts
 type Session = {
+    id: string;
     key?: string;
     requester?: unknown;
     identity: Identity;

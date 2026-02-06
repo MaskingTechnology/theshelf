@@ -14,5 +14,5 @@ It's based on the following authentication flow:
 
 ## Packages
 
-* **[Core](./core/README.md)** - implementation of the authentication flow
-* **[OpenID driver](./drivers/openid/README.md)** - universal OpenID driver
+* **[Core](./core/README.md)** - definition of the authentication flow
+* **[OpenID driver](./drivers/openid/README.md)** - driver for [OpenID](https://openid.net)

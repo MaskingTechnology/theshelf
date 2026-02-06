@@ -20,7 +20,7 @@ import { OpenIDDriver } from '@theshelf/authentication-driver-openid';
 const driver = new OpenIDDriver({/* Configuration options */});
 const identityProvider = new IdentityProvider(driver);
 
-// Perform operations
+// Perform operations with the identityProvider instance
 ```
 
 ## Configuration options
