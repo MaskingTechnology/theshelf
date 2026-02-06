@@ -164,6 +164,8 @@ export default class ConnectionManager
             this.#scheduleMonitoring();
 
         }, this.#timeoutDuration);
+
+        this.#monitorTimeout.unref();
     }
 
     #stopMonitoring(): void

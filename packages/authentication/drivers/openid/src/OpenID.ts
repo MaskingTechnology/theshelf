@@ -2,32 +2,50 @@
 import
 {
     allowInsecureRequests, authorizationCodeGrant, buildAuthorizationUrlWithPAR, calculatePKCECodeChallenge, discovery,
-    fetchUserInfo, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
+    fetchUserInfo, randomNonce, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
 } from 'openid-client';
+
+import crypto from 'node:crypto';
 
 import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
 
 import { LoginFailed, RefreshFailed, NotConnected, generateId } from '@theshelf/authentication';
 import type { Driver, Identity, Session } from '@theshelf/authentication';
 
+import SecretManager from './SecretManager.js';
+
 type OpenIDConfiguration = {
     issuer: string;
     clientId: string;
     clientSecret: string;
     redirectPath: string;
+    secretKey: string;
     allowInsecureRequests: boolean;
 };
+
+type Payload = {
+    jti: string;
+    iat: number;
+    exp: number;
+};
+
+const TTL = 30_000;
+const HMAC_ALGORITHM = 'sha512';
+const URL_ENCODING = 'base64url';
 
 export default class OpenID implements Driver
 {
     readonly #providerConfiguration: OpenIDConfiguration;
+    readonly #key: string;
+
     #clientConfiguration?: Configuration;
 
-    readonly #codeVerifier = randomPKCECodeVerifier();
+    readonly #secretManager = new SecretManager();
 
     constructor(configuration: OpenIDConfiguration)
     {
         this.#providerConfiguration = configuration;
+        this.#key = configuration.secretKey;
     }
 
     get name(): string { return OpenID.name; }
@@ -45,10 +63,14 @@ export default class OpenID implements Driver
         const requestOptions = this.#getRequestOptions();
 
         this.#clientConfiguration = await discovery(issuer, clientId, clientSecret, undefined, requestOptions);
+
+        this.#secretManager.start();
     }
 
     async disconnect(): Promise<void>
     {
+        this.#secretManager.stop();
+
         this.#clientConfiguration = undefined;
     }
 
@@ -57,18 +79,28 @@ export default class OpenID implements Driver
         const redirect_uri = new URL(this.#providerConfiguration.redirectPath, origin).href;
         const scope = 'openid profile email';
 
-        const code_challenge = await calculatePKCECodeChallenge(this.#codeVerifier);
+        const nonce = randomNonce();
+        const codeVerifier = randomPKCECodeVerifier();
+        const code_challenge = await calculatePKCECodeChallenge(codeVerifier);
         const code_challenge_method = 'S256';
+        
+        const payload = this.#createPayload();
+        const state = this.#calculateState(payload);
 
         const parameters: Record<string, string> = {
             redirect_uri,
             scope,
             code_challenge,
-            code_challenge_method
+            code_challenge_method,
+            state,
+            nonce
         };
 
         const clientConfiguration = this.#getClientConfiguration();
         const redirectTo = await buildAuthorizationUrlWithPAR(clientConfiguration, parameters);
+        const secret = { codeVerifier, nonce };
+        
+        this.#secretManager.set(state, secret);
 
         return redirectTo.href;
     }
@@ -83,8 +115,18 @@ export default class OpenID implements Driver
             url.searchParams.set(key, String(value));
         }
 
+        const state = this.#getState(data);
+        const secret = this.#secretManager.get(state);
+
+        if (secret === undefined)
+        {
+            throw new LoginFailed('Missing secret');
+        }
+
         const tokens = await authorizationCodeGrant(clientConfiguration, url, {
-            pkceCodeVerifier: this.#codeVerifier,
+            pkceCodeVerifier: secret.codeVerifier,
+            expectedNonce: secret.nonce,
+            expectedState: state,
             idTokenExpected: true
         });
 
@@ -175,5 +217,63 @@ export default class OpenID implements Driver
         }
 
         return claims;
+    }
+
+    #createPayload(): Payload
+    {
+        return {
+            jti: crypto.randomBytes(32).toString('base64'),
+            iat: Date.now(),
+            exp: Date.now() + TTL
+        };
+    }
+
+    #calculateState(payload: Payload): string
+    {
+        const data = JSON.stringify(payload);
+
+        const value = Buffer.from(data).toString(URL_ENCODING);
+        const signature = crypto.createHmac(HMAC_ALGORITHM, this.#key).update(data).digest(URL_ENCODING);
+
+        return `${value}.${signature}`;
+    }
+
+    #getState(data: Record<string, unknown>): string
+    {
+        const state = data.state;
+
+        if (typeof state !== 'string')
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        const parts = state.split('.');
+      
+        if (parts.length !== 2)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        const [value, signature] = parts;
+
+        const decodedValue = Buffer.from(value, URL_ENCODING).toString('utf8');
+        const decodedSignature = Buffer.from(signature, URL_ENCODING);
+
+        const check = Buffer.from(crypto.createHmac(HMAC_ALGORITHM, this.#key).update(decodedValue).digest());
+
+        if (check.length !== decodedSignature.length || crypto.timingSafeEqual(check, decodedSignature) === false)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        const payload: Payload = JSON.parse(decodedValue);
+        const now = Date.now();
+
+        if (payload.iat > now || payload.exp < now)
+        {
+            throw new LoginFailed('Invalid state');
+        }
+
+        return state;
     }
 }
