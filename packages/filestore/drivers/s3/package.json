@@ -1,0 +1,29 @@
+{
+  "name": "@theshelf/filestore-driver-s3",
+  "private": false,
+  "version": "0.4.0",
+  "type": "module",
+  "repository": {
+    "url": "git+https://github.com/MaskingTechnology/theshelf.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "lint": "eslint",
+    "review": "npm run build && npm run lint",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.984.0"
+  },
+  "peerDependencies": {
+    "@theshelf/filestore": "^0.4.0"
+  }
+}

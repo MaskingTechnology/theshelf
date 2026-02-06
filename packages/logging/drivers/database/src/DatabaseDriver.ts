@@ -1,0 +1,51 @@
+
+import type Database from '@theshelf/database';
+import type { RecordType } from '@theshelf/database';
+
+import type { Driver, Log } from '@theshelf/logging';
+
+export default class DatabaseDriver implements Driver
+{
+    readonly #database: Database;
+    readonly #recordType: RecordType;
+    readonly #backup?: Driver;
+
+    constructor(database: Database, recordType: RecordType, backup?: Driver)
+    {
+        this.#recordType = recordType;
+        this.#database = database;
+        this.#backup = backup;
+    }
+
+    async log(log: Log): Promise<void>
+    {
+        if (this.#database.connected === false)
+        {
+            return this.#logBackup(log);
+        }
+
+        try
+        {
+            return this.#logDatabase(log);
+        }
+        catch
+        {
+            return this.#logBackup(log);
+        }
+    }
+
+    async #logDatabase(log: Log): Promise<void>
+    {
+        await this.#database.createRecord(this.#recordType, log);
+    }
+
+    async #logBackup(log: Log): Promise<void>
+    {
+        if (this.#backup === undefined)
+        {
+            return;
+        }
+
+        await this.#backup.log(log);
+    }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@theshelf/notification",
+  "private": false,
+  "version": "0.4.0",
+  "type": "module",
+  "repository": {
+    "url": "git+https://github.com/MaskingTechnology/theshelf.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "test": "vitest run",
+    "test-coverage": "vitest run --coverage",
+    "lint": "eslint",
+    "review": "npm run build && npm run lint && npm run test",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "peerDependencies": {
+    "@theshelf/logging": "^0.4.0"
+  }
+}
