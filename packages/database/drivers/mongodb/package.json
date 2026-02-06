@@ -21,7 +21,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "mongodb": "7.0.0"
+    "mongodb": "7.1.0"
   },
   "peerDependencies": {
     "@theshelf/database": "^0.4.0"

@@ -25,6 +25,9 @@
   "dependencies": {
     "sanitize-html": "2.17.0"
   },
+  "devDependencies": {
+    "@types/sanitize-html": "2.16.0"
+  },
   "peerDependencies": {
     "@theshelf/logging": "^0.4.0"
   }
