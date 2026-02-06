@@ -9,12 +9,6 @@ This package contains the publication / subscription model. It uses a interchang
 npm install @theshelf/eventbroker
 ```
 
-## Driver
-
-There is a single driver:
-
-* **Memory** - non-persistent event broker based on the Node.js `EventEmitter`.
-
 ## How to use
 
 The basic set up looks like this.
@@ -83,7 +77,7 @@ type EventHandler<T> = (data: T) => void;
 
 ### Memory
 
-In memory event broker (suited for testing). It doesn't have any configuration options, but has an additional operation.
+In-memory event broker (suited for testing). It doesn't have any configuration options, but has an additional operation.
 
 ```ts
 // Clear the memory
