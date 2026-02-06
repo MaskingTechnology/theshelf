@@ -71,6 +71,8 @@ In case multiple messages are given, they will be concatenated with a space betw
 
 ## Drivers
 
+There are three drivers included in this package. Other drivers are available in separate packages.
+
 ### Void
 
 Dummy driver that doesn't log anything (suited for testing). It doesn't have any configuration options or additional operations.

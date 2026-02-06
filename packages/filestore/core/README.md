@@ -49,6 +49,8 @@ await fileStore.deleteFile('path/to/file.txt');
 
 ## Drivers
 
+There is one driver included in this package. Other drivers are available in separate packages.
+
 ### Memory
 
 In memory file store (suited for testing). It doesn't have any configuration options, but has an additional operation.
