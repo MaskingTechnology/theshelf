@@ -103,3 +103,14 @@ const sort: RecordSort = { fieldName1: SortDirections.ASCENDING, fieldName2: Sor
 ```
 
 The sort will be performed in the configured order.
+
+## Drivers
+
+### Memory
+
+In memory database (suited for testing). It doesn't have any configuration options, but has an additional operation.
+
+```ts
+// Clear the memory
+driver.clear();
+```

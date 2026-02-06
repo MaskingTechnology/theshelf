@@ -46,3 +46,14 @@ const data: Buffer = await fileStore.readFile('path/to/file.txt');
 // Throws FileNotFound if not found
 await fileStore.deleteFile('path/to/file.txt');
 ```
+
+## Drivers
+
+### Memory
+
+In memory file store (suited for testing). It doesn't have any configuration options, but has an additional operation.
+
+```ts
+// Clear the memory
+driver.clear();
+```

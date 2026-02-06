@@ -1,7 +1,7 @@
 
 # Event Broker core | The Shelf
 
-This package contains the publication / subscription model. It uses a interchangeable driver system for performing the actual operations.
+This package contains the publication / subscription model. It uses a interchangeable driver system for performing the actual operations. An in-memory driver is included.
 
 ## Installation
 
@@ -77,4 +77,15 @@ Where the event handler performs an operation on the data of the publication.
 
 ```ts
 type EventHandler<T> = (data: T) => void;
+```
+
+## Drivers
+
+### Memory
+
+In memory event broker (suited for testing). It doesn't have any configuration options, but has an additional operation.
+
+```ts
+// Clear the memory
+driver.clear();
 ```
