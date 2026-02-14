@@ -1,16 +1,11 @@
 
-import
-{
-    allowInsecureRequests, authorizationCodeGrant, buildAuthorizationUrlWithPAR, calculatePKCECodeChallenge, discovery,
-    fetchUserInfo, randomNonce, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation
-} from 'openid-client';
-
 import crypto from 'node:crypto';
 
 import type { Configuration, DiscoveryRequestOptions, IDToken, TokenEndpointResponse, TokenEndpointResponseHelpers } from 'openid-client';
+import { allowInsecureRequests, authorizationCodeGrant, buildAuthorizationUrlWithPAR, calculatePKCECodeChallenge, discovery, fetchUserInfo, randomNonce, randomPKCECodeVerifier, refreshTokenGrant, tokenRevocation } from 'openid-client';
 
-import { LoginFailed, RefreshFailed, NotConnected, generateId } from '@theshelf/authentication';
 import type { Driver, Identity, Session } from '@theshelf/authentication';
+import { LoginFailed, NotConnected, RefreshFailed, generateId } from '@theshelf/authentication';
 
 import SecretManager from './SecretManager.js';
 
@@ -19,33 +14,26 @@ type OpenIDConfiguration = {
     clientId: string;
     clientSecret: string;
     redirectPath: string;
-    secretKey: string;
+    signingSecret: string;
+    ttl?: number;
     allowInsecureRequests: boolean;
 };
 
-type Payload = {
-    jti: string;
-    iat: number;
-    exp: number;
-};
-
-const TTL = 30_000;
 const HMAC_ALGORITHM = 'sha512';
 const URL_ENCODING = 'base64url';
 
 export default class OpenID implements Driver
 {
-    readonly #providerConfiguration: OpenIDConfiguration;
-    readonly #key: string;
-
+    readonly #configuration: OpenIDConfiguration;
+    readonly #secretManager: SecretManager;
+    
     #clientConfiguration?: Configuration;
-
-    readonly #secretManager = new SecretManager();
 
     constructor(configuration: OpenIDConfiguration)
     {
-        this.#providerConfiguration = configuration;
-        this.#key = configuration.secretKey;
+        this.#configuration = configuration;
+
+        this.#secretManager = new SecretManager(configuration.ttl);
     }
 
     get name(): string { return OpenID.name; }
@@ -57,9 +45,9 @@ export default class OpenID implements Driver
 
     async connect(): Promise<void>
     {
-        const issuer = new URL(this.#providerConfiguration.issuer);
-        const clientId = this.#providerConfiguration.clientId;
-        const clientSecret = this.#providerConfiguration.clientSecret;
+        const issuer = new URL(this.#configuration.issuer);
+        const clientId = this.#configuration.clientId;
+        const clientSecret = this.#configuration.clientSecret;
         const requestOptions = this.#getRequestOptions();
 
         this.#clientConfiguration = await discovery(issuer, clientId, clientSecret, undefined, requestOptions);
@@ -76,7 +64,7 @@ export default class OpenID implements Driver
 
     async getLoginUrl(origin: string): Promise<string>
     {
-        const redirect_uri = new URL(this.#providerConfiguration.redirectPath, origin).href;
+        const redirect_uri = new URL(this.#configuration.redirectPath, origin).href;
         const scope = 'openid profile email';
 
         const nonce = randomNonce();
@@ -108,7 +96,7 @@ export default class OpenID implements Driver
     async login(origin: string, data: Record<string, unknown>): Promise<Session>
     {
         const clientConfiguration = this.#getClientConfiguration();
-        const url = new URL(this.#providerConfiguration.redirectPath, origin);
+        const url = new URL(this.#configuration.redirectPath, origin);
 
         for (const [key, value] of Object.entries(data))
         {
@@ -178,11 +166,18 @@ export default class OpenID implements Driver
         };
     }
 
-    logout(session: Session): Promise<void>
+    async logout(session: Session): Promise<void>
     {
         const config = this.#getClientConfiguration();
 
-        return tokenRevocation(config, session.refreshToken ?? session.accessToken);
+        const revocations: Promise<void>[] = [tokenRevocation(config, session.accessToken)];
+
+        if (session.refreshToken !== undefined)
+        {
+            revocations.push(tokenRevocation(config, session.refreshToken));
+        }
+
+        await Promise.allSettled(revocations);
     }
 
     #getClientConfiguration(): Configuration
@@ -199,7 +194,7 @@ export default class OpenID implements Driver
     {
         const options: DiscoveryRequestOptions = {};
 
-        if (this.#providerConfiguration.allowInsecureRequests)
+        if (this.#configuration.allowInsecureRequests)
         {
             options.execute = [allowInsecureRequests];
         }
@@ -219,21 +214,15 @@ export default class OpenID implements Driver
         return claims;
     }
 
-    #createPayload(): Payload
+    #createPayload(): string
     {
-        return {
-            jti: crypto.randomBytes(32).toString('base64'),
-            iat: Date.now(),
-            exp: Date.now() + TTL
-        };
+        return crypto.randomBytes(64).toString('base64');
     }
 
-    #calculateState(payload: Payload): string
+    #calculateState(data: string): string
     {
-        const data = JSON.stringify(payload);
-
         const value = Buffer.from(data).toString(URL_ENCODING);
-        const signature = crypto.createHmac(HMAC_ALGORITHM, this.#key).update(data).digest(URL_ENCODING);
+        const signature = crypto.createHmac(HMAC_ALGORITHM, this.#configuration.signingSecret).update(data).digest(URL_ENCODING);
 
         return `${value}.${signature}`;
     }
@@ -259,17 +248,9 @@ export default class OpenID implements Driver
         const decodedValue = Buffer.from(value, URL_ENCODING).toString('utf8');
         const decodedSignature = Buffer.from(signature, URL_ENCODING);
 
-        const check = Buffer.from(crypto.createHmac(HMAC_ALGORITHM, this.#key).update(decodedValue).digest());
+        const check = Buffer.from(crypto.createHmac(HMAC_ALGORITHM, this.#configuration.signingSecret).update(decodedValue).digest());
 
         if (check.length !== decodedSignature.length || crypto.timingSafeEqual(check, decodedSignature) === false)
-        {
-            throw new LoginFailed('Invalid state');
-        }
-
-        const payload: Payload = JSON.parse(decodedValue);
-        const now = Date.now();
-
-        if (payload.iat > now || payload.exp < now)
         {
             throw new LoginFailed('Invalid state');
         }
