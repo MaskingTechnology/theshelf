@@ -17,7 +17,7 @@ export default class SecretManager
     #cleanupInterval?: NodeJS.Timeout;
     readonly #TTL: number;
 
-    constructor(ttl: number = 3600_000)
+    constructor(ttl = 3600_000)
     {
         this.#TTL = ttl;
     }
