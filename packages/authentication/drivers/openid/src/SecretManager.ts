@@ -9,20 +9,25 @@ type Entry = {
     expiresAt: number;
 };
 
-const TTL = 40_000;
-const CLEANUP_INTERVAL = 10_000;
+const CLEANUP_INTERVAL = 60_000;
 
 export default class SecretManager
 {
     readonly #cache = new Map<string, Entry>();
     #cleanupInterval?: NodeJS.Timeout;
+    readonly #TTL: number;
+
+    constructor(ttl = 3600_000)
+    {
+        this.#TTL = ttl;
+    }
 
     set(key: string, secret: Secret): void
     {
         const entry: Entry =
         {
             secret,
-            expiresAt: Date.now() + TTL
+            expiresAt: Date.now() + this.#TTL
         };
 
         this.#cache.set(key, entry);
