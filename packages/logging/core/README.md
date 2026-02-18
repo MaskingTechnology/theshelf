@@ -79,7 +79,7 @@ Dummy driver that doesn't log anything (suited for testing). It doesn't have any
 
 ### Memory
 
-In memory logging (suited for testing). It doesn't have any configuration options, but has an additional operation.
+In-memory logging (suited for testing). It doesn't have any configuration options, but has an additional operation.
 
 ```ts
 // Clear the memory

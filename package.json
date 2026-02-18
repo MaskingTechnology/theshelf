@@ -14,6 +14,7 @@
   },
   "workspaces": [
     "packages/logging/core",
+    "packages/caching/core",
     "packages/authentication/core",
     "packages/database/core",
     "packages/eventbroker/core",
@@ -23,6 +24,7 @@
     "packages/validation/core",
     "packages/connection",
     "packages/authentication/drivers/openid",
+    "packages/caching/drivers/redis",
     "packages/database/drivers/mongodb",
     "packages/filestore/drivers/s3",
     "packages/logging/drivers/database",
