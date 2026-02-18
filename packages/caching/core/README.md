@@ -52,7 +52,7 @@ There is one driver included in this package. Other drivers are available in sep
 
 ### Memory
 
-In memory cache store (suited for testing).
+In-memory cache store (suited for testing).
 
 It has one configuration option.
 

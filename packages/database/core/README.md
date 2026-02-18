@@ -110,7 +110,7 @@ There is one driver included in this package. Other drivers are available in sep
 
 ### Memory
 
-In memory database (suited for testing). It doesn't have any configuration options, but has an additional operation.
+In-memory database (suited for testing). It doesn't have any configuration options, but has an additional operation.
 
 ```ts
 // Clear the memory

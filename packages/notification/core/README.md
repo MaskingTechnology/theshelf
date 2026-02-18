@@ -49,7 +49,7 @@ There is one driver included in this package. Other drivers are available in sep
 
 ### Memory
 
-This driver is a non-persistent in memory implementation (suitable for testing purposes). It doesn't have any configuration options, but has an additional operation.
+This driver is a non-persistent in-memory implementation (suitable for testing purposes). It doesn't have any configuration options, but has an additional operation.
 
 ```ts
 // Clear the subscriptions

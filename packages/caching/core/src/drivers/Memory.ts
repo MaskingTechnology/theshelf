@@ -19,7 +19,7 @@ export default class Memory implements Driver
     #connected = false;
     #cleanupInterval?: NodeJS.Timeout;
 
-    constructor(defaultTTL: number = DEFAULT_TTL)
+    constructor(defaultTTL = DEFAULT_TTL)
     {
         if (Number.isFinite(defaultTTL) === false || defaultTTL <= 0)
         {
