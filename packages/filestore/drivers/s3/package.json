@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/filestore-driver-s3",
   "private": false,
-  "version": "0.4.1",
+  "version": "0.4.2",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -21,7 +21,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.984.0"
+    "@aws-sdk/client-s3": "^3.995.0"
   },
   "peerDependencies": {
     "@theshelf/filestore": "^0.4.0"
