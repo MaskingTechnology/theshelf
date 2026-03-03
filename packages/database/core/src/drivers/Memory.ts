@@ -225,7 +225,6 @@ export default class Memory implements Driver
         const statementCode = this.#buildStatementCode(query);
         const functionCode = statementCode === '' ? 'true' : statementCode;
 
-        // eslint-disable-next-line sonarjs/code-eval
         return new Function('record', `return ${functionCode}`) as FilterFunction;
     }
 
