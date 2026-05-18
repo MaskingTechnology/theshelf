@@ -4,17 +4,21 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'packages/**'
-      - '!packages/**/node_modules/**'
-      - '!packages/**/dist/**'
+    - 'packages/**'
+    - '!packages/**/node_modules/**'
+    - '!packages/**/dist/**'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'packages/**'
-      - '!packages/**/node_modules/**'
-      - '!packages/**/dist/**'
+    - 'packages/**'
+    - '!packages/**/node_modules/**'
+    - '!packages/**/dist/**'
   schedule:
-    - cron: '39 10 * * 1'
+  - cron: '39 10 * * 1'
+
+permissions:
+  id-token: none
+  contents: read
 
 jobs:
   analyze:
@@ -30,14 +34,14 @@ jobs:
       matrix:
         language: [ 'javascript' ]
         package:
-          - 'packages/authentication'
-          - 'packages/database'
-          - 'packages/eventbroker'
-          - 'packages/filestore'
-          - 'packages/http'
-          - 'packages/logging'
-          - 'packages/notification'
-          - 'packages/validation'
+        - 'packages/authentication'
+        - 'packages/database'
+        - 'packages/eventbroker'
+        - 'packages/filestore'
+        - 'packages/http'
+        - 'packages/logging'
+        - 'packages/notification'
+        - 'packages/validation'
 
     steps:
     - name: Checkout repository
