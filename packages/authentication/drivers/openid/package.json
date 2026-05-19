@@ -21,7 +21,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "openid-client": "6.8.2"
+    "openid-client": "6.8.4"
   },
   "peerDependencies": {
     "@theshelf/authentication": "^0.4.3"
