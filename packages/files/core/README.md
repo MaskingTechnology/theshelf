@@ -1,5 +1,5 @@
 
-# File Store core | The Shelf
+# Files core | The Shelf
 
 This package contains the definition of the file operations. It uses a interchangeable driver system for performing the actual operations. An in-memory driver is included.
 

@@ -1,7 +1,7 @@
 {
-  "name": "@theshelf/eventbroker",
+  "name": "@theshelf/files",
   "private": false,
-  "version": "0.4.4",
+  "version": "0.5.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -21,5 +21,8 @@
     "dist"
   ],
   "types": "./dist/index.d.ts",
-  "exports": "./dist/index.js"
+  "exports": "./dist/index.js",
+  "peerDependencies": {
+    "@theshelf/logging": "^0.5.0"
+  }
 }

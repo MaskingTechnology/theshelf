@@ -1,7 +1,7 @@
 
-# File Store | The Shelf
+# Files | The Shelf
 
-The file store packages provide a universal driver system for working with file storage solutions.
+The files packages provide a universal driver system for working with file storage solutions.
 
 ## Packages
 

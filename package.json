@@ -1,7 +1,7 @@
 {
   "name": "theshelf",
   "private": true,
-  "version": "0.4.4",
+  "version": "0.5.0",
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
@@ -17,8 +17,8 @@
     "packages/caching/core",
     "packages/authentication/core",
     "packages/database/core",
-    "packages/eventbroker/core",
-    "packages/filestore/core",
+    "packages/events/core",
+    "packages/files/core",
     "packages/http/core",
     "packages/notification/core",
     "packages/validation/core",
@@ -26,7 +26,7 @@
     "packages/authentication/drivers/openid",
     "packages/caching/drivers/redis",
     "packages/database/drivers/mongodb",
-    "packages/filestore/drivers/s3",
+    "packages/files/drivers/s3",
     "packages/logging/drivers/database",
     "packages/notification/drivers/webpush",
     "packages/validation/drivers/zod"

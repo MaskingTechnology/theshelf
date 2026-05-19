@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/database-driver-mongodb",
   "private": false,
-  "version": "0.4.4",
+  "version": "0.5.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -24,6 +24,6 @@
     "mongodb": "7.2.0"
   },
   "peerDependencies": {
-    "@theshelf/database": "^0.4.3"
+    "@theshelf/database": "^0.5.0"
   }
 }

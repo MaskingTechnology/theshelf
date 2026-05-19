@@ -1,5 +1,5 @@
 
-# Event Broker core | The Shelf
+# Events core | The Shelf
 
 This package contains the publication / subscription model. It uses a interchangeable driver system for performing the actual operations. An in-memory driver is included.
 
