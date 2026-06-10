@@ -21,7 +21,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "redis": "5.12.1"
+    "redis": "^6.0.0"
   },
   "peerDependencies": {
     "@theshelf/caching": "^0.4.3"
