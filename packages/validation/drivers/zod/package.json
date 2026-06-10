@@ -23,7 +23,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "zod": "4.4.3"
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "@theshelf/validation": "^0.4.3"
