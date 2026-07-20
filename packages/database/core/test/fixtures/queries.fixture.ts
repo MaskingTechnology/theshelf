@@ -1,12 +1,12 @@
 
 import type { RecordQuery } from '../../src/index.js';
 
-import { RECORDS } from './records.fixture.js';
+import { RECORDS, type Pizza } from './records.fixture.js';
 import { VALUES } from './values.fixture.js';
 
 const { CALZONE, VEGETARIAN, HAWAII } = RECORDS.PIZZAS;
 
-export const QUERIES: Record<string, RecordQuery> =
+export const QUERIES: Record<string, RecordQuery<Pizza>> =
 {
     UPDATED: { size: { EQUALS: 40 } },
     EMPTY: {},

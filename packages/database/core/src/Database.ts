@@ -69,7 +69,7 @@ export default class Database
         }
     }
 
-    async createRecord(type: RecordType, data: RecordData): Promise<RecordId>
+    async createRecord<T extends RecordData>(type: RecordType, data: T): Promise<RecordId>
     {
         this.#logger?.debug(this.#logPrefix, 'Creating record for type', type);
 
@@ -89,7 +89,7 @@ export default class Database
         }
     }
 
-    async readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
+    async readRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>): Promise<T | undefined>
     {
         this.#logger?.debug(this.#logPrefix, 'Reading record for type', type);
 
@@ -107,7 +107,7 @@ export default class Database
         }
     }
 
-    async searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
+    async searchRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<T[]>
     {
         this.#logger?.debug(this.#logPrefix, 'Searching record for type', type);
 
@@ -125,7 +125,7 @@ export default class Database
         }
     }
 
-    async updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<number>
     {
         this.#logger?.debug(this.#logPrefix, 'Updating record for type', type);
 
@@ -145,7 +145,7 @@ export default class Database
         }
     }
 
-    async updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<number>
     {
         this.#logger?.debug(this.#logPrefix, 'Updating records for type', type);
 
@@ -165,7 +165,7 @@ export default class Database
         }
     }
 
-    async deleteRecord(type: RecordType, query: RecordQuery): Promise<number>
+    async deleteRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>
     {
         this.#logger?.debug(this.#logPrefix, 'Deleting record for type', type);
 
@@ -183,7 +183,7 @@ export default class Database
         }
     }
 
-    async deleteRecords(type: RecordType, query: RecordQuery): Promise<number>
+    async deleteRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>
     {
         this.#logger?.debug(this.#logPrefix, 'Deleting records for type', type);
 
