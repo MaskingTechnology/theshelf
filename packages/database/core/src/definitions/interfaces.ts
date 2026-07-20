@@ -8,11 +8,11 @@ export interface Driver
 
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    createRecord(type: RecordType, data: RecordData): Promise<RecordId>;
-    readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>;
-    searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>;
-    updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>;
-    updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>;
-    deleteRecord(type: RecordType, query: RecordQuery): Promise<number>;
-    deleteRecords(type: RecordType, query: RecordQuery): Promise<number>;
+    createRecord<T extends RecordData>(type: RecordType, data: T): Promise<RecordId>;
+    readRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>): Promise<T | undefined>;
+    searchRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<T[]>;
+    updateRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: T): Promise<number>;
+    updateRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: T): Promise<number>;
+    deleteRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>;
+    deleteRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>;
 }

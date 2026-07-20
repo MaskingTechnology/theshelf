@@ -65,9 +65,9 @@ export default class Memory implements Driver
         this.#memory.clear();
     }
 
-    async createRecord(type: string, data: RecordData): Promise<string>
+    async createRecord<T extends RecordData>(type: string, data: T): Promise<string>
     {
-        const collection = this.#getCollection(type);
+        const collection = this.#getCollection<T>(type);
 
         const record = data.id === undefined
             ? { id: this.#createId(), ...data }
@@ -78,26 +78,26 @@ export default class Memory implements Driver
         return record.id as string;
     }
 
-    async readRecord(type: string, query: RecordQuery, fields?: string[], sort?: RecordSort): Promise<RecordData | undefined>
+    async readRecord<T extends RecordData>(type: string, query: RecordQuery<T>, fields?: string[], sort?: RecordSort<T>): Promise<T | undefined>
     {
-        const result = await this.searchRecords(type, query, fields, sort, 1, 0);
+        const result = await this.searchRecords<T>(type, query, fields, sort, 1, 0);
 
         return result[0];
     }
 
-    async searchRecords(type: string, query: RecordQuery, fields?: string[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
+    async searchRecords<T extends RecordData>(type: string, query: RecordQuery<T>, fields?: string[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<T[]>
     {
-        const records = this.#fetchRecords(type, query);
+        const records = this.#fetchRecords<T>(type, query);
 
-        const sortedRecords = this.#sortRecords(records, sort);
-        const limitedRecords = this.#limitNumberOfRecords(sortedRecords, offset, limit);
+        const sortedRecords = this.#sortRecords<T>(records, sort);
+        const limitedRecords = this.#limitNumberOfRecords<T>(sortedRecords, offset, limit);
 
-        return limitedRecords.map(record => this.#buildRecordData(record, fields));
+        return limitedRecords.map(record => this.#buildRecordData<T>(record, fields));
     }
 
-    async updateRecord(type: string, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecord<T extends RecordData>(type: string, query: RecordQuery<T>, data: RecordData): Promise<number>
     {
-        const record = this.#fetchRecord(type, query);
+        const record = this.#fetchRecord<T>(type, query);
 
         if (record === undefined)
         {
@@ -109,20 +109,20 @@ export default class Memory implements Driver
         return 1;
     }
 
-    async updateRecords(type: string, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecords<T extends RecordData>(type: string, query: RecordQuery<T>, data: RecordData): Promise<number>
     {
-        const records = this.#fetchRecords(type, query);
+        const records = this.#fetchRecords<T>(type, query);
 
         records.forEach(record => this.#updateRecordData(record, data));
 
         return records.length;
     }
 
-    async deleteRecord(type: string, query: RecordQuery): Promise<number>
+    async deleteRecord<T extends RecordData>(type: string, query: RecordQuery<T>): Promise<number>
     {
-        const filterFunction = this.#buildFilterFunction(query);
+        const filterFunction = this.#buildFilterFunction<T>(query);
 
-        const collection = this.#getCollection(type);
+        const collection = this.#getCollection<T>(type);
         const index = collection.findIndex(filterFunction);
 
         if (index === -1)
@@ -135,10 +135,10 @@ export default class Memory implements Driver
         return 1;
     }
 
-    async deleteRecords(type: string, query: RecordQuery): Promise<number>
+    async deleteRecords<T extends RecordData>(type: string, query: RecordQuery<T>): Promise<number>
     {
-        const collection = this.#getCollection(type);
-        const records = this.#fetchRecords(type, query);
+        const collection = this.#getCollection<T>(type);
+        const records = this.#fetchRecords<T>(type, query);
 
         const indexes = records
             .map(fetchedRecord => collection.findIndex(collectionRecord => collectionRecord.id === fetchedRecord.id))
@@ -154,18 +154,18 @@ export default class Memory implements Driver
         this.memory.clear();
     }
 
-    #fetchRecord(type: string, query: RecordQuery): RecordData | undefined
+    #fetchRecord<T extends RecordData>(type: string, query: RecordQuery<T>): T | undefined
     {
-        const collection = this.#getCollection(type);
-        const filterFunction = this.#buildFilterFunction(query);
+        const collection = this.#getCollection<T>(type);
+        const filterFunction = this.#buildFilterFunction<T>(query);
 
         return collection.find(filterFunction);
     }
 
-    #fetchRecords(type: string, query: RecordQuery): RecordData[]
+    #fetchRecords<T extends RecordData>(type: string, query: RecordQuery<T>): T[]
     {
-        const collection = this.#getCollection(type);
-        const filterFunction = this.#buildFilterFunction(query);
+        const collection = this.#getCollection<T>(type);
+        const filterFunction = this.#buildFilterFunction<T>(query);
 
         return collection.filter(filterFunction);
     }
@@ -178,7 +178,7 @@ export default class Memory implements Driver
         }
     }
 
-    #limitNumberOfRecords(result: RecordData[], offset?: number, limit?: number): RecordData[]
+    #limitNumberOfRecords<T extends RecordData>(result: T[], offset?: number, limit?: number): T[]
     {
         if (offset === undefined && limit === undefined)
         {
@@ -191,14 +191,14 @@ export default class Memory implements Driver
         return result.slice(first, last);
     }
 
-    #sortRecords(result: RecordData[], sort?: RecordSort): RecordData[]
+    #sortRecords<T extends RecordData>(result: T[], sort?: RecordSort<T>): T[]
     {
         if (sort === undefined)
         {
             return result;
         }
 
-        return result.sort((a: RecordData, b: RecordData) =>
+        return result.sort((a: T, b: T) =>
         {
             for (const key in sort)
             {
@@ -220,26 +220,26 @@ export default class Memory implements Driver
         });
     }
 
-    #buildFilterFunction(query: RecordQuery): FilterFunction
+    #buildFilterFunction<T extends RecordData>(query: RecordQuery<T>): FilterFunction
     {
-        const statementCode = this.#buildStatementCode(query);
+        const statementCode = this.#buildStatementCode<T>(query);
         const functionCode = statementCode === '' ? 'true' : statementCode;
 
         return new Function('record', `return ${functionCode}`) as FilterFunction;
     }
 
-    #buildStatementCode(query: RecordQuery): string
+    #buildStatementCode<T extends RecordData>(query: RecordQuery<T>): string
     {
-        const multiStatements = query as QueryMultiExpressionStatement;
-        const singleStatements = query as QuerySingleExpressionStatement;
+        const multiStatements = query as QueryMultiExpressionStatement<T>;
+        const singleStatements = query as QuerySingleExpressionStatement<T>;
 
         const statementCodes = [];
 
         for (const key in multiStatements)
         {
             const code = key === 'AND' || key === 'OR'
-                ? this.#buildMultiStatementCode(key, multiStatements[key] ?? [])
-                : this.#buildExpressionCode(key, singleStatements[key]);
+                ? this.#buildMultiStatementCode<T>(key, multiStatements[key] ?? [])
+                : this.#buildExpressionCode<T>(key, singleStatements[key]!);
 
             statementCodes.push(code);
         }
@@ -247,14 +247,14 @@ export default class Memory implements Driver
         return statementCodes.join(' && ');
     }
 
-    #buildMultiStatementCode(operator: string, statements: QuerySingleExpressionStatement[])
+    #buildMultiStatementCode<T extends RecordData>(operator: string, statements: QuerySingleExpressionStatement<T>[])
     {
         const codeOperator = LOGICAL_OPERATORS[operator];
         const statementCodes = [];
 
         for (const statement of statements)
         {
-            const statementCode = this.#buildStatementCode(statement);
+            const statementCode = this.#buildStatementCode<T>(statement);
 
             statementCodes.push(statementCode);
         }
@@ -264,7 +264,7 @@ export default class Memory implements Driver
         return `(${code})`;
     }
 
-    #buildExpressionCode(key: string, expression: QueryExpression)
+    #buildExpressionCode<T extends RecordData>(key: string, expression: QueryExpression<T>)
     {
         const expressionCodes = [];
 
@@ -302,11 +302,11 @@ export default class Memory implements Driver
         return (++this.#recordId).toString().padStart(8, '0');
     }
 
-    #getCollection(type: string): RecordData[]
+    #getCollection<T extends RecordData>(type: string): T[]
     {
         const memory = this.memory;
 
-        let collection = memory.get(type);
+        let collection = memory.get(type) as T[];
 
         if (collection === undefined)
         {
@@ -318,7 +318,7 @@ export default class Memory implements Driver
         return collection;
     }
 
-    #buildRecordData(data: RecordData, fields?: RecordField[]): RecordData
+    #buildRecordData<T extends RecordData>(data: T, fields?: RecordField[]): T
     {
         if (fields === undefined)
         {
@@ -332,6 +332,6 @@ export default class Memory implements Driver
             result[field] = data[field];
         }
 
-        return result;
+        return result as T;
     }
 }

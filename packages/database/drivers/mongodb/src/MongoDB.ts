@@ -121,7 +121,7 @@ export default class MongoDB implements Driver
         }
     }
 
-    async createRecord(type: RecordType, data: RecordData): Promise<RecordId>
+    async createRecord<T extends RecordData>(type: RecordType, data: T): Promise<RecordId>
     {
         const collection = await this.#getCollection(type);
         const dataCopy = { ...data };
@@ -134,14 +134,14 @@ export default class MongoDB implements Driver
         return id as RecordId;
     }
 
-    async readRecord(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort): Promise<RecordData | undefined>
+    async readRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>): Promise<T | undefined>
     {
         const result = await this.searchRecords(type, query, fields, sort, 1, 0);
 
         return result[0];
     }
 
-    async searchRecords(type: RecordType, query: RecordQuery, fields?: RecordField[], sort?: RecordSort, limit?: number, offset?: number): Promise<RecordData[]>
+    async searchRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<T[]>
     {
         const mongoQuery = this.#buildMongoQuery(query);
         const mongoSort = this.#buildMongoSort(sort);
@@ -153,7 +153,7 @@ export default class MongoDB implements Driver
         return result.map(data => this.#buildRecordData(data, fields));
     }
 
-    async updateRecord(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<number>
     {
         const mongoQuery = this.#buildMongoQuery(query);
         const mongoData = this.#buildMongoData(data);
@@ -164,7 +164,7 @@ export default class MongoDB implements Driver
         return result.modifiedCount;
     }
 
-    async updateRecords(type: RecordType, query: RecordQuery, data: RecordData): Promise<number>
+    async updateRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<number>
     {
         const mongoQuery = this.#buildMongoQuery(query);
         const mongoData = this.#buildMongoData(data);
@@ -175,7 +175,7 @@ export default class MongoDB implements Driver
         return result.modifiedCount;
     }
 
-    async deleteRecord(type: RecordType, query: RecordQuery): Promise<number>
+    async deleteRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>
     {
         const mongoQuery = this.#buildMongoQuery(query);
 
@@ -185,7 +185,7 @@ export default class MongoDB implements Driver
         return result.deletedCount;
     }
 
-    async deleteRecords(type: RecordType, query: RecordQuery): Promise<number>
+    async deleteRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>
     {
         const mongoQuery = this.#buildMongoQuery(query);
 
@@ -195,11 +195,11 @@ export default class MongoDB implements Driver
         return result.deletedCount;
     }
 
-    #buildMongoQuery(query: RecordQuery): Filter<any> 
+    #buildMongoQuery<T extends RecordData>(query: RecordQuery<T>): Filter<any> 
     {
         const mongoQuery: Filter<any> = {};
-        const multiStatements = query as QueryMultiExpressionStatement;
-        const singleStatements = query as QuerySingleExpressionStatement;
+        const multiStatements = query as QueryMultiExpressionStatement<T>;
+        const singleStatements = query as QuerySingleExpressionStatement<T>;
 
         for (const key in multiStatements)
         {
@@ -238,7 +238,7 @@ export default class MongoDB implements Driver
         return mongoQuery;
     }
 
-    #buildMongoData(data: RecordData): RecordData
+    #buildMongoData<T extends RecordData>(data: T): RecordData
     {
         const mongoData: RecordData = {};
 
@@ -252,7 +252,7 @@ export default class MongoDB implements Driver
         return mongoData;
     }
 
-    #buildMongoSort(sort?: RecordSort): Sort
+    #buildMongoSort<T extends RecordData>(sort?: RecordSort<T>): Sort
     {
         const mongoSort: Record<string, 1 | -1> = {};
 
@@ -297,7 +297,7 @@ export default class MongoDB implements Driver
         return MongoClient.connect(connectionString);
     }
 
-    #buildRecordData(data: Document, fields?: RecordField[]): RecordData
+    #buildRecordData<T extends RecordData>(data: Document, fields?: RecordField[]): T
     {
         const result: RecordData = {};
 
@@ -323,7 +323,7 @@ export default class MongoDB implements Driver
             result[field] = value ?? undefined;
         }
 
-        return result;
+        return result as T;
     }
 
     #extractValue(expression: RecordData, operator: QueryOperator): RecordValue
