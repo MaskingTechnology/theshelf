@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/notification",
   "private": false,
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -14,7 +14,8 @@
     "test-coverage": "vitest run --coverage",
     "lint": "eslint",
     "review": "npm run build && npm run lint && npm run test",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "link": "npm link"
   },
   "files": [
     "README.md",
