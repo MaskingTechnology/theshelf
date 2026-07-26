@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/database-driver-mongodb",
   "private": false,
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -12,7 +12,8 @@
     "clean": "rimraf dist",
     "lint": "eslint",
     "review": "npm run build && npm run lint",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "link": "npm link"
   },
   "files": [
     "README.md",
@@ -21,7 +22,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "dependencies": {
-    "mongodb": "^7.2.0"
+    "mongodb": "^7.5.0"
   },
   "peerDependencies": {
     "@theshelf/database": "^0.4.3"

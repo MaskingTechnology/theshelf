@@ -1,7 +1,7 @@
 {
   "name": "theshelf",
   "private": true,
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
@@ -10,7 +10,8 @@
     "test": "npm run test --workspaces --if-present",
     "review": "npm run review --workspaces",
     "publish": "npm publish --workspaces --access=public",
-    "version": "npm version $VERSION --no-git-tag-version --workspaces --include-workspace-root=true"
+    "version": "npm version $VERSION --no-git-tag-version --workspaces --include-workspace-root=true",
+    "link": "npm link --workspaces"
   },
   "workspaces": [
     "packages/logging/core",
