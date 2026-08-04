@@ -1,5 +1,5 @@
 
-import type { ValidationSchema } from '../../../validation/core/src/index.js';
+import type { ValidationSchema } from '@theshelf/validation';
 
 import { VALUES } from './values.fixture.js';
 
@@ -8,8 +8,8 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     STRING: {
         string: {
             message: VALUES.MESSAGES.INVALID_STRING,
+            required: true,
             STRING: {
-                required: true,
                 minLength: 4,
                 maxLength: 7,
                 pattern: '^[a-zA-Z]+$'
@@ -20,8 +20,8 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     NUMBER: {
         number: {
             message: VALUES.MESSAGES.INVALID_NUMBER,
+            required: true,
             NUMBER: {
-                required: true,
                 minValue: 10,
                 maxValue: 20
             }
@@ -31,63 +31,54 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     BOOLEAN: {
         boolean: {
             message: VALUES.MESSAGES.INVALID_BOOLEAN,
-            BOOLEAN: {
-                required: true
-            }
+            required: true,
+            BOOLEAN: { }
         }
     },
 
     DATE: {
         date: {
             message: VALUES.MESSAGES.INVALID_DATE,
-            DATE: {
-                required: true
-            }
+            required: true,
+            DATE: {}
         }
     },
 
     DATETIME: {
         datetime: {
             message: VALUES.MESSAGES.INVALID_DATETIME,
-            DATETIME: {
-                required: true
-            }
+            required: true,
+            DATETIME: { }
         }
     },
 
     UUID: {
         id: {
             message: VALUES.MESSAGES.INVALID_ID,
-            UUID: {
-                required: true
-            }
+            required: true,
+            UUID: { }
         }
     },
 
     EMAIL: {
         email: {
             message: VALUES.MESSAGES.INVALID_EMAIL,
-            EMAIL: {
-                required: true
-            }
+            required: true,
+            EMAIL: { }
         }
     },
 
     ARRAY: {
         list: {
             message: VALUES.MESSAGES.INVALID_LIST,
+            required: true,
             ARRAY: {
-                required: true,
                 minLength: 1,
                 maxLength: 2,
-                validations:
+                STRING:
                 {
-                    STRING:
-                    {
-                        required: true,
-                        minLength: 3,
-                        maxLength: 5
-                    }
+                    minLength: 3,
+                    maxLength: 5
                 }
             }
         }
@@ -96,17 +87,16 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     URL_NO_PROTOCOL: {
         url: {
             message: VALUES.MESSAGES.INVALID_URL,
-            URL: {
-                required: true
-            }
+            required: true,
+            URL: { }
         }
     },
 
     URL_HTTPS_FTP: {
         url: {
             message: VALUES.MESSAGES.INVALID_URL,
+            required: true,
             URL: {
-                required: true,
                 protocols: ['https', 'ftp']
             }
         }
@@ -115,8 +105,8 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     ENUM: {
         enum: {
             message: VALUES.MESSAGES.INVALID_ENUM,
+            required: true,
             ENUM: {
-                required: true,
                 values: ["A", "B", "C"]
             }
         }
@@ -125,14 +115,13 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     OPTIONAL: {
         string: {
             message: VALUES.MESSAGES.INVALID_STRING,
-            STRING: {
-                required: false
-            }
+            required: false,
+            STRING: { }
         },
         number: {
             message: VALUES.MESSAGES.INVALID_NUMBER,
+            required: false,
             NUMBER: {
-                required: false,
                 minValue: 18
             }
         }
@@ -141,60 +130,49 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
     MIXED_SCHEMA: {
         id: {
             message: VALUES.MESSAGES.INVALID_ID,
-            UUID: {
-                required: true
-            }
+            required: true,
+            UUID: { }
         },
         string: {
             message: VALUES.MESSAGES.INVALID_STRING,
-            STRING: {
-                required: true
-            }
+            required: true,
+            STRING: { }
         },
         number: {
             message: VALUES.MESSAGES.INVALID_NUMBER,
-            NUMBER: {
-                required: false
-            }
+            required: false,
+            NUMBER: { }
         },
         email: {
             message: VALUES.MESSAGES.INVALID_EMAIL,
-            EMAIL: {
-                required: true
-            }
+            required: true,
+            EMAIL: { }
         },
         date: {
             message: VALUES.MESSAGES.INVALID_DATE,
-            DATE: {
-                required: true
-            }
+            required: true,
+            DATE: { }
         },
         datetime: {
             message: VALUES.MESSAGES.INVALID_DATETIME,
-            DATETIME: {
-                required: true
-            }
+            required: true,
+            DATETIME: { }
         },
         boolean: {
             message: VALUES.MESSAGES.INVALID_BOOLEAN,
-            BOOLEAN: {
-                required: true
-            }
+            required: true,
+            BOOLEAN: { }
         },
         list: {
             message: VALUES.MESSAGES.INVALID_LIST,
+            required: false,
             ARRAY: {
-                required: false,
                 minLength: 1,
                 maxLength: 2,
-                validations:
+                STRING:
                 {
-                    STRING:
-                    {
-                        required: true,
-                        minLength: 3,
-                        maxLength: 5
-                    }
+                    minLength: 3,
+                    maxLength: 5
                 }
             }
         }

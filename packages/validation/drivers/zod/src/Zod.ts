@@ -2,30 +2,33 @@
 import { z } from 'zod';
 import type { $ZodIssue, $ZodIssueUnrecognizedKeys } from 'zod/v4/core';
 
-import { ValidationResult, FieldTypes, MAX_EMAIL_LENGTH, MAX_URL_LENGTH, UnknownValidator } from '@theshelf/validation';
-import type { Driver, Message, Validation, ValidationSchema, ValidationTypes } from '@theshelf/validation';
+import { ValidationResult, MAX_EMAIL_LENGTH, MAX_URL_LENGTH } from '@theshelf/validation';
+import type { Driver, ValidationProperties, Validation, ValidationSchema, ValidationTypes } from '@theshelf/validation';
 
-type ValidatorFunction = (value: ValidationTypes[keyof ValidationTypes]) => z.ZodTypeAny;
+type ValidationType = keyof ValidationTypes;
+type GenericConstraints = ValidationTypes[ValidationType] & ValidationProperties;
+type Constraints<T extends ValidationType> = ValidationTypes[T] & ValidationProperties;
+type ValidatorFunction = (constraints: GenericConstraints, required: boolean) => z.ZodTypeAny;
 
 // Zod is so type heavy that we've chosen for inferred types to be used.
 // This is a trade-off between readability and verbosity.
 
 export default class Zod implements Driver
 {
-    readonly #validations = new Map<string, ValidatorFunction>();
+    readonly #validators = new Map<string, ValidatorFunction>();
 
     constructor()
     {
-        this.#validations.set(FieldTypes.STRING, (value: ValidationTypes['STRING']) => this.#validateString(value));
-        this.#validations.set(FieldTypes.NUMBER, (value: ValidationTypes['NUMBER']) => this.#validateNumber(value));
-        this.#validations.set(FieldTypes.BOOLEAN, (value: ValidationTypes['BOOLEAN']) => this.#validateBoolean(value));
-        this.#validations.set(FieldTypes.DATE, (value: ValidationTypes['DATE']) => this.#validateDate(value));
-        this.#validations.set(FieldTypes.DATETIME, (value: ValidationTypes['DATETIME']) => this.#validateDateTime(value));
-        this.#validations.set(FieldTypes.UUID, (value: ValidationTypes['UUID']) => this.#validateUuid(value));
-        this.#validations.set(FieldTypes.EMAIL, (value: ValidationTypes['EMAIL']) => this.#validateEmail(value));
-        this.#validations.set(FieldTypes.ARRAY, (value: ValidationTypes['ARRAY']) => this.#validateArray(value));
-        this.#validations.set(FieldTypes.URL, (value: ValidationTypes['URL']) => this.#validateUrl(value));
-        this.#validations.set(FieldTypes.ENUM, (value: ValidationTypes['ENUM']) => this.#validateEnum(value));
+        this.#validators.set('string', (constraints: Constraints<'STRING'>, required: boolean) => this.#validateString(constraints, required));
+        this.#validators.set('number', (constraints: Constraints<'NUMBER'>, required: boolean) => this.#validateNumber(constraints, required));
+        this.#validators.set('boolean', (constraints: Constraints<'BOOLEAN'>, required: boolean) => this.#validateBoolean(constraints, required));
+        this.#validators.set('date', (constraints: Constraints<'DATE'>, required: boolean) => this.#validateDate(constraints, required));
+        this.#validators.set('datetime', (constraints: Constraints<'DATETIME'>, required: boolean) => this.#validateDateTime(constraints, required));
+        this.#validators.set('uuid', (constraints: Constraints<'UUID'>, required: boolean) => this.#validateUuid(constraints, required));
+        this.#validators.set('email', (constraints: Constraints<'EMAIL'>, required: boolean) => this.#validateEmail(constraints, required));
+        this.#validators.set('array', (constraints: Constraints<'ARRAY'>, required: boolean) => this.#validateArray(constraints, required));
+        this.#validators.set('url', (constraints: Constraints<'URL'>, required: boolean) => this.#validateUrl(constraints, required));
+        this.#validators.set('enum', (constraints: Constraints<'ENUM'>, required: boolean) => this.#validateEnum(constraints, required));
     }
 
     get name(): string { return Zod.name; }
@@ -53,130 +56,129 @@ export default class Zod implements Driver
         return Object.entries(schema)
             .reduce((partialSchema, [key, value]) => 
             {
-                const fieldValidation = this.#getValidation(value);
+                const fieldValidator = this.#getFieldValidator(value);
 
-                return partialSchema.extend({ [key]: fieldValidation });
-            },
-                z.object({})
+                return partialSchema.extend({ [key]: fieldValidator });
+
+            }, z.object({})
             ).strict();
     }
 
-    #getValidation(schema: Partial<Validation | Message>)
+    #getFieldValidator(schema: Validation)
     {
-        for (const [key, validation] of Object.entries(schema))
+        const required = schema.required === true;
+
+        for (const key of Object.keys(schema))
         {
-            if (key === 'message') continue;
+            const type = key.toLowerCase();
 
-            const validator = this.#validations.get(key.toLowerCase());
+            const validator = this.#validators.get(type);
 
-            if (validator === undefined)
-            {
-                throw new UnknownValidator(key);
-            }
+            if (validator === undefined) continue;
 
-            return validator(validation);
+            const constraints = schema[key as ValidationType] as GenericConstraints;
+
+            return validator(constraints, required);
         }
 
         return z.never();
     }
 
-    #validateString(value: ValidationTypes['STRING'])
+    #validateString(constraints: Constraints<'STRING'>, required: boolean)
     {
         let validation = z.string();
 
-        if (value.minLength !== undefined) validation = validation.min(value.minLength);
-        if (value.maxLength !== undefined) validation = validation.max(value.maxLength);
-        if (value.pattern !== undefined) validation = validation.regex(new RegExp(value.pattern));
+        if (constraints.minLength !== undefined) validation = validation.min(constraints.minLength);
+        if (constraints.maxLength !== undefined) validation = validation.max(constraints.maxLength);
+        if (constraints.pattern !== undefined) validation = validation.regex(new RegExp(constraints.pattern));
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateNumber(value: ValidationTypes['NUMBER'])
+    #validateNumber(constraints: Constraints<'NUMBER'>, required: boolean)
     {
         let validation = z.number();
 
-        if (value.minValue !== undefined) validation = validation.min(value.minValue);
-        if (value.maxValue !== undefined) validation = validation.max(value.maxValue);
+        if (constraints.minValue !== undefined) validation = validation.min(constraints.minValue);
+        if (constraints.maxValue !== undefined) validation = validation.max(constraints.maxValue);
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateBoolean(value: ValidationTypes['BOOLEAN'])
+    #validateBoolean(constraints: Constraints<'BOOLEAN'>, required: boolean)
     {
         const validation = z.boolean();
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateDate(value: ValidationTypes['DATE'])
+    #validateDate(constraints: Constraints<'DATE'>, required: boolean)
     {
         const validation = z.iso.date();
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateDateTime(value: ValidationTypes['DATETIME'])
+    #validateDateTime(constraints: Constraints<'DATETIME'>, required: boolean)
     {
         const validation = z.iso.datetime();
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateUuid(value: ValidationTypes['UUID'])
+    #validateUuid(constraints: Constraints<'UUID'>, required: boolean)
     {
         const validation = z.uuid();
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateEmail(value: ValidationTypes['EMAIL'])
+    #validateEmail(constraints: Constraints<'EMAIL'>, required: boolean)
     {
         const validation = z.email().max(MAX_EMAIL_LENGTH);
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateArray(value: ValidationTypes['ARRAY'])
+    #validateArray(constraints: Constraints<'ARRAY'>, required: boolean)
     {
-        let validation = value.validations === undefined
-            ? z.array(z.unknown())
-            : z.array(this.#getValidation(value.validations));
+        const itemValidator = this.#getFieldValidator(constraints);
 
-        if (value.minLength !== undefined) validation = validation.min(value.minLength);
-        if (value.maxLength !== undefined) validation = validation.max(value.maxLength);
+        let validation: z.ZodArray<z.ZodTypeAny> = z.array(itemValidator);
 
-        return this.#checkRequired(value, validation);
+        if (constraints.minLength !== undefined) validation = validation.min(constraints.minLength);
+        if (constraints.maxLength !== undefined) validation = validation.max(constraints.maxLength);
+
+        return this.#checkRequired(validation, required);
     }
 
-    #validateUrl(value: ValidationTypes['URL'])
+    #validateUrl(constraints: Constraints<'URL'>, required: boolean)
     {
         let validation = z.url().max(MAX_URL_LENGTH);
 
-        if (value.protocols !== undefined)
+        if (constraints.protocols !== undefined)
         {
-            const escapedProtocols = value.protocols.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const escapedProtocols = constraints.protocols!.map((p: string) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
             const expression = escapedProtocols.join('|');
 
             validation = validation.regex(new RegExp(`^(${expression}):.*`));
         }
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #validateEnum(value: ValidationTypes['ENUM'])
+    #validateEnum(constraints: Constraints<'ENUM'>, required: boolean)
     {
-        const validation = value.values === undefined
+        const validation = constraints.values === undefined
             ? z.enum([])
-            : z.enum(value.values);
+            : z.enum(constraints.values);
 
-        return this.#checkRequired(value, validation);
+        return this.#checkRequired(validation, required);
     }
 
-    #checkRequired(value: ValidationTypes[keyof ValidationTypes], validation: z.ZodTypeAny)
+    #checkRequired(validation: z.ZodTypeAny, required: boolean)
     {
-        return value.required
-            ? validation
-            : validation.optional();
+        return required ? validation : validation.optional();
     }
 
     #getMessages(issues: $ZodIssue[], schema: ValidationSchema)
@@ -215,7 +217,7 @@ export default class Zod implements Driver
 
     #getMessageByField(path: string, schema: ValidationSchema)
     {
-        const field = schema[path] as Message;
+        const field = schema[path] as Validation;
 
         return field?.message ?? 'Invalid field';
     }

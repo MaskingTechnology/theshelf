@@ -3,7 +3,7 @@ import type Logger from '@theshelf/logging';
 
 import type { Driver } from './definitions/interfaces.js';
 import type { ValidationSchema } from './definitions/types.js';
-import type ValidationResult from './definitions/ValidationResult.js';
+import type ValidationResult from './ValidationResult.js';
 
 export default class Validator
 {
