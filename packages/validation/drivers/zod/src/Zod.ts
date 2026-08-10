@@ -64,11 +64,11 @@ export default class Zod implements Driver
             ).strict();
     }
 
-    #getFieldValidator(schema: Validation)
+    #getFieldValidator(validation: Validation)
     {
-        const required = schema.required === true;
+        const required = validation.required === true;
 
-        for (const key of Object.keys(schema))
+        for (const key of Object.keys(validation))
         {
             const type = key.toLowerCase();
 
@@ -76,7 +76,7 @@ export default class Zod implements Driver
 
             if (validator === undefined) continue;
 
-            const constraints = schema[key as ValidationType] as GenericConstraints;
+            const constraints = validation[key as ValidationType] as GenericConstraints;
 
             return validator(constraints, required);
         }
@@ -217,8 +217,8 @@ export default class Zod implements Driver
 
     #getMessageByField(path: string, schema: ValidationSchema)
     {
-        const field = schema[path] as Validation;
+        const validation = schema[path] as Validation;
 
-        return field?.message ?? 'Invalid field';
+        return validation?.message ?? 'Invalid field';
     }
 }
