@@ -27,6 +27,7 @@
     "packages/authentication/drivers/openid",
     "packages/caching/drivers/redis",
     "packages/database/drivers/mongodb",
+    "packages/eventbroker/drivers/kafka",
     "packages/filestore/drivers/s3",
     "packages/logging/drivers/database",
     "packages/notification/drivers/webpush",
