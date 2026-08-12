@@ -70,6 +70,8 @@ export default class Kafka implements Driver
             ?? await this.#createConsumer(subscription.topic);
 
         consumer.registerHandler(subscription.name, subscription.handler);
+
+        consumer.listen();
     }
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
@@ -106,8 +108,6 @@ export default class Kafka implements Driver
 
         this.#consumers.set(topic, consumer);
 
-        consumer.listen();
-
         return consumer;
     }
 
@@ -122,6 +122,6 @@ export default class Kafka implements Driver
     {
         if (this.#errorHandler === undefined) return;
         
-        this.#errorHandler(event, error);
+        await this.#errorHandler(event, error);
     }
 }

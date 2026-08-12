@@ -37,7 +37,7 @@ describe('EventBroker', () =>
             expect(data2).toStrictEqual(PUBLICATIONS.FIRST_CREATED.data);
         });
 
-        it('should publish to different channels', async () =>
+        it('should publish to different topics', async () =>
         {
             const firstSubscription = createSubscription(EVENTS.FIRST_CREATED);
             const secondSubscription = createSubscription(EVENTS.SECOND_CREATED);
@@ -51,13 +51,31 @@ describe('EventBroker', () =>
             expect(secondData).toStrictEqual(PUBLICATIONS.SECOND_CREATED.data);
         });
 
+        it('should unsubscribe an publication', async () =>
+        {
+            const subscription = createErrorSubscription(EVENTS.FIRST_ERRORED);
+
+            await eventBroker.subscribe(subscription);
+            await eventBroker.unsubscribe(subscription);
+
+            await eventBroker.publish(EVENTS.FIRST_ERRORED);
+
+            expect(logDriver.logs.length).toBe(3);
+            expect(logDriver.logs[0].message).toBe('Memory -> Subscribing to first -> errored');
+            expect(logDriver.logs[1].message).toBe('Memory -> Unsubscribing from first -> errored');
+            expect(logDriver.logs[2].message).toBe('Memory -> Publishing to first -> errored');
+        });
+
         it('should handle consumer errors', async () =>
         {
-            await createErrorSubscription(EVENTS.FIRST_ERRORED);
+            const subscription = createErrorSubscription(EVENTS.FIRST_ERRORED);
 
+            await eventBroker.subscribe(subscription);
             await eventBroker.publish(PUBLICATIONS.FIRST_ERRORED);
 
             expect(logDriver.logs.length).toBe(3);
+            expect(logDriver.logs[0].message).toBe('Memory -> Subscribing to first -> errored');
+            expect(logDriver.logs[1].message).toBe('Memory -> Publishing to first -> errored');
             expect(logDriver.logs[2].message).toContain('Memory -> Processing event from first -> errored failed with error Error: Error');
         });
     });

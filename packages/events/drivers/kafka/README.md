@@ -27,7 +27,7 @@ const eventBroker = new EventBroker(driver);
 
 ```ts
 type KafkaConfiguration = {
-    readonly brokers: string[]; // e.g. http://my-kafka-cluster.local:9092
+    readonly brokers: string[]; // e.g. my-kafka-cluster.local:9092
     readonly groupId: string; // e.g. prod.domain.social
     readonly clientId: string;// e.g. prod.domain.social.creator
 };

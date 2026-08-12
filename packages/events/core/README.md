@@ -34,11 +34,11 @@ await eventBroker.connect();
 await eventBroker.disconnect();
 
 // Subscribe to an event
-const subscription: Subscription = { channel: 'post', name: 'updated', handler: (postId: string) => { ... } };
+const subscription: Subscription = { topic: 'post', name: 'updated', handler: (postId: string) => { ... } };
 await eventBroker.subscribe(subscription);
 
 // Publish an event
-const publication: Publication = { channel: 'post', name: 'updated', data: { postId: '123' } };
+const publication: Publication = { topic: 'post', name: 'updated', data: { postId: '123' } };
 await eventBroker.publish(publication);
 
 // Unsubscribe from an event
@@ -51,7 +51,7 @@ The publication has the following structure.
 
 ```ts
 type Publication<T> = {
-    channel: string;
+    topic: string;
     name: string;
     data?: T
 }
@@ -61,7 +61,7 @@ The subscription has the following structure.
 
 ```ts
 type Subscription<T> = {
-    channel: string;
+    topic: string;
     name: string;
     handler: EventHandler<T>;
 }
@@ -70,7 +70,7 @@ type Subscription<T> = {
 Where the event handler performs an operation on the data of the publication.
 
 ```ts
-type EventHandler<T> = (data: T) => void;
+type EventHandler<T> = (data: T) => Promise<void>;
 ```
 
 ## Drivers

@@ -13,11 +13,10 @@ export function createSubscription<T>(event: Event): Promise<T>
     });
 }
 
-export async function createErrorSubscription(event: Event): Promise<void>
+
+export function createErrorSubscription<T>(event: Event): Subscription<T>
 {
     const handler = () => { throw new Error('Error'); };
 
-    const subscription = { ...event, handler };
-
-    eventBroker.subscribe(subscription);
+    return { ...event, handler };
 }
