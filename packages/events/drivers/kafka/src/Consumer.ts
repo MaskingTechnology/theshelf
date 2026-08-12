@@ -1,7 +1,7 @@
 
-import { Consumer as KafkaConsumer, type Message, type MessagesStream, stringDeserializers } from '@platformatic/kafka';
+import { jsonDeserializer, Consumer as KafkaConsumer, type Message, type MessagesStream, stringDeserializer } from '@platformatic/kafka';
 
-import type { EventHandler } from '@theshelf/eventbroker';
+import type { EventHandler, Event, ErrorHandler } from '@theshelf/events';
 
 type Options =
 {
@@ -13,14 +13,16 @@ type Options =
 
 export default class Consumer
 {
-    readonly #consumer: KafkaConsumer<string, string, string, string>;
+    readonly #consumer: KafkaConsumer<string, Record<string, unknown>, string, string>;
 
     readonly #topic: string;
     readonly #handlers = new Map<string, EventHandler<unknown>[]>();
+    readonly #errorHandler: ErrorHandler;
 
-    #stream: MessagesStream<string, string, string, string> | undefined;
+    #stream: MessagesStream<string, Record<string, unknown>, string, string> | undefined;
+    #listenerPromise: Promise<void> | undefined;
 
-    constructor(options: Options)
+    constructor(options: Options, errorHandler: ErrorHandler)
     {
         this.#topic = options.topic;
 
@@ -28,8 +30,15 @@ export default class Consumer
             groupId: options.groupId,
             clientId: options.clientId,
             bootstrapBrokers: options.brokers,
-            deserializers: stringDeserializers
+            deserializers: {
+                key: stringDeserializer,
+                value: jsonDeserializer,
+                headerKey: stringDeserializer,
+                headerValue: stringDeserializer
+            }
         });
+
+        this.#errorHandler = errorHandler;
     }
 
     get topic(): string { return this.#topic; }
@@ -44,16 +53,26 @@ export default class Consumer
             mode: 'committed',
             fallbackMode: 'earliest'
         });
+    }
 
-        this.#listen(this.#stream).catch(error =>
-        {            
-            throw error;
-        });
+    listen(): void
+    {
+        if (this.#stream === undefined)
+        {
+            return;
+        }
+
+        this.#listenerPromise = this.#listen(this.#stream);
     }
 
     async close(): Promise<void>
     {
         await this.#stream?.close();
+
+        if (this.#listenerPromise)
+        {
+            await this.#listenerPromise;
+        }
 
         await this.#consumer.close();
     }
@@ -77,14 +96,16 @@ export default class Consumer
         if (index === -1) return;
 
         eventHandlers.splice(index, 1);
+
+        if (eventHandlers.length === 0)
+        {
+            this.#handlers.delete(eventName);
+        }
     }
 
-    hasEventHandlers(eventName: string): boolean
+    hasEventHandlers(): boolean
     {
-        const eventHandlers = this.#getEventHandlers(eventName);
-
-        return eventHandlers !== undefined
-            && eventHandlers.length > 0;
+        return this.#handlers.size > 0;
     }
 
     #getEventHandlers<T>(eventName: string): EventHandler<T>[] | undefined
@@ -101,7 +122,7 @@ export default class Consumer
         return eventHandlers as EventHandler<T>[];
     }
 
-    async #listen(stream: MessagesStream<string, string, string, string>): Promise<void>
+    async #listen(stream: MessagesStream<string, Record<string, unknown>, string, string>): Promise<void>
     {
         for await (const message of stream)
         {
@@ -109,15 +130,22 @@ export default class Consumer
         }
     }
 
-    async #handle(message: Message<string, string, string, string>): Promise<void>
+    async #handle(message: Message<string, Record<string, unknown>, string, string>): Promise<void>
     {
         const handlers = this.#handlers.get(message.key) ?? [];
 
         for (const handler of handlers)
         {
-            const value = JSON.parse(message.value);
+            try
+            {
+                await handler(message.value);
+            }
+            catch(error: unknown)
+            {
+                const event: Event = { topic: message.topic, name: message.key };
 
-            await handler(value);
+                await this.#errorHandler(event, error);
+            }
         }
     }
 }

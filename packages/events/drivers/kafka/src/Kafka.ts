@@ -1,5 +1,5 @@
 
-import type { Driver, Publication, Subscription } from '@theshelf/eventbroker';
+import type { Driver, Publication, Subscription, ErrorHandler, Event } from '@theshelf/events';
 
 import Consumer from './Consumer.js';
 import Producer from './Producer.js';
@@ -20,6 +20,7 @@ export default class Kafka implements Driver
     readonly #clientId: string;
 
     #connected = false;
+    #errorHandler: ErrorHandler | undefined;
 
     constructor(configuration: KafkaConfiguration)
     {
@@ -37,8 +38,10 @@ export default class Kafka implements Driver
 
     get connected(): boolean { return this.#connected; }
 
-    async connect(): Promise<void>
+    async connect(errorHandler: ErrorHandler): Promise<void>
     {
+        this.#errorHandler = errorHandler;
+
         this.#connected = true;
     }
 
@@ -63,21 +66,21 @@ export default class Kafka implements Driver
     
     async subscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#getConsumer(subscription.channel)
-            ?? await this.#createConsumer(subscription.channel);
+        const consumer = this.#getConsumer(subscription.topic)
+            ?? await this.#createConsumer(subscription.topic);
 
         consumer.registerHandler(subscription.name, subscription.handler);
     }
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#getConsumer(subscription.channel);
+        const consumer = this.#getConsumer(subscription.topic);
 
         if (consumer === undefined) return;
 
         consumer.unregisterHandler(subscription.name, subscription.handler);
 
-        if (consumer.hasEventHandlers(subscription.name) === false)
+        if (consumer.hasEventHandlers() === false)
         {
             return this.#removeConsumer(consumer);
         }
@@ -90,16 +93,20 @@ export default class Kafka implements Driver
 
     async #createConsumer(topic: string): Promise<Consumer>
     {
+        const errorHandler: ErrorHandler = (event, error) => this.#handleError(event, error);
+
         const consumer = new Consumer({
             topic,
             clientId: this.#clientId,
             groupId: this.#groupId,
             brokers: this.#brokers
-        });
+        }, errorHandler);
+
+        await consumer.consume();
 
         this.#consumers.set(topic, consumer);
 
-        await consumer.consume();
+        consumer.listen();
 
         return consumer;
     }
@@ -109,5 +116,12 @@ export default class Kafka implements Driver
         this.#consumers.delete(consumer.topic);
 
         return consumer.close();
+    }
+
+    async #handleError(event: Event, error: unknown): Promise<void>
+    {
+        if (this.#errorHandler === undefined) return;
+        
+        this.#errorHandler(event, error);
     }
 }

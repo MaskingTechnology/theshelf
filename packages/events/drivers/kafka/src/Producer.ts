@@ -1,6 +1,6 @@
 
-import { type MessageToProduce, Producer as KafkaProducer, stringSerializers } from '@platformatic/kafka';
-import { type Publication } from '@theshelf/eventbroker';
+import { type MessageToProduce, jsonSerializer, Producer as KafkaProducer, stringSerializer } from '@platformatic/kafka';
+import { type Publication } from '@theshelf/events';
 
 export type Options =
 {
@@ -10,7 +10,7 @@ export type Options =
 
 export default class Producer
 {
-    readonly #producer: KafkaProducer<string, string, string, string>;
+    readonly #producer: KafkaProducer<string, Record<string, unknown>, string, string>;
     
     readonly #brokers: string[];
     readonly #clientId: string;
@@ -24,17 +24,22 @@ export default class Producer
             clientId: this.#clientId,
             bootstrapBrokers: this.#brokers,
             idempotent: true,
-            serializers: stringSerializers
+            serializers: {
+                key: stringSerializer,
+                value: jsonSerializer,
+                headerKey: stringSerializer,
+                headerValue: stringSerializer
+            }
         });
     }
 
     async send(publication: Publication<unknown>): Promise<void>
     {
-        const message: MessageToProduce<string, string, string, string> =
+        const message: MessageToProduce<string, Record<string, unknown>, string, string> =
         {
-            topic: publication.channel,
+            topic: publication.topic,
             key: publication.name,
-            value: JSON.stringify(publication.data)
+            value: publication.data as Record<string, unknown>
         };
 
         await this.#producer.send({

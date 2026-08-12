@@ -6,7 +6,7 @@ This package contains the publication / subscription model. It uses a interchang
 ## Installation
 
 ```bash
-npm install @theshelf/eventbroker
+npm install @theshelf/events
 ```
 
 ## How to use
@@ -14,7 +14,7 @@ npm install @theshelf/eventbroker
 The basic set up looks like this.
 
 ```ts
-import EventBroker, { MemoryDriver } from '@theshelf/eventbroker';
+import EventBroker, { MemoryDriver } from '@theshelf/events';
 
 const driver = new MemoryDriver();
 const eventBroker = new EventBroker(driver);
@@ -25,7 +25,7 @@ const eventBroker = new EventBroker(driver);
 ## Operations
 
 ```ts
-import type { Publication, Subscription } from '@theshelf/eventbroker';
+import type { Publication, Subscription } from '@theshelf/events';
 
 // Open connection
 await eventBroker.connect();

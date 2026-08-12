@@ -1,10 +1,11 @@
 
 export type Event = {
-    channel: string;
+    topic: string;
     name: string;
 };
 
-export type EventHandler<T> = (data: T) => void | Promise<void>;
+export type EventHandler<T> = (data: T) => Promise<void>;
+export type ErrorHandler = (event: Event, error: unknown) => Promise<void>;
 
 export type Publication<T> = Event & {
     data?: T;

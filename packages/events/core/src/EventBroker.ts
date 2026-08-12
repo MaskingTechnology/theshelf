@@ -2,7 +2,7 @@
 import type Logger from '@theshelf/logging';
 
 import type { Driver } from './definitions/interfaces.js';
-import type { Publication, Subscription } from './definitions/types.js';
+import type { ErrorHandler, Event, Publication, Subscription } from './definitions/types.js';
 import NotConnected from './errors/NotConnected.js';
 
 export default class EventBroker
@@ -34,9 +34,11 @@ export default class EventBroker
 
         this.#logger?.debug(this.#logPrefix, 'Connecting');
         
+        const errorHandler: ErrorHandler = (event, error) => this.#handleError(event, error);
+
         try
         {
-            await this.#driver.connect();
+            await this.#driver.connect(errorHandler);
         }
         catch (error)
         {
@@ -69,7 +71,7 @@ export default class EventBroker
 
     async publish<T>(publication: Publication<T>): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Publishing to', publication.channel, '->', publication.name);
+        this.#logger?.debug(this.#logPrefix, 'Publishing to', publication.topic, '->', publication.name);
 
         try
         {
@@ -79,7 +81,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Publish to', publication.channel, '->', publication.name, 'failed with error', error);
+            this.#logger?.error(this.#logPrefix, 'Publish to', publication.topic, '->', publication.name, 'failed with error', error);
 
             throw error;
         }
@@ -87,7 +89,7 @@ export default class EventBroker
 
     async subscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Subscribing to', subscription.channel, '->', subscription.name);
+        this.#logger?.debug(this.#logPrefix, 'Subscribing to', subscription.topic, '->', subscription.name);
 
         try
         {
@@ -97,7 +99,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Subscribe to', subscription.channel, '->', subscription.name, 'failed with error', error);
+            this.#logger?.error(this.#logPrefix, 'Subscribe to', subscription.topic, '->', subscription.name, 'failed with error', error);
 
             throw error;
         }
@@ -105,7 +107,7 @@ export default class EventBroker
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Unsubscribing from', subscription.channel, '->', subscription.name);
+        this.#logger?.debug(this.#logPrefix, 'Unsubscribing from', subscription.topic, '->', subscription.name);
 
         try
         {
@@ -115,10 +117,15 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Unsubscribe from', subscription.channel, '->', subscription.name, 'failed with error', error);
+            this.#logger?.error(this.#logPrefix, 'Unsubscribe from', subscription.topic, '->', subscription.name, 'failed with error', error);
 
             throw error;
         }
+    }
+
+    async #handleError(event: Event, error: unknown): Promise<void>
+    {
+        this.#logger?.error(this.#logPrefix, 'Processing event from', event.topic, '->', event.name, 'failed with error', error);
     }
 
     #validateConnection(): void

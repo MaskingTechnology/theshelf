@@ -6,7 +6,7 @@ This package contains the driver implementation for Kafka. This driver can be us
 ## Installation
 
 ```bash
-npm install @theshelf/eventbroker @theshelf/eventbroker-driver-kafka
+npm install @theshelf/events @theshelf/events-driver-kafka
 ```
 
 ## How to use
@@ -14,8 +14,8 @@ npm install @theshelf/eventbroker @theshelf/eventbroker-driver-kafka
 The basic set up looks like this.
 
 ```ts
-import EventBroker from '@theshelf/eventbroker';
-import { KafkaDriver } from '@theshelf/eventbroker-driver-kafka';
+import EventBroker from '@theshelf/events';
+import { KafkaDriver } from '@theshelf/events-driver-kafka';
 
 const driver = new KafkaDriver({/* Configuration options */});
 const eventBroker = new EventBroker(driver);
@@ -28,7 +28,7 @@ const eventBroker = new EventBroker(driver);
 ```ts
 type KafkaConfiguration = {
     readonly brokers: string[]; // e.g. http://my-kafka-cluster.local:9092
-    readonly groupId: string; // e.g. prod.orders.payment-service
-    readonly clientId: string;// e.g. prod.orders.payment-service.order-events-processor
+    readonly groupId: string; // e.g. prod.domain.social
+    readonly clientId: string;// e.g. prod.domain.social.creator
 };
 ```

@@ -2,14 +2,15 @@
 import { EventEmitter } from 'node:events';
 
 import type { Driver } from '../definitions/interfaces.js';
-import type { Event, Publication, Subscription } from '../definitions/types.js';
+import type { Event, Publication, Subscription, ErrorHandler } from '../definitions/types.js';
 
 import NotConnected from '../errors/NotConnected.js';
 
 export default class Memory implements Driver
 {
     readonly #emitters = new Map<string, EventEmitter>();
-
+    
+    #errorHandler: ErrorHandler | undefined;
     #connected = false;
 
     get name(): string { return Memory.name; }
@@ -26,8 +27,10 @@ export default class Memory implements Driver
         return this.#emitters;
     }
 
-    async connect(): Promise<void>
+    async connect(errorHandler: ErrorHandler): Promise<void>
     {
+        this.#errorHandler = errorHandler;
+
         this.#connected = true;
     }
 
@@ -48,7 +51,7 @@ export default class Memory implements Driver
     {
         const emitter = this.#getEmitter(subscription);
 
-        emitter.on(subscription.name, subscription.handler);
+        emitter.on(subscription.name, data => this.#handle<T>(subscription, data));
     }
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
@@ -67,11 +70,30 @@ export default class Memory implements Driver
     {
         const emitters = this.emitters;
 
-        if (emitters.has(event.channel) === false)
+        if (emitters.has(event.topic) === false)
         {
-            emitters.set(event.channel, new EventEmitter());
+            emitters.set(event.topic, new EventEmitter());
         }
 
-        return emitters.get(event.channel) as EventEmitter;
+        return emitters.get(event.topic) as EventEmitter;
+    }
+
+    async #handle<T>(subscription: Subscription<T>, data: T): Promise<void>
+    {
+        try
+        {
+            await subscription.handler(data);
+        }
+        catch(error: unknown)
+        {
+            await this.#handleError(subscription, error);
+        }
+    }
+
+    async #handleError(event: Event, error: unknown)
+    {
+        if (this.#errorHandler === undefined) return;
+
+        await this.#errorHandler(event, error);
     }
 }

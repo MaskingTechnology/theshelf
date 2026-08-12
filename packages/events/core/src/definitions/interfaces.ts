@@ -1,12 +1,12 @@
 
-import type { Publication, Subscription } from './types.js';
+import type { Publication, Subscription, ErrorHandler } from './types.js';
 
 export interface Driver
 {
     get name(): string;
     get connected(): boolean;
 
-    connect(): Promise<void>;
+    connect(errorHandler: ErrorHandler): Promise<void>;
     disconnect(): Promise<void>;
 
     publish<T>(publication: Publication<T>): Promise<void>;

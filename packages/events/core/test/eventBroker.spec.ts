@@ -48,5 +48,7 @@ describe('EventBroker', () =>
             expect(firstData).toStrictEqual(PUBLICATIONS.FIRST_CREATED.data);
             expect(secondData).toStrictEqual(PUBLICATIONS.SECOND_CREATED.data);
         });
+
+        
     });
 });
