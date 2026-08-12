@@ -12,3 +12,12 @@ export function createSubscription<T>(event: Event): Promise<T>
         eventBroker.subscribe(subscription);
     });
 }
+
+export async function createErrorSubscription(event: Event): Promise<void>
+{
+    const handler = () => { throw new Error('Error'); };
+
+    const subscription = { ...event, handler };
+
+    eventBroker.subscribe(subscription);
+}

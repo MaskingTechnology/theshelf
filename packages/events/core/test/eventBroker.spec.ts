@@ -1,7 +1,7 @@
 
 import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 
-import { createSubscription, eventBroker, SEEDS, EVENTS, PUBLICATIONS } from './fixtures/index.js';
+import { createSubscription, eventBroker, SEEDS, EVENTS, PUBLICATIONS, createErrorSubscription, logDriver } from './fixtures/index.js';
 
 beforeAll(async () =>
 {
@@ -15,6 +15,8 @@ afterAll(async () =>
 
 beforeEach(() =>
 {
+    logDriver.clear();
+
     SEEDS.empty();
 });
 
@@ -49,6 +51,14 @@ describe('EventBroker', () =>
             expect(secondData).toStrictEqual(PUBLICATIONS.SECOND_CREATED.data);
         });
 
-        
+        it('should handle consumer errors', async () =>
+        {
+            await createErrorSubscription(EVENTS.FIRST_ERRORED);
+
+            await eventBroker.publish(PUBLICATIONS.FIRST_ERRORED);
+
+            expect(logDriver.logs.length).toBe(3);
+            expect(logDriver.logs[2].message).toContain('Memory -> Processing event from first -> errored failed with error Error: Error');
+        });
     });
 });
