@@ -11,7 +11,7 @@
     "review": "npm run review --workspaces",
     "publish": "npm publish --workspaces --access=public",
     "version": "npm version $VERSION --no-git-tag-version --workspaces --include-workspace-root=true",
-    "link": "npm link --workspaces"
+    "link": "npm run link --workspaces"
   },
   "workspaces": [
     "packages/logging/core",
