@@ -19,7 +19,7 @@
     "packages/authentication/core",
     "packages/database/core",
     "packages/events/core",
-    "packages/filestore/core",
+    "packages/files/core",
     "packages/http/core",
     "packages/notification/core",
     "packages/validation/core",
@@ -28,7 +28,7 @@
     "packages/caching/drivers/redis",
     "packages/database/drivers/mongodb",
     "packages/events/drivers/kafka",
-    "packages/filestore/drivers/s3",
+    "packages/files/drivers/s3",
     "packages/logging/drivers/database",
     "packages/notification/drivers/webpush",
     "packages/validation/drivers/zod"

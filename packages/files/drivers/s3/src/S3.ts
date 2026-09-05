@@ -2,8 +2,8 @@
 import type { S3ClientConfig } from '@aws-sdk/client-s3';
 import { CreateBucketCommand, DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, ListBucketsCommand, NoSuchKey, NotFound, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
-import { FileNotFound, FileStoreError, NotConnected } from '@theshelf/filestore';
-import type { Driver } from '@theshelf/filestore';
+import { FileNotFound, FileStoreError, NotConnected } from '@theshelf/files';
+import type { Driver } from '@theshelf/files';
 
 export type S3Configuration = {
     clientConfig: S3ClientConfig;

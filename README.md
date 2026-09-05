@@ -17,7 +17,7 @@ There are packages for the following concerns:
 * [**Connection**](./packages/connection/README.md) - connection management.
 * [**Database**](./packages/database/README.md) - storing and retrieving data.
 * [**Event broker**](./packages/events/README.md) - event management.
-* [**File store**](./packages/filestore/README.md) - storing and retrieving files.
+* [**File store**](./packages/files/README.md) - storing and retrieving files.
 * [**HTTP**](./packages/http/README.md) - outgoing HTTP requests.
 * [**Logging**](./packages/logging/README.md) - application logging.
 * [**Notification**](./packages/notification/README.md) - push notifications.
