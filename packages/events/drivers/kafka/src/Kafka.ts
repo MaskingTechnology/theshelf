@@ -47,7 +47,7 @@ export default class Kafka implements Driver
 
     async disconnect(): Promise<void>
     {
-        const consumers = [...this.#consumers.values()];
+        const consumers = this.#consumers.values().toArray();
 
         await Promise.all([
             ...consumers.map(consumer => consumer.close()),

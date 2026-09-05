@@ -103,7 +103,6 @@ export default class Memory implements Driver
 
     #createHandler<T>(subscription: Subscription<T>): EventHandler<T>
     {
-
         const handler: EventHandler<T> = (data) => this.#handle<T>(subscription, data);
 
         const handlers = this.#getHandlers(subscription)
@@ -116,20 +115,25 @@ export default class Memory implements Driver
 
     #getHandlers<T>(subscription: Subscription<T>): Map<EventHandler<T>, EventHandler<T>> | undefined
     {
-        const key = `${subscription.topic}.${subscription.name}`;
+        const key = this.#createKey(subscription);
 
         return this.#handlers.get(key)!;
     }
 
     #createHandlers<T>(subscription: Subscription<T>): Map<EventHandler<T>, EventHandler<T>>
     {
-        const key = `${subscription.topic}.${subscription.name}`;
+        const key = this.#createKey(subscription);
 
         const handlers = new Map<EventHandler<unknown>, EventHandler<unknown>>();
 
         this.#handlers.set(key, handlers);
 
         return handlers;
+    }
+
+    #createKey<T>(subscription: Subscription<T>): string
+    {
+        return JSON.stringify([subscription.topic, subscription.name]);
     }
 
     async #handle<T>(subscription: Subscription<T>, data: T): Promise<void>

@@ -51,7 +51,7 @@ describe('EventBroker', () =>
             expect(secondData).toStrictEqual(PUBLICATIONS.SECOND_CREATED.data);
         });
 
-        it('should unsubscribe an publication', async () =>
+        it('should unsubscribe an subscription', async () =>
         {
             const subscription = createErrorSubscription(EVENTS.FIRST_ERRORED);
 

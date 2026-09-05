@@ -13,7 +13,6 @@ export function createSubscription<T>(event: Event): Promise<T>
     });
 }
 
-
 export function createErrorSubscription<T>(event: Event): Subscription<T>
 {
     const handler = () => { throw new Error('Error'); };
