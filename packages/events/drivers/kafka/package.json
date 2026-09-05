@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/events-driver-kafka",
   "private": false,
-  "version": "0.4.5",
+  "version": "0.5.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -24,6 +24,6 @@
     "@platformatic/kafka": "^2.8.0"
   },
   "peerDependencies": {
-    "@theshelf/events": "^0.4.5"
+    "@theshelf/events": "^0.5.0"
   }
 }

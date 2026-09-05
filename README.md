@@ -14,8 +14,9 @@ There are packages for the following concerns:
 
 * [**Authentication**](./packages/authentication/README.md) - access and identity management.
 * [**Caching**](./packages/caching/README.md) - cache management.
+* [**Connection**](./packages/connection/README.md) - connection management.
 * [**Database**](./packages/database/README.md) - storing and retrieving data.
-* [**Event broker**](./packages/eventbroker/README.md) - event management.
+* [**Event broker**](./packages/events/README.md) - event management.
 * [**File store**](./packages/filestore/README.md) - storing and retrieving files.
 * [**HTTP**](./packages/http/README.md) - outgoing HTTP requests.
 * [**Logging**](./packages/logging/README.md) - application logging.
