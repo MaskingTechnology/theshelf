@@ -33,7 +33,7 @@ jobs:
         - 'packages/connection'
         - 'packages/database'
         - 'packages/events'
-        - 'packages/filestore'
+        - 'packages/files'
         - 'packages/http'
         - 'packages/logging'
         - 'packages/notification'

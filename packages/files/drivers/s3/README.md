@@ -6,7 +6,7 @@ This package contains the driver implementation for S3 compatible solutions. Thi
 ## Installation
 
 ```bash
-npm install @theshelf/filestore @theshelf/filestore-driver-s3
+npm install @theshelf/files @theshelf/files-driver-s3
 ```
 
 ## How to use
@@ -14,8 +14,8 @@ npm install @theshelf/filestore @theshelf/filestore-driver-s3
 The basic set up looks like this.
 
 ```ts
-import FileStore from '@theshelf/fileStore';
-import { S3Driver } from '@theshelf/fileStore-driver-s3';
+import FileStore from '@theshelf/files';
+import { S3Driver } from '@theshelf/files-driver-s3';
 
 const driver = new S3Driver({/* Configuration options */});
 const fileStore = new FileStore(driver);

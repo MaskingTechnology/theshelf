@@ -6,7 +6,7 @@ This package contains the definition of the file operations. It uses a interchan
 ## Installation
 
 ```bash
-npm install @theshelf/filestore
+npm install @theshelf/files
 ```
 
 ## How to use
@@ -14,7 +14,7 @@ npm install @theshelf/filestore
 The basic set up looks like this.
 
 ```ts
-import FileStore, { MemoryDriver } from '@theshelf/fileStore';
+import FileStore, { MemoryDriver } from '@theshelf/files';
 
 const driver = new MemoryDriver();
 const fileStore = new FileStore(driver);
