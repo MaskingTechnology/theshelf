@@ -3,60 +3,54 @@ import type { FieldTypes } from './constants.js';
 
 export type ValidationType = keyof typeof FieldTypes;
 
-type DefaultProperties = {
-    required: boolean;
-};
-
-export type StringProperties = DefaultProperties & {
+export type StringConstraints = {
     minLength?: number,
     maxLength?: number;
     pattern?: string;
 };
 
-export type NumberProperties = DefaultProperties & {
+export type NumberConstraints = {
     minValue?: number,
     maxValue?: number;
 };
 
-export type ArrayProperties = DefaultProperties & {
-    minLength?: number;
-    maxLength?: number;
-    validations?: Partial<Validation>;
-};
+export type BooleanConstraints = {};
+export type DateConstraints = {};
+export type DateTimeConstraints = {};
+export type UUIDConstraints = {};
+export type EmailConstraints = {};
 
-export type BooleanProperties = DefaultProperties;
-export type DateProperties = DefaultProperties;
-export type DateTimeProperties = DefaultProperties;
-export type UUIDProperties = DefaultProperties;
-export type EmailProperties = DefaultProperties;
-
-export type URLProperties = DefaultProperties & {
+export type URLConstraints = {
     protocols?: string[];
 };
 
-// values are optional, because making them required
-// kills the typescript checking in the Zod implementation
-export type EnumProperties = DefaultProperties & {
+export type EnumConstraints = {
     values?: string[];
 };
 
-export type Message = {
-    message: string;
+export type ValidationProperties = {
+    message?: string;
+    required?: boolean;
+};
+
+export type ArrayConstraints = Partial<ValidationTypes> & {
+    minLength?: number;
+    maxLength?: number;
 };
 
 export type ValidationTypes = {
-    STRING: StringProperties;
-    NUMBER: NumberProperties;
-    BOOLEAN: BooleanProperties;
-    DATE: DateProperties;
-    DATETIME: DateTimeProperties;
-    UUID: UUIDProperties;
-    EMAIL: EmailProperties;
-    ARRAY: ArrayProperties;
-    URL: URLProperties;
-    ENUM: EnumProperties;
+    STRING: StringConstraints;
+    NUMBER: NumberConstraints;
+    BOOLEAN: BooleanConstraints;
+    DATE: DateConstraints;
+    DATETIME: DateTimeConstraints;
+    UUID: UUIDConstraints;
+    EMAIL: EmailConstraints;
+    ARRAY: ArrayConstraints;
+    URL: URLConstraints;
+    ENUM: EnumConstraints;
 };
 
-export type Validation = Partial<ValidationTypes | Message>;
+export type Validation = ValidationProperties & Partial<ValidationTypes>;
 
 export type ValidationSchema = Record<string, Validation>;
