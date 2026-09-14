@@ -158,7 +158,7 @@ export default class Zod implements Driver
 
         if (constraints.protocols !== undefined)
         {
-            const escapedProtocols = constraints.protocols!.map((p: string) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const escapedProtocols = constraints.protocols.map((p: string) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
             const expression = escapedProtocols.join('|');
 
             validation = validation.regex(new RegExp(`^(${expression}):.*`));
