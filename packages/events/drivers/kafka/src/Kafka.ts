@@ -15,6 +15,7 @@ export default class Kafka implements Driver
 {
     readonly #producer: Producer;
     readonly #consumers = new Map<string, Consumer>();
+    readonly #queue = new Map<string, Promise<Consumer>>();
     
     readonly #brokers: string[];
     readonly #groupId: string;
@@ -68,15 +69,14 @@ export default class Kafka implements Driver
     
     async subscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#getConsumer(subscription.topic)
-            ?? await this.#createConsumer(subscription.topic);
+        const consumer = await this.#getOrCreateConsumer(subscription.topic);
 
         consumer.registerHandler(subscription.name, subscription.handler);
     }
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#getConsumer(subscription.topic);
+        const consumer = this.#consumers.get(subscription.topic);
 
         if (consumer === undefined) return;
 
@@ -88,9 +88,22 @@ export default class Kafka implements Driver
         }
     }
 
-    #getConsumer(topic: string): Consumer | undefined
+    async #getOrCreateConsumer(topic: string): Promise<Consumer>
     {
-        return this.#consumers.get(topic);
+        const promise = this.#getConsumer(topic);
+
+        if (promise !== undefined) return promise;
+
+        const consumer = this.#createConsumer(topic);
+
+        this.#queue.set(topic, consumer);
+
+        return consumer;
+    }
+
+    #getConsumer(topic: string): Promise<Consumer> | undefined
+    {
+        return this.#queue.get(topic);
     }
 
     async #createConsumer(topic: string): Promise<Consumer>
