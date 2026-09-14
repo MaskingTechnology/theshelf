@@ -8,6 +8,7 @@ type KafkaConfiguration = {
     readonly brokers: string[];
     readonly groupId: string;
     readonly clientId: string;
+    readonly autocreateTopics: boolean;
 };
 
 export default class Kafka implements Driver
@@ -30,7 +31,8 @@ export default class Kafka implements Driver
 
         this.#producer = new Producer({
             clientId: this.#clientId,
-            brokers: this.#brokers
+            brokers: this.#brokers,
+            autocreateTopics: configuration.autocreateTopics
         });
     }
 
@@ -70,8 +72,6 @@ export default class Kafka implements Driver
             ?? await this.#createConsumer(subscription.topic);
 
         consumer.registerHandler(subscription.name, subscription.handler);
-
-        consumer.listen();
     }
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>

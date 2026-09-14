@@ -27,7 +27,7 @@ export default class Consumer
         this.#topic = options.topic;
 
         this.#consumer = new KafkaConsumer({
-            groupId: options.groupId,
+            groupId: `${options.groupId}.${options.topic}`,
             clientId: options.clientId,
             bootstrapBrokers: options.brokers,
             deserializers: {
@@ -53,14 +53,6 @@ export default class Consumer
             mode: 'committed',
             fallbackMode: 'earliest'
         });
-    }
-
-    listen(): void
-    {
-        if (this.#stream === undefined)
-        {
-            return;
-        }
 
         this.#listenerPromise = this.#listen(this.#stream);
     }
