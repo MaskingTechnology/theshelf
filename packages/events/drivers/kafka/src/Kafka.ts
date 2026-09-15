@@ -16,6 +16,7 @@ export default class Kafka implements Driver
     readonly #producer: Producer;
     readonly #consumers = new Map<string, Consumer>();
     readonly #queue = new Map<string, Promise<Consumer>>();
+    readonly #autocreateTopics: boolean;
     
     readonly #brokers: string[];
     readonly #groupId: string;
@@ -29,11 +30,12 @@ export default class Kafka implements Driver
         this.#brokers = configuration.brokers;
         this.#groupId = configuration.groupId;
         this.#clientId = configuration.clientId;
+        this.#autocreateTopics = configuration.autocreateTopics;
 
         this.#producer = new Producer({
             clientId: this.#clientId,
             brokers: this.#brokers,
-            autocreateTopics: configuration.autocreateTopics
+            autocreateTopics: this.#autocreateTopics
         });
     }
 
@@ -98,7 +100,14 @@ export default class Kafka implements Driver
 
         this.#queue.set(topic, consumer);
 
-        return consumer;
+        try
+        {
+            return await consumer;
+        }
+        finally
+        {
+            this.#queue.delete(topic);
+        }
     }
 
     #getConsumer(topic: string): Promise<Consumer> | undefined
@@ -114,7 +123,8 @@ export default class Kafka implements Driver
             topic,
             clientId: this.#clientId,
             groupId: this.#groupId,
-            brokers: this.#brokers
+            brokers: this.#brokers,
+            autocreateTopics: this.#autocreateTopics 
         }, errorHandler);
 
         await consumer.consume();

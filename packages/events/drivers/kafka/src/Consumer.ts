@@ -9,6 +9,7 @@ type Options =
     readonly brokers: string[];
     readonly groupId: string;
     readonly clientId: string;
+    readonly autocreateTopics: boolean;
 }
 
 export default class Consumer
@@ -30,6 +31,7 @@ export default class Consumer
             groupId: `${options.groupId}.${options.topic}`,
             clientId: options.clientId,
             bootstrapBrokers: options.brokers,
+            autocreateTopics: options.autocreateTopics,
             deserializers: {
                 key: stringDeserializer,
                 value: jsonDeserializer,
