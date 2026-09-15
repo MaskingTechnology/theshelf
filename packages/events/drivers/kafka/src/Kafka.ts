@@ -8,7 +8,7 @@ type KafkaConfiguration = {
     readonly brokers: string[];
     readonly groupId: string;
     readonly clientId: string;
-    readonly autocreateTopics: boolean;
+    readonly autocreateTopics?: boolean;
 };
 
 export default class Kafka implements Driver
@@ -30,7 +30,7 @@ export default class Kafka implements Driver
         this.#brokers = configuration.brokers;
         this.#groupId = configuration.groupId;
         this.#clientId = configuration.clientId;
-        this.#autocreateTopics = configuration.autocreateTopics;
+        this.#autocreateTopics = configuration.autocreateTopics ?? false;
 
         this.#producer = new Producer({
             clientId: this.#clientId,
