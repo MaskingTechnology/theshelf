@@ -6,6 +6,7 @@ export type Options =
 {
     readonly brokers: string[];
     readonly clientId: string;
+    readonly autocreateTopics: boolean;
 }
 
 export default class Producer
@@ -29,7 +30,8 @@ export default class Producer
                 value: jsonSerializer,
                 headerKey: stringSerializer,
                 headerValue: stringSerializer
-            }
+            },
+            autocreateTopics: options.autocreateTopics
         });
     }
 

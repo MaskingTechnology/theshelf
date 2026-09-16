@@ -8,12 +8,14 @@ type KafkaConfiguration = {
     readonly brokers: string[];
     readonly groupId: string;
     readonly clientId: string;
+    readonly autocreateTopics?: boolean;
 };
 
 export default class Kafka implements Driver
 {
     readonly #producer: Producer;
-    readonly #consumers = new Map<string, Consumer>();
+    readonly #consumers = new Map<string, Promise<Consumer>>();
+    readonly #autocreateTopics: boolean;
     
     readonly #brokers: string[];
     readonly #groupId: string;
@@ -27,10 +29,12 @@ export default class Kafka implements Driver
         this.#brokers = configuration.brokers;
         this.#groupId = configuration.groupId;
         this.#clientId = configuration.clientId;
+        this.#autocreateTopics = configuration.autocreateTopics ?? false;
 
         this.#producer = new Producer({
             clientId: this.#clientId,
-            brokers: this.#brokers
+            brokers: this.#brokers,
+            autocreateTopics: this.#autocreateTopics
         });
     }
 
@@ -47,7 +51,7 @@ export default class Kafka implements Driver
 
     async disconnect(): Promise<void>
     {
-        const consumers = this.#consumers.values().toArray();
+        const consumers = await Promise.all(this.#consumers.values());
 
         await Promise.all([
             ...consumers.map(consumer => consumer.close()),
@@ -66,17 +70,14 @@ export default class Kafka implements Driver
     
     async subscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#getConsumer(subscription.topic)
-            ?? await this.#createConsumer(subscription.topic);
+        const consumer = await this.#getOrCreateConsumer(subscription.topic);
 
         consumer.registerHandler(subscription.name, subscription.handler);
-
-        consumer.listen();
     }
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#getConsumer(subscription.topic);
+        const consumer = await this.#getConsumer(subscription.topic);
 
         if (consumer === undefined) return;
 
@@ -88,7 +89,20 @@ export default class Kafka implements Driver
         }
     }
 
-    #getConsumer(topic: string): Consumer | undefined
+    async #getOrCreateConsumer(topic: string): Promise<Consumer>
+    {
+        const promise = this.#getConsumer(topic);
+
+        if (promise !== undefined) return promise;
+
+        const consumer = this.#createConsumer(topic);
+
+        this.#consumers.set(topic, consumer);
+
+        return consumer;
+    }
+
+    #getConsumer(topic: string): Promise<Consumer> | undefined
     {
         return this.#consumers.get(topic);
     }
@@ -101,12 +115,11 @@ export default class Kafka implements Driver
             topic,
             clientId: this.#clientId,
             groupId: this.#groupId,
-            brokers: this.#brokers
+            brokers: this.#brokers,
+            autocreateTopics: this.#autocreateTopics 
         }, errorHandler);
 
         await consumer.consume();
-
-        this.#consumers.set(topic, consumer);
 
         return consumer;
     }
