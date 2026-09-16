@@ -23,11 +23,6 @@ export default class SearchResult<T>
         return this.count === 0;
     }
 
-    get record(): T | undefined
-    {
-        return this.#records[0];
-    }
-
     get records(): T[]
     {
         return this.#records;
