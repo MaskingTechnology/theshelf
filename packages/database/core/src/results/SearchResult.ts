@@ -1,5 +1,5 @@
 
-export default class QueryResult<T>
+export default class SearchResult<T>
 {
     readonly #records: T[];
 

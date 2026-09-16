@@ -1,5 +1,5 @@
 
-export default class MutationResult
+export default class UpdateResult
 {
     readonly #affectedCount: number;
 

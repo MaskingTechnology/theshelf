@@ -5,9 +5,6 @@ export const VALUES =
     {
         NON_EXISTING: 'non-existing',
 
-        APPLE: '1',
-        PEAR: '2',
-
         MARGHERITA: '1',
         CALZONE: '2',
         PEPPERONI: '3',
@@ -21,9 +18,7 @@ export const VALUES =
         NAME: 'name',
         SIZE: 'size',
         PRICE: 'price',
-        FOLDED: 'folded',
-        COUNTRY: 'country',
-        SPRAYED: 'sprayed'
+        FOLDED: 'folded'
     },
 
     UPDATES:
