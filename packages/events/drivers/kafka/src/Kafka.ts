@@ -14,8 +14,7 @@ type KafkaConfiguration = {
 export default class Kafka implements Driver
 {
     readonly #producer: Producer;
-    readonly #consumers = new Map<string, Consumer>();
-    readonly #queue = new Map<string, Promise<Consumer>>();
+    readonly #consumers = new Map<string, Promise<Consumer>>();
     readonly #autocreateTopics: boolean;
     
     readonly #brokers: string[];
@@ -52,7 +51,7 @@ export default class Kafka implements Driver
 
     async disconnect(): Promise<void>
     {
-        const consumers = this.#consumers.values().toArray();
+        const consumers = await Promise.all(this.#consumers.values());
 
         await Promise.all([
             ...consumers.map(consumer => consumer.close()),
@@ -78,7 +77,7 @@ export default class Kafka implements Driver
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        const consumer = this.#consumers.get(subscription.topic);
+        const consumer = await this.#getConsumer(subscription.topic);
 
         if (consumer === undefined) return;
 
@@ -98,21 +97,14 @@ export default class Kafka implements Driver
 
         const consumer = this.#createConsumer(topic);
 
-        this.#queue.set(topic, consumer);
+        this.#consumers.set(topic, consumer);
 
-        try
-        {
-            return await consumer;
-        }
-        finally
-        {
-            this.#queue.delete(topic);
-        }
+        return consumer;
     }
 
     #getConsumer(topic: string): Promise<Consumer> | undefined
     {
-        return this.#queue.get(topic);
+        return this.#consumers.get(topic);
     }
 
     async #createConsumer(topic: string): Promise<Consumer>
@@ -128,8 +120,6 @@ export default class Kafka implements Driver
         }, errorHandler);
 
         await consumer.consume();
-
-        this.#consumers.set(topic, consumer);
 
         return consumer;
     }
