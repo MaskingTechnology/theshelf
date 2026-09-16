@@ -1,7 +1,7 @@
 
 # Database core | The Shelf
 
-This package contains the definition of the CRUD operations. It uses a interchangeable driver system for performing the actual operations. An in-memory driver is included.
+This package contains the definition of the CRUD operations. It uses an interchangeable driver system for performing the actual operations. An in-memory driver is included.
 
 ## Installation
 
@@ -25,7 +25,7 @@ const database = new Database(driver);
 ## Operations
 
 ```ts
-import { RecordData, RecordQuery, RecordSort, SortDirections } from '@theshelf/database';
+import { RecordQuery, RecordSort, SortDirections, CreateResult, ReadResult, SearchResult, UpdateResult, DeleteResult } from '@theshelf/database';
 
 // Open connection
 await database.connect();
@@ -34,49 +34,50 @@ await database.connect();
 await database.disconnect();
 
 // INSERT INTO items (name, quantity) VALUES (?, ?)
-const id: string = await database.createRecord('items', { name: 'Popcorn', quantity: 3 });
+const result: CreateResult = await database.createRecord<T>('items', { name: 'Popcorn', quantity: 3 });
 
 // SELECT * FROM items WHERE id = ?
 // Throws `RecordNotFound` if not found
-const record: RecordData = await database.readRecord('items', id);
+const result: ReadResult<T> = await database.readRecord<T>('items', id);
 
 // SELECT name FROM items WHERE id = ?
-const record: RecordData = await database.readRecord('items', id, ['name']);
+const result: ReadResult<T> = await database.readRecord<T>('items', id, ['name']);
 
 // SELECT * FROM items
-const records: RecordData[] = await database.searchRecords('items', {});
+const result: SearchResult<T> = await database.searchRecords<T>('items', {});
 
 // SELECT name FROM items
-const records: RecordData[] = await database.searchRecords('items', {}, ['name']);
-
-// SELECT * FROM items WHERE id = ? LIMIT 1 OFFSET 0
-const records: RecordData | undefined = await database.findRecord('items', { id }, undefined, undefined, 1, 0);
+const result: SearchResult<T> = await database.searchRecords<T>('items', {}, ['name']);
 
 // SELECT * FROM items WHERE name LIKE "%?%" ORDER BY name ASC LIMIT ? OFFSET ?
-const query: RecordQuery = { name: { CONTAINS: name }};
-const sort: RecordSort = { name: SortDirections.ASCENDING };
-const records: RecordData[] = await database.searchRecords('items', query, undefined, sort, limit, offset);
+const query: RecordQuery<T> = { name: { CONTAINS: name }};
+const sort: RecordSort<T> = { name: SortDirections.ASCENDING };
+const result: SearchResult<T> = await database.searchRecords<T>('items', query, undefined, sort, limit, offset);
 
 // SELECT name FROM items WHERE name LIKE "?%" OR name LIKE "%?" ORDER BY name ASC, quantity DESC LIMIT ? OFFSET ?;
-const query: RecordQuery = { OR: [ { name: { STARTS_WITH: name } }, { name: { ENDS_WITH: name } } ] };
-const sort: RecordSort = { name: SortDirections.ASCENDING, quantity: SortDirections.DESCENDING };
-const records: RecordData[] = await database.searchRecords('items', query, ['name'], sort, limit, offset);
+const query: RecordQuery<T> = { OR: [ { name: { STARTS_WITH: name } }, { name: { ENDS_WITH: name } } ] };
+const sort: RecordSort<T> = { name: SortDirections.ASCENDING, quantity: SortDirections.DESCENDING };
+const result: SearchResult<T> = await database.searchRecords<T>('items', query, ['name'], sort, limit, offset);
 
 // UPDATE items SET name = ? WHERE id = ?
 // Throws `RecordNotFound` if not found
-await database.updateRecord('items', item.id, { 'name': item.name });
+const result: UpdateResult = await database.updateRecord<T>('items', item.id, { 'name': item.name });
 
 // DELETE FROM items WHERE id = ?
 // Throws `RecordNotFound` if not found
-await database.deleteRecord('items', item.id);
+const result: DeleteResult = await database.deleteRecord<T>('items', item.id);
 ```
+
+## Results
+
+Each operation returns its own result type for better semantic coding.
 
 ## Query options
 
 A basic query has the following structure.
 
 ```ts
-const query: RecordQuery = { fieldName1: { OPERATOR: value }, fieldName2: { OPERATOR: value }, ...  }
+const query: RecordQuery<T> = { fieldName1: { OPERATOR: value }, fieldName2: { OPERATOR: value }, ...  }
 ```
 
 The following operators are supported: `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS`, `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `IN`, `NOT_IN`, `CONTAINS`, `STARTS_WITH`, `ENDS_WITH`
@@ -84,8 +85,8 @@ The following operators are supported: `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `LES
 Multiple queries can be grouped using the logical operators: `AND`, `OR`.
 
 ```ts
-const andQuery: RecordQuery = { AND: [ query1, query2, ...]  }
-const orQuery: RecordQuery = { OR: [ query1, query2, ...]  }
+const andQuery: RecordQuery<T> = { AND: [ query1, query2, ...]  }
+const orQuery: RecordQuery<T> = { OR: [ query1, query2, ...]  }
 ```
 
 ## Sort options
@@ -93,13 +94,13 @@ const orQuery: RecordQuery = { OR: [ query1, query2, ...]  }
 A basic query has the following structure.
 
 ```ts
-const sort: RecordSort = { fieldName1: DIRECTION, fieldName2: DIRECTION, ... };
+const sort: RecordSort<T> = { fieldName1: DIRECTION, fieldName2: DIRECTION, ... };
 ```
 
 The following directions are supported: `ASCENDING`, `DESCENDING`. Both are defined in the `SortDirections` enum.
 
 ```ts
-const sort: RecordSort = { fieldName1: SortDirections.ASCENDING, fieldName2: SortDirections.DESCENDING, ... };
+const sort: RecordSort<T> = { fieldName1: SortDirections.ASCENDING, fieldName2: SortDirections.DESCENDING, ... };
 ```
 
 The sort will be performed in the configured order.

@@ -4,8 +4,13 @@ import type Logger from '@theshelf/logging';
 import sanitize from './utilities/sanitize.js';
 
 import type { Driver } from './definitions/interfaces.js';
-import type { RecordData, RecordField, RecordId, RecordQuery, RecordSort, RecordType } from './definitions/types.js';
+import type { RecordData, RecordField, RecordQuery, RecordSort, RecordType } from './definitions/types.js';
 import NotConnected from './errors/NotConnected.js';
+import CreateResult from './results/CreateResult.js';
+import ReadResult from './results/ReadResult.js';
+import UpdateResult from './results/UpdateResult.js';
+import DeleteResult from './results/DeleteResult.js';
+import SearchResult from './results/SearchResult.js';
 
 export default class Database
 {
@@ -69,7 +74,7 @@ export default class Database
         }
     }
 
-    async createRecord<T extends RecordData>(type: RecordType, data: T): Promise<RecordId>
+    async createRecord<T extends RecordData>(type: RecordType, data: T): Promise<CreateResult>
     {
         this.#logger?.debug(this.#logPrefix, 'Creating record for type', type);
 
@@ -79,7 +84,9 @@ export default class Database
         
             const cleanData = sanitize(data);
 
-            return await this.#driver.createRecord(type, cleanData);
+            const recordId = await this.#driver.createRecord(type, cleanData);
+
+            return new CreateResult(recordId);
         }
         catch (error)
         {
@@ -89,7 +96,7 @@ export default class Database
         }
     }
 
-    async readRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>): Promise<T | undefined>
+    async readRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>): Promise<ReadResult<T>>
     {
         this.#logger?.debug(this.#logPrefix, 'Reading record for type', type);
 
@@ -97,7 +104,9 @@ export default class Database
         {
             this.#validateConnection();
         
-            return await this.#driver.readRecord(type, query, fields, sort);
+            const record =  await this.#driver.readRecord(type, query, fields, sort);
+
+            return new ReadResult<T>(record);
         }
         catch (error)
         {
@@ -107,7 +116,7 @@ export default class Database
         }
     }
 
-    async searchRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<T[]>
+    async searchRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<SearchResult<T>>
     {
         this.#logger?.debug(this.#logPrefix, 'Searching record for type', type);
 
@@ -115,7 +124,9 @@ export default class Database
         {
             this.#validateConnection();
         
-            return await this.#driver.searchRecords(type, query, fields, sort, limit, offset);
+            const records = await this.#driver.searchRecords(type, query, fields, sort, limit, offset);
+
+            return new SearchResult<T>(records);
         }
         catch (error)
         {
@@ -125,7 +136,7 @@ export default class Database
         }
     }
 
-    async updateRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<number>
+    async updateRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<UpdateResult>
     {
         this.#logger?.debug(this.#logPrefix, 'Updating record for type', type);
 
@@ -135,7 +146,9 @@ export default class Database
 
             const cleanData = sanitize(data);
         
-            return await this.#driver.updateRecord(type, query, cleanData);
+            const affectedCount = await this.#driver.updateRecord(type, query, cleanData);
+
+            return new UpdateResult(affectedCount);
         }
         catch (error)
         {
@@ -145,7 +158,7 @@ export default class Database
         }
     }
 
-    async updateRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<number>
+    async updateRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<UpdateResult>
     {
         this.#logger?.debug(this.#logPrefix, 'Updating records for type', type);
 
@@ -155,7 +168,9 @@ export default class Database
 
             const cleanData = sanitize(data);
         
-            return await this.#driver.updateRecords(type, query, cleanData);
+            const affectedCount = await this.#driver.updateRecords(type, query, cleanData);
+
+            return new UpdateResult(affectedCount);
         }
         catch (error)
         {
@@ -165,7 +180,7 @@ export default class Database
         }
     }
 
-    async deleteRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>
+    async deleteRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<DeleteResult>
     {
         this.#logger?.debug(this.#logPrefix, 'Deleting record for type', type);
 
@@ -173,7 +188,9 @@ export default class Database
         {
             this.#validateConnection();
         
-            return await this.#driver.deleteRecord(type, query);
+            const affectedCount = await this.#driver.deleteRecord(type, query);
+
+            return new DeleteResult(affectedCount);
         }
         catch (error)
         {
@@ -183,7 +200,7 @@ export default class Database
         }
     }
 
-    async deleteRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<number>
+    async deleteRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<DeleteResult>
     {
         this.#logger?.debug(this.#logPrefix, 'Deleting records for type', type);
 
@@ -191,7 +208,9 @@ export default class Database
         {
             this.#validateConnection();
         
-            return await this.#driver.deleteRecords(type, query);
+            const affectedCount = await this.#driver.deleteRecords(type, query);
+
+            return new DeleteResult(affectedCount);
         }
         catch (error)
         {

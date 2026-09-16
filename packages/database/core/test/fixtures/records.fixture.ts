@@ -1,14 +1,6 @@
 
 import { VALUES } from './values.fixture.js';
 
-export type Fruit =
-{
-    readonly id: string;
-    readonly name: string;
-    readonly country: string;
-    readonly sprayed: boolean;
-};
-
 export type Pizza =
 {
     readonly id: string;
@@ -20,14 +12,7 @@ export type Pizza =
 
 export const RECORD_TYPES =
 {
-    FRUITS: 'fruits',
     PIZZAS: 'pizzas'
-};
-
-const FRUITS: Record<string, Fruit> =
-{
-    APPLE: { id: VALUES.IDS.APPLE, name: 'Apple', country: 'Belgium', sprayed: false },
-    PEAR: { id: VALUES.IDS.PEAR, name: 'Pear', country: 'Netherlands', sprayed: true }
 };
 
 const PIZZAS: Record<string, Pizza> =
@@ -39,4 +24,4 @@ const PIZZAS: Record<string, Pizza> =
     HAWAII: { id: VALUES.IDS.HAWAII, name: 'Hawaii', size: 20, price: 10.00, folded: false }
 };
 
-export const RECORDS = { FRUITS, PIZZAS };
+export const RECORDS = { PIZZAS };
