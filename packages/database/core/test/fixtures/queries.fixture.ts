@@ -83,7 +83,5 @@ export const QUERIES: Record<string, RecordQuery<Pizza>> =
             ]
     },
 
-    MARGHERITA: { id: { EQUALS: VALUES.IDS.MARGHERITA } },
-    PEAR: { id: { EQUALS: VALUES.IDS.PEAR } },
-    APPLE: { id: { EQUALS: VALUES.IDS.APPLE } }
+    MARGHERITA: { id: { EQUALS: VALUES.IDS.MARGHERITA } }
 };
