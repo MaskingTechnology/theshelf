@@ -53,5 +53,5 @@ export type ValidationTypes = {
 
 export type Validation = ValidationProperties & Partial<ValidationTypes>;
 
-export type ValidationSchema<T> = Record<keyof T, Validation>;
-
+export type ValidationSchema<T> = { [K in keyof T as undefined extends T[K] ? never : K]: Validation; } 
+    & Partial<Record<keyof T, Validation>>;

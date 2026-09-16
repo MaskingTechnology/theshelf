@@ -197,7 +197,7 @@ export default class Zod implements Driver
             if (issue.path.length === 0) continue;
 
             const field = String(issue.path[0]);
-            const message = this.#getMessageByField(field as keyof T, schema);
+            const message = this.#getMessageByField(field, schema);
 
             messages.set(field, message);
         }
@@ -209,15 +209,15 @@ export default class Zod implements Driver
     {
         for (const key of issue.keys)
         {
-            const message = this.#getMessageByField(key as keyof T, schema);
+            const message = this.#getMessageByField(key, schema);
 
             messages.set(key, message);
         }
     }
 
-    #getMessageByField<T>(path: keyof T, schema: ValidationSchema<T>)
+    #getMessageByField<T>(path: string, schema: ValidationSchema<T>)
     {
-        const validation = schema[path];
+        const validation = schema[path as keyof T];
 
         return validation?.message ?? 'Invalid field';
     }
