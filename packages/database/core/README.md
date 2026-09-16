@@ -47,7 +47,7 @@ const result: ReadResult<T> = await database.readRecord<T>('items', id, ['name']
 const result: SearchResult<T> = await database.searchRecords<T>('items', {});
 
 // SELECT name FROM items
-const result: SearchResult = await database.searchRecords<T>('items', {}, ['name']);
+const result: SearchResult<T> = await database.searchRecords<T>('items', {}, ['name']);
 
 // SELECT * FROM items WHERE name LIKE "%?%" ORDER BY name ASC LIMIT ? OFFSET ?
 const query: RecordQuery<T> = { name: { CONTAINS: name }};
