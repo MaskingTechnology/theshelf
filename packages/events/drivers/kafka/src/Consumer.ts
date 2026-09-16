@@ -9,6 +9,7 @@ type Options =
     readonly brokers: string[];
     readonly groupId: string;
     readonly clientId: string;
+    readonly autocreateTopics: boolean;
 }
 
 export default class Consumer
@@ -27,9 +28,10 @@ export default class Consumer
         this.#topic = options.topic;
 
         this.#consumer = new KafkaConsumer({
-            groupId: options.groupId,
+            groupId: `${options.groupId}.${options.topic}`,
             clientId: options.clientId,
             bootstrapBrokers: options.brokers,
+            autocreateTopics: options.autocreateTopics,
             deserializers: {
                 key: stringDeserializer,
                 value: jsonDeserializer,
@@ -53,14 +55,6 @@ export default class Consumer
             mode: 'committed',
             fallbackMode: 'earliest'
         });
-    }
-
-    listen(): void
-    {
-        if (this.#stream === undefined)
-        {
-            return;
-        }
 
         this.#listenerPromise = this.#listen(this.#stream);
     }

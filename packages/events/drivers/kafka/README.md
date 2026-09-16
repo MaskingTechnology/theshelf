@@ -29,6 +29,7 @@ const eventBroker = new EventBroker(driver);
 type KafkaConfiguration = {
     readonly brokers: string[]; // e.g. my-kafka-cluster.local:9092
     readonly groupId: string; // e.g. prod.domain.social
-    readonly clientId: string;// e.g. prod.domain.social.creator
+    readonly clientId: string; // e.g. prod.domain.social.creator
+    readonly autocreateTopics: boolean; // allow topics to be created automatically (e.g. in a dev setup)
 };
 ```
