@@ -22,10 +22,10 @@ export default class Zod implements Driver
         this.#validators.set('string', (constraints: Constraints<'STRING'>, required: boolean) => this.#validateString(constraints, required));
         this.#validators.set('number', (constraints: Constraints<'NUMBER'>, required: boolean) => this.#validateNumber(constraints, required));
         this.#validators.set('boolean', (constraints: Constraints<'BOOLEAN'>, required: boolean) => this.#validateBoolean(constraints, required));
-        this.#validators.set('date_object', (constraints: Constraints<'DATE_OBJECT'>, required: boolean) => this.#validateDateObject(constraints, required));
-        this.#validators.set('date', (constraints: Constraints<'DATE'>, required: boolean) => this.#validateDate(constraints, required));
-        this.#validators.set('datetime', (constraints: Constraints<'DATETIME'>, required: boolean) => this.#validateDateTime(constraints, required));
-        this.#validators.set('time', (constraints: Constraints<'TIME'>, required: boolean) => this.#validateTime(constraints, required));
+        this.#validators.set('date', (constraints: Constraints<'DATE'>, required: boolean) => this.#validateDateObject(constraints, required));
+        this.#validators.set('date_string', (constraints: Constraints<'DATE_STRING'>, required: boolean) => this.#validateDate(constraints, required));
+        this.#validators.set('datetime_string', (constraints: Constraints<'DATETIME_STRING'>, required: boolean) => this.#validateDateTime(constraints, required));
+        this.#validators.set('time_string', (constraints: Constraints<'TIME_STRING'>, required: boolean) => this.#validateTime(constraints, required));
         this.#validators.set('uuid', (constraints: Constraints<'UUID'>, required: boolean) => this.#validateUuid(constraints, required));
         this.#validators.set('email', (constraints: Constraints<'EMAIL'>, required: boolean) => this.#validateEmail(constraints, required));
         this.#validators.set('array', (constraints: Constraints<'ARRAY'>, required: boolean) => this.#validateArray(constraints, required));
@@ -114,28 +114,28 @@ export default class Zod implements Driver
         return this.#checkRequired(validation, required);
     }
 
-    #validateDateObject(constraints: Constraints<'DATE_OBJECT'>, required: boolean)
+    #validateDateObject(constraints: Constraints<'DATE'>, required: boolean)
     {
         const validation = z.date();
 
         return this.#checkRequired(validation, required);
     }
 
-    #validateDate(constraints: Constraints<'DATE'>, required: boolean)
+    #validateDate(constraints: Constraints<'DATE_STRING'>, required: boolean)
     {
         const validation = z.iso.date();
 
         return this.#checkRequired(validation, required);
     }
 
-    #validateDateTime(constraints: Constraints<'DATETIME'>, required: boolean)
+    #validateDateTime(constraints: Constraints<'DATETIME_STRING'>, required: boolean)
     {
         const validation = z.iso.datetime();
 
         return this.#checkRequired(validation, required);
     }
 
-    #validateTime(constraints: Constraints<'TIME'>, required: boolean)
+    #validateTime(constraints: Constraints<'TIME_STRING'>, required: boolean)
     {
         const validation = z.iso.time();
 

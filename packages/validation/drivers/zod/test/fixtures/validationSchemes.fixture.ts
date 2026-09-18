@@ -36,14 +36,6 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
         }
     },
 
-    DATE_OBJECT: {
-        date_object: {
-            message: VALUES.MESSAGES.INVALID_DATE_OBJECT,
-            required: true,
-            DATE_OBJECT: {}
-        }
-    },
-
     DATE: {
         date: {
             message: VALUES.MESSAGES.INVALID_DATE,
@@ -52,19 +44,27 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
         }
     },
 
-    DATETIME: {
-        datetime: {
-            message: VALUES.MESSAGES.INVALID_DATETIME,
+    DATE_STRING: {
+        date_string: {
+            message: VALUES.MESSAGES.INVALID_DATE_STRING,
             required: true,
-            DATETIME: { }
+            DATE_STRING: {}
         }
     },
 
-    TIME: {
-        time: {
-            message: VALUES.MESSAGES.INVALID_TIME,
+    DATETIME_STRING: {
+        datetime_string: {
+            message: VALUES.MESSAGES.INVALID_DATETIME_STRING,
             required: true,
-            TIME: { }
+            DATETIME_STRING: { }
+        }
+    },
+
+    TIME_STRING: {
+        time_string: {
+            message: VALUES.MESSAGES.INVALID_TIME_STRING,
+            required: true,
+            TIME_STRING: { }
         }
     },
 
@@ -165,14 +165,14 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
             EMAIL: { }
         },
         date: {
-            message: VALUES.MESSAGES.INVALID_DATE,
+            message: VALUES.MESSAGES.INVALID_DATE_STRING,
             required: true,
-            DATE: { }
+            DATE_STRING: { }
         },
         datetime: {
-            message: VALUES.MESSAGES.INVALID_DATETIME,
+            message: VALUES.MESSAGES.INVALID_DATETIME_STRING,
             required: true,
-            DATETIME: { }
+            DATETIME_STRING: { }
         },
         boolean: {
             message: VALUES.MESSAGES.INVALID_BOOLEAN,
