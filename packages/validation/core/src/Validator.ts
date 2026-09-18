@@ -20,13 +20,13 @@ export default class Validator
         this.#logPrefix = `${this.#driver.name} ->`;
     }
 
-    validate(data: unknown, schema: ValidationSchema): ValidationResult
+    validate<T>(data: T, schema: ValidationSchema<T>): ValidationResult
     {
         this.#logger?.debug(this.#logPrefix, 'Validating schema', schema);
 
         try
         {
-            return this.#driver.validate(data, schema);
+            return this.#driver.validate<T>(data, schema);
         }
         catch (error)
         {

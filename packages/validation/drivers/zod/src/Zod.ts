@@ -33,7 +33,7 @@ export default class Zod implements Driver
 
     get name(): string { return Zod.name; }
 
-    validate(data: unknown, schema: ValidationSchema): ValidationResult
+    validate<T>(data: T, schema: ValidationSchema<T>): ValidationResult
     {
         const validator = this.#buildValidator(schema);
 
@@ -51,12 +51,12 @@ export default class Zod implements Driver
         return new ValidationResult(false);
     }
 
-    #buildValidator(schema: ValidationSchema)
+    #buildValidator<T>(schema: ValidationSchema<T>)
     {
         return Object.entries(schema)
             .reduce((partialSchema, [key, value]) => 
             {
-                const fieldValidator = this.#getFieldValidator(value);
+                const fieldValidator = this.#getFieldValidator(value as Validation);
 
                 return partialSchema.extend({ [key]: fieldValidator });
 
@@ -176,12 +176,12 @@ export default class Zod implements Driver
         return this.#checkRequired(validation, required);
     }
 
-    #checkRequired(validation: z.ZodTypeAny, required: boolean)
+    #checkRequired<T>(validation: z.ZodType<T>, required: boolean)
     {
         return required ? validation : validation.optional();
     }
 
-    #getMessages(issues: $ZodIssue[], schema: ValidationSchema)
+    #getMessages<T>(issues: $ZodIssue[], schema: ValidationSchema<T>)
     {
         const messages = new Map<string, string>();
 
@@ -205,7 +205,7 @@ export default class Zod implements Driver
         return messages;
     }
 
-    #mapUnrecognizedKeys(issue: $ZodIssueUnrecognizedKeys, schema: ValidationSchema, messages: Map<string, string>)
+    #mapUnrecognizedKeys<T>(issue: $ZodIssueUnrecognizedKeys, schema: ValidationSchema<T>, messages: Map<string, string>)
     {
         for (const key of issue.keys)
         {
@@ -215,9 +215,9 @@ export default class Zod implements Driver
         }
     }
 
-    #getMessageByField(path: string, schema: ValidationSchema)
+    #getMessageByField<T>(path: string, schema: ValidationSchema<T>)
     {
-        const validation = schema[path] as Validation;
+        const validation = schema[path as keyof T];
 
         return validation?.message ?? 'Invalid field';
     }

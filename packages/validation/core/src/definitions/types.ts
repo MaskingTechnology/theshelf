@@ -53,4 +53,4 @@ export type ValidationTypes = {
 
 export type Validation = ValidationProperties & Partial<ValidationTypes>;
 
-export type ValidationSchema = Record<string, Validation>;
+export type ValidationSchema<T> = Record<keyof T, Validation>;

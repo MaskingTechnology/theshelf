@@ -3,7 +3,7 @@ import type { ValidationSchema } from '@theshelf/validation';
 
 import { VALUES } from './values.fixture.js';
 
-export const VALIDATION_SCHEMES: Record<string, ValidationSchema> =
+export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
 {
     STRING: {
         string: {

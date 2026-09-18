@@ -6,5 +6,5 @@ export interface Driver
 {
     get name(): string;
     
-    validate(data: unknown, schema: ValidationSchema): ValidationResult;
+    validate<T>(data: T, schema: ValidationSchema<T>): ValidationResult;
 }

@@ -27,19 +27,25 @@ const validator = new Validator(driver);
 ```ts
 import { ValidationSchema, ValidationResult } from '@theshelf/validation';
 
+type Person = {
+    name: string,
+    nickname?: string,
+    age: string
+}
+
 const data = {
     name: 'John Doe',
     age: '42'
 };
 
-const schema: ValidationSchema = {
+const schema: ValidationSchema<Person> = {
     name: { message: 'Invalid name', STRING: { required: true, minLength: 4, maxLength: 40 } },
     nickname: { message: 'Invalid nickname', STRING: { required: false, , pattern: '^[a-z]+$' } },
     age: { message: 'Invalid age', NUMBER: { required: true, minValue: 18, maxValue: 99 } }
 };
 
 // Validate data
-const result: ValidationResult = validator.validate(data, schema);
+const result: ValidationResult = validator.validate<Person>(data, schema);
 ```
 
 ## Validation schema
@@ -47,7 +53,7 @@ const result: ValidationResult = validator.validate(data, schema);
 A basic validation schema has the following structure.
 
 ```ts
-const schema: ValidationSchema = {
+const schema: ValidationSchema<CustomType> = {
     fieldName1: { TYPE: { /* type options */ } },
     fieldName2: { TYPE: { /* type options */ } },
     ...

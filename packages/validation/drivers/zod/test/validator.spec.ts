@@ -448,7 +448,7 @@ describe('validator', () =>
     });
 });
 
-function performInvalidResultCheck(input: unknown, validationScheme: ValidationSchema, expectedMessage: string): void
+function performInvalidResultCheck(input: unknown, validationScheme: ValidationSchema<unknown>, expectedMessage: string): void
 {
     const result = validator.validate(input, validationScheme);
     const messages = result.messages;
@@ -459,7 +459,7 @@ function performInvalidResultCheck(input: unknown, validationScheme: ValidationS
     expect(message).toBe(expectedMessage);
 }
 
-function performValidResultCheck(input: unknown, validationScheme: ValidationSchema): void
+function performValidResultCheck(input: unknown, validationScheme: ValidationSchema<unknown>): void
 {
     const result = validator.validate(input, validationScheme);
 
