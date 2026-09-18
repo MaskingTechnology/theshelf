@@ -36,6 +36,14 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
         }
     },
 
+    DATE_OBJECT: {
+        date_object: {
+            message: VALUES.MESSAGES.INVALID_DATE_OBJECT,
+            required: true,
+            DATE_OBJECT: {}
+        }
+    },
+
     DATE: {
         date: {
             message: VALUES.MESSAGES.INVALID_DATE,
@@ -49,6 +57,14 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
             message: VALUES.MESSAGES.INVALID_DATETIME,
             required: true,
             DATETIME: { }
+        }
+    },
+
+    TIME: {
+        time: {
+            message: VALUES.MESSAGES.INVALID_TIME,
+            required: true,
+            TIME: { }
         }
     },
 
