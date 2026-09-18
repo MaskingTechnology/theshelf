@@ -39,9 +39,9 @@ const data = {
 };
 
 const schema: ValidationSchema<Person> = {
-    name: { message: 'Invalid name', STRING: { required: true, minLength: 4, maxLength: 40 } },
-    nickname: { message: 'Invalid nickname', STRING: { required: false, , pattern: '^[a-z]+$' } },
-    age: { message: 'Invalid age', NUMBER: { required: true, minValue: 18, maxValue: 99 } }
+    name: { message: 'Invalid name', required: true, STRING: { minLength: 4, maxLength: 40 } },
+    nickname: { message: 'Invalid nickname', required: false, STRING: { pattern: '^[a-z]+$' } },
+    age: { message: 'Invalid age', required: true, NUMBER: { minValue: 18, maxValue: 99 } }
 };
 
 // Validate data
@@ -65,29 +65,32 @@ const schema: ValidationSchema<CustomType> = {
 The following types are supported:
 
 * **STRING**
-  * `required: boolean`
   * `minLength?: number`
   * `maxLength?: number`
   * `pattern?: string`
 * **NUMBER**
-  * `required: boolean`
   * `minValue?: number`
   * `maxValue?: number`
 * **ARRAY**
-  * `required: boolean`
   * `minLength?: number`
   * `maxLength?: number`
   * `validations?: Partial<Validation>`
 * **BOOLEAN**
-  * `required: boolean`
+  * (no additional properties)
 * **DATE**
-  * `required: boolean`
+  * (no additional properties)
+* **DATE_STRING**
+  * (no additional properties)
+* **DATETIME_STRING**
+  * (no additional properties)
+* **TIME_STRING**
+  * (no additional properties)
 * **UUID**
-  * `required: boolean`
+  * (no additional properties)
 * **EMAIL**
-  * `required: boolean`
+  * (no additional properties)
 * **URL**
-  * `required: boolean`
+  * (no additional properties)
 
 ## Validation result
 

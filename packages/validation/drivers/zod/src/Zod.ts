@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import type { $ZodIssue, $ZodIssueUnrecognizedKeys } from 'zod/v4/core';
 
-import { ValidationResult, MAX_EMAIL_LENGTH, MAX_URL_LENGTH } from '@theshelf/validation';
+import { ValidationResult, FieldTypes, MAX_EMAIL_LENGTH, MAX_URL_LENGTH } from '@theshelf/validation';
 import type { Driver, ValidationProperties, Validation, ValidationSchema, ValidationTypes } from '@theshelf/validation';
 
 type ValidationType = keyof ValidationTypes;
@@ -19,16 +19,18 @@ export default class Zod implements Driver
 
     constructor()
     {
-        this.#validators.set('string', (constraints: Constraints<'STRING'>, required: boolean) => this.#validateString(constraints, required));
-        this.#validators.set('number', (constraints: Constraints<'NUMBER'>, required: boolean) => this.#validateNumber(constraints, required));
-        this.#validators.set('boolean', (constraints: Constraints<'BOOLEAN'>, required: boolean) => this.#validateBoolean(constraints, required));
-        this.#validators.set('date', (constraints: Constraints<'DATE'>, required: boolean) => this.#validateDate(constraints, required));
-        this.#validators.set('datetime', (constraints: Constraints<'DATETIME'>, required: boolean) => this.#validateDateTime(constraints, required));
-        this.#validators.set('uuid', (constraints: Constraints<'UUID'>, required: boolean) => this.#validateUuid(constraints, required));
-        this.#validators.set('email', (constraints: Constraints<'EMAIL'>, required: boolean) => this.#validateEmail(constraints, required));
-        this.#validators.set('array', (constraints: Constraints<'ARRAY'>, required: boolean) => this.#validateArray(constraints, required));
-        this.#validators.set('url', (constraints: Constraints<'URL'>, required: boolean) => this.#validateUrl(constraints, required));
-        this.#validators.set('enum', (constraints: Constraints<'ENUM'>, required: boolean) => this.#validateEnum(constraints, required));
+        this.#validators.set(FieldTypes.STRING, (constraints: Constraints<'STRING'>, required: boolean) => this.#validateString(constraints, required));
+        this.#validators.set(FieldTypes.NUMBER, (constraints: Constraints<'NUMBER'>, required: boolean) => this.#validateNumber(constraints, required));
+        this.#validators.set(FieldTypes.BOOLEAN, (constraints: Constraints<'BOOLEAN'>, required: boolean) => this.#validateBoolean(constraints, required));
+        this.#validators.set(FieldTypes.DATE, (constraints: Constraints<'DATE'>, required: boolean) => this.#validateDate(constraints, required));
+        this.#validators.set(FieldTypes.DATE_STRING, (constraints: Constraints<'DATE_STRING'>, required: boolean) => this.#validateDateString(constraints, required));
+        this.#validators.set(FieldTypes.DATE_TIME_STRING, (constraints: Constraints<'DATE_TIME_STRING'>, required: boolean) => this.#validateDateTimeString(constraints, required));
+        this.#validators.set(FieldTypes.TIME_STRING, (constraints: Constraints<'TIME_STRING'>, required: boolean) => this.#validateTimeString(constraints, required));
+        this.#validators.set(FieldTypes.UUID, (constraints: Constraints<'UUID'>, required: boolean) => this.#validateUuid(constraints, required));
+        this.#validators.set(FieldTypes.EMAIL, (constraints: Constraints<'EMAIL'>, required: boolean) => this.#validateEmail(constraints, required));
+        this.#validators.set(FieldTypes.ARRAY, (constraints: Constraints<'ARRAY'>, required: boolean) => this.#validateArray(constraints, required));
+        this.#validators.set(FieldTypes.URL, (constraints: Constraints<'URL'>, required: boolean) => this.#validateUrl(constraints, required));
+        this.#validators.set(FieldTypes.ENUM, (constraints: Constraints<'ENUM'>, required: boolean) => this.#validateEnum(constraints, required));
     }
 
     get name(): string { return Zod.name; }
@@ -114,21 +116,35 @@ export default class Zod implements Driver
 
     #validateDate(constraints: Constraints<'DATE'>, required: boolean)
     {
+        const validation = z.date();
+
+        return this.#checkRequired(validation, required);
+    }
+
+    #validateDateString(constraints: Constraints<'DATE_STRING'>, required: boolean)
+    {
         const validation = z.iso.date();
 
         return this.#checkRequired(validation, required);
     }
 
-    #validateDateTime(constraints: Constraints<'DATETIME'>, required: boolean)
+    #validateDateTimeString(constraints: Constraints<'DATE_TIME_STRING'>, required: boolean)
     {
         const validation = z.iso.datetime();
 
         return this.#checkRequired(validation, required);
     }
 
+    #validateTimeString(constraints: Constraints<'TIME_STRING'>, required: boolean)
+    {
+        const validation = z.iso.time();
+
+        return this.#checkRequired(validation, required);
+    }
+
     #validateUuid(constraints: Constraints<'UUID'>, required: boolean)
     {
-        const validation = z.uuid();
+        const validation = z.uuid(); // String or UUID object?
 
         return this.#checkRequired(validation, required);
     }

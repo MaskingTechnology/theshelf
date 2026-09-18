@@ -16,7 +16,9 @@ export type NumberConstraints = {
 
 export type BooleanConstraints = {};
 export type DateConstraints = {};
-export type DateTimeConstraints = {};
+export type DateStringConstraints = {};
+export type DateTimeStringConstraints = {};
+export type TimeStringConstraints = {};
 export type UUIDConstraints = {};
 export type EmailConstraints = {};
 
@@ -43,7 +45,9 @@ export type ValidationTypes = {
     NUMBER: NumberConstraints;
     BOOLEAN: BooleanConstraints;
     DATE: DateConstraints;
-    DATETIME: DateTimeConstraints;
+    DATE_STRING: DateStringConstraints;
+    DATE_TIME_STRING: DateTimeStringConstraints;
+    TIME_STRING: TimeStringConstraints;
     UUID: UUIDConstraints;
     EMAIL: EmailConstraints;
     ARRAY: ArrayConstraints;

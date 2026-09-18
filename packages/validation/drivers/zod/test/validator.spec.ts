@@ -114,11 +114,11 @@ describe('validator', () =>
         });
     });
 
-    describe('Date values', () =>
+    describe('Date object values', () =>
     {
         it('should accept a valid date', () =>
         {
-            const input = { date: new Date().toISOString().slice(0, 10) };
+            const input = { date: new Date() };
 
             performValidResultCheck(input, VALIDATION_SCHEMES.DATE);
         });
@@ -139,40 +139,116 @@ describe('validator', () =>
 
         it('should reject a value that is not a date', () =>
         {
-            const input = { date: new Date().toISOString() };
+            const input = { date: 'not a date' };
 
             performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE, VALUES.MESSAGES.INVALID_DATE);
         });
     });
 
-    describe('DateTime values', () =>
+    describe('Date string values', () =>
     {
-        it('should accept a valid datetime', () =>
+        it('should accept a valid date', () =>
         {
-            const input = { datetime: new Date().toISOString() };
+            const input = { dateString: '2000-12-31' };
 
-            performValidResultCheck(input, VALIDATION_SCHEMES.DATETIME);
+            performValidResultCheck(input, VALIDATION_SCHEMES.DATE_STRING);
         });
 
-        it('should reject a missing required datetime', () =>
+        it('should reject a missing required date', () =>
         {
-            const input = { datetime: undefined };
+            const input = { dateString: undefined };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATETIME);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE_STRING, VALUES.MESSAGES.INVALID_DATE_STRING);
         });
 
-        it('should reject a value that is not a valid datetime', () =>
+        it('should reject a value that is not a valid date', () =>
         {
-            const input = { datetime: new Date('invalid') };
+            const input = { dateString: '2000-13-01' };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATETIME);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE_STRING, VALUES.MESSAGES.INVALID_DATE_STRING);
         });
 
-        it('should reject a value that is not a datetime', () =>
+        it('should reject a value that is not a date', () =>
         {
-            const input = { datetime: '2021-01-01' };
+            const input = { dateString: 'not a date' };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATETIME, VALUES.MESSAGES.INVALID_DATETIME);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE_STRING, VALUES.MESSAGES.INVALID_DATE_STRING);
+        });
+    });
+
+    describe('DateTime string values', () =>
+    {
+        it('should accept a valid date time', () =>
+        {
+            const input = { dateTimeString: '2000-01-01T15:15:15.015Z' };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.DATE_TIME_STRING);
+        });
+
+        it('should reject a missing required date time', () =>
+        {
+            const input = { dateTimeString: undefined };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE_TIME_STRING, VALUES.MESSAGES.INVALID_DATE_TIME_STRING);
+        });
+
+        it('should reject a value that is not a valid date time', () =>
+        {
+            const input = { dateTimeString: '2001-02-29T12:12:12:012' };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE_TIME_STRING, VALUES.MESSAGES.INVALID_DATE_TIME_STRING);
+        });
+
+        it('should reject a value that is not a date time', () =>
+        {
+            const input = { dateTimeString: 'not a date time' };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.DATE_TIME_STRING, VALUES.MESSAGES.INVALID_DATE_TIME_STRING);
+        });
+    });
+
+    describe('Time string values', () =>
+    {
+        it('should accept a valid time (HH:mm:ss.SSS)', () =>
+        {
+            const input = { timeString: '18:30:00.123' };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.TIME_STRING);
+        });
+
+        it('should accept a valid time (HH:mm:ss)', () =>
+        {
+            const input = { timeString: '18:30:00' };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.TIME_STRING);
+        });
+
+        it('should accept a valid time (HH:mm)', () =>
+        {
+            const input = { timeString: '00:30' };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.TIME_STRING);
+        });
+
+        it('should reject a missing required time', () =>
+        {
+            const input = { timeString: undefined };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.TIME_STRING, VALUES.MESSAGES.INVALID_TIME_STRING);
+        });
+
+        it('should reject a value that is not a valid time', () =>
+        {
+            const input = { timeString: '25:01:01' };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.TIME_STRING, VALUES.MESSAGES.INVALID_TIME_STRING);
+        });
+
+        it('should reject a value that is not a time', () =>
+        {
+            const input = { timeString: 'not a time' };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.TIME_STRING, VALUES.MESSAGES.INVALID_TIME_STRING);
         });
     });
 
@@ -412,8 +488,8 @@ describe('validator', () =>
                 string: 'ABCD',
                 number: 10,
                 email: 'xyz@def.com',
-                date: new Date().toISOString().slice(0, 10),
-                datetime: new Date().toISOString(),
+                date: '2026-09-18',
+                dateTime: new Date().toISOString(),
                 boolean: false
             };
 
@@ -428,7 +504,7 @@ describe('validator', () =>
                 id: '123e4567-e89b-12d3-a456-426614174002',
                 string: 'abcd',
                 email: 'def@def.com',
-                datetime: new Date().toISOString(),
+                dateTime: '2026-09-18T19:11:12.012Z',
                 boolean: 'false',
                 list: ['abcd', 'abcdefghij']
             };
@@ -443,7 +519,7 @@ describe('validator', () =>
             expect(messages.size).toBe(3);
             expect(booleanMessage).toBe(VALUES.MESSAGES.INVALID_BOOLEAN);
             expect(listMessage).toBe(VALUES.MESSAGES.INVALID_LIST);
-            expect(dateMessage).toBe(VALUES.MESSAGES.INVALID_DATE);
+            expect(dateMessage).toBe(VALUES.MESSAGES.INVALID_DATE_STRING);
         });
     });
 });
