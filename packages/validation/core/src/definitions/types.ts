@@ -46,7 +46,7 @@ export type ValidationTypes = {
     BOOLEAN: BooleanConstraints;
     DATE: DateConstraints;
     DATE_STRING: DateStringConstraints;
-    DATETIME_STRING: DateTimeStringConstraints;
+    DATE_TIME_STRING: DateTimeStringConstraints;
     TIME_STRING: TimeStringConstraints;
     UUID: UUIDConstraints;
     EMAIL: EmailConstraints;

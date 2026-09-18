@@ -5,7 +5,7 @@ const FieldTypes = {
     BOOLEAN: 'boolean',
     DATE: 'date',
     DATE_STRING: 'date_string',
-    DATETIME_STRING: 'datetime_string',
+    DATE_TIME_STRING: 'date_time_string',
     TIME_STRING: 'time_string',
     UUID: 'uuid',
     EMAIL: 'email',
