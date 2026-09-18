@@ -13,12 +13,12 @@ export default class SearchResult<T>
         return this.#records.length;
     }
 
-    get filled(): boolean
+    get found(): boolean
     {
         return this.count > 0;
     }
 
-    get empty(): boolean
+    get notFound(): boolean
     {
         return this.count === 0;
     }
