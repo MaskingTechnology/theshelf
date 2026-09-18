@@ -539,7 +539,5 @@ function performValidResultCheck(input: unknown, validationScheme: ValidationSch
 {
     const result = validator.validate(input, validationScheme);
 
-    if (result.invalid) console.log(input, result.messages)
-
     expect(result.invalid).toBe(false);
 }
