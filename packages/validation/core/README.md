@@ -82,6 +82,12 @@ The following types are supported:
   * `required: boolean`
 * **DATE**
   * `required: boolean`
+* **DATE_STRING**
+  * `required: boolean`
+* **DATETIME_STRING**
+  * `required: boolean`
+* **TIME_STRING**
+  * `required: boolean`
 * **UUID**
   * `required: boolean`
 * **EMAIL**
