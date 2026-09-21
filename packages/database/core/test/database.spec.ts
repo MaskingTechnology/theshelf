@@ -193,7 +193,7 @@ describe('Database', () =>
             const updateResult = await database.updateRecord(RECORD_TYPES.PIZZAS, QUERIES.MARGHERITA, VALUES.SIZE);
             const readResult = await database.readRecord(RECORD_TYPES.PIZZAS, QUERIES.MARGHERITA);
 
-            expect(updateResult.affectedCount).toBe(1);
+            expect(updateResult.count).toBe(1);
             expect(readResult.record?.size).toBe(VALUES.SIZE.size);
         });
 
@@ -201,7 +201,7 @@ describe('Database', () =>
         {
             const result = await database.updateRecord(RECORD_TYPES.PIZZAS, QUERIES.NO_MATCH, {});
 
-            expect(result.affectedCount).toBe(0);
+            expect(result.count).toBe(0);
         });
     });
 
@@ -212,7 +212,7 @@ describe('Database', () =>
             const updateResult = await database.updateRecords(RECORD_TYPES.PIZZAS, QUERIES.EQUALS, VALUES.SIZE);
             const readResult = await database.searchRecords(RECORD_TYPES.PIZZAS, QUERIES.UPDATED);
 
-            expect(updateResult.affectedCount).toBe(2);
+            expect(updateResult.count).toBe(2);
             expect(readResult.count).toBe(2);
             expect(readResult.records[0].size).toBe(VALUES.SIZE.size);
             expect(readResult.records[1].size).toBe(VALUES.SIZE.size);
@@ -222,7 +222,7 @@ describe('Database', () =>
         {
             const result = await database.updateRecords(RECORD_TYPES.PIZZAS, QUERIES.NO_MATCH, {});
 
-            expect(result.affectedCount).toBe(0);
+            expect(result.count).toBe(0);
         });
     });
 
@@ -233,7 +233,7 @@ describe('Database', () =>
             const updateResult = await database.deleteRecord(RECORD_TYPES.PIZZAS, QUERIES.MARGHERITA);
             const readResult = await database.readRecord(RECORD_TYPES.PIZZAS, QUERIES.MARGHERITA);
 
-            expect(updateResult.affectedCount).toBe(1);
+            expect(updateResult.count).toBe(1);
             expect(readResult.record).toBeUndefined();
         });
 
@@ -241,7 +241,7 @@ describe('Database', () =>
         {
             const result = await database.deleteRecord(RECORD_TYPES.PIZZAS, QUERIES.NO_MATCH);
 
-            expect(result.affectedCount).toBe(0);
+            expect(result.count).toBe(0);
         });
     });
 
@@ -252,7 +252,7 @@ describe('Database', () =>
             const deleteResult = await database.deleteRecords(RECORD_TYPES.PIZZAS, QUERIES.EQUALS);
             const searchResult = await database.searchRecords(RECORD_TYPES.PIZZAS, QUERIES.EQUALS);
 
-            expect(deleteResult.affectedCount).toBe(2);
+            expect(deleteResult.count).toBe(2);
             expect(searchResult.count).toBe(0);
         });
 
@@ -261,7 +261,7 @@ describe('Database', () =>
             const deleteResult = await database.deleteRecords(RECORD_TYPES.PIZZAS, QUERIES.NO_MATCH);
             const searchResult = await database.searchRecords(RECORD_TYPES.PIZZAS, QUERIES.EMPTY);
 
-            expect(deleteResult.affectedCount).toBe(0);
+            expect(deleteResult.count).toBe(0);
             expect(searchResult.count).toBe(5);
         });
     });
