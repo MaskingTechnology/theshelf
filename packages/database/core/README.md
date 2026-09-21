@@ -72,6 +72,30 @@ const result: DeleteResult = await database.deleteRecord<T>('items', item.id);
 
 Each operation returns its own result type for better semantic coding.
 
+Create result:
+ * `.recordId`: The ID of the created record.
+
+Delete result:
+ * `.count`: The number of records affected.
+ * `.noChanges`: `true` if no records were affected.
+ * `.hasChanges`: `true` if records were affected.
+
+Read result:
+ * `.record`: The record found.
+ * `.notFound`: `true` if no record was found.
+ * `.found`: `true` if a record was found.
+
+Search result:
+ * `.records`: The records found.
+ * `.count`: The number of records found.
+ * `.notFound`: `true` if no record was found.
+ * `.found`: `true` if at least one record was found
+
+Update result:
+ * `.count`: The number of records affected.
+ * `.noChanges`: `true` if no records were affected.
+ * `.hasChanges`: `true` if records were affected.
+
 ## Query options
 
 A basic query has the following structure.

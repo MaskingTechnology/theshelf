@@ -8,9 +8,14 @@ export default class ReadResult<T>
         this.#record = record;
     }
 
-    get hasResult(): boolean
+    get found(): boolean
     {
         return this.#record !== undefined;
+    }
+
+    get notFound(): boolean
+    {
+        return this.#record === undefined;
     }
 
     get record(): T | undefined

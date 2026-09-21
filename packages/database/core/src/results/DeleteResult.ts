@@ -1,25 +1,25 @@
 
 export default class DeleteResult
 {
-    readonly #affectedCount: number;
+    readonly #count: number;
 
-    constructor(affectedCount: number)
+    constructor(count: number)
     {
-        this.#affectedCount = affectedCount;
+        this.#count = count;
     }
 
-    get affectedCount(): number
+    get count(): number
     {
-        return this.#affectedCount;
+        return this.#count;
     }
 
     get noChanges(): boolean
     {
-        return this.#affectedCount === 0;
+        return this.#count === 0;
     }
 
     get hasChanges(): boolean
     {
-        return this.#affectedCount > 0;
+        return this.#count > 0;
     }
 }
