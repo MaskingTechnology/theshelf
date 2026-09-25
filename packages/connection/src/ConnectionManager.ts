@@ -20,7 +20,6 @@ export default class ConnectionManager
     readonly #timeoutDuration: number;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     #state: State = States.DISCONNECTED;
 
@@ -35,8 +34,8 @@ export default class ConnectionManager
         this.#connectable = configuration.connectable;
         this.#timeoutDuration = configuration.monitoringTimeout ?? DEFAULT_MONITORING_TIMEOUT;
 
-        this.#logger = logger?.for(ConnectionManager.name);
-        this.#logPrefix = `${this.#name} ->`;
+        this.#logger = logger?.for(ConnectionManager.name)
+                              .for(this.#name);
     }
 
     get name(): string { return this.#name; }
@@ -47,14 +46,14 @@ export default class ConnectionManager
     {
         if (this.#connectPromise !== undefined)
         {
-            this.#logger?.warn(this.#logPrefix, 'connect already in progress');
+            this.#logger?.warn('Connect already in progress');
 
             return this.#connectPromise;
         }
 
         if (this.#state !== States.DISCONNECTED)
         {
-            this.#logger?.warn(this.#logPrefix, 'connect in invalid state');
+            this.#logger?.warn('Connect in invalid state');
 
             return;
         }
@@ -68,14 +67,14 @@ export default class ConnectionManager
     {
         if (this.#disconnectPromise !== undefined)
         {
-            this.#logger?.warn(this.#logPrefix, 'disconnect already in progress');
+            this.#logger?.warn('Disconnect already in progress');
 
             return this.#disconnectPromise;
         }
 
         if (this.#state !== States.CONNECTED)
         {
-            this.#logger?.warn(this.#logPrefix, 'disconnect in invalid state');
+            this.#logger?.warn('Disconnect in invalid state');
 
             return;
         }
@@ -97,13 +96,13 @@ export default class ConnectionManager
 
             this.#state = States.CONNECTED;
 
-            this.#logger?.info(this.#logPrefix, 'connected successfully');
+            this.#logger?.info('Connected successfully');
         }
         catch (error)
         {
             this.#state = States.DISCONNECTED;
             
-            this.#logger?.error(this.#logPrefix, 'connection failure', error);
+            this.#logger?.error('Connection failure', error);
 
             // The error isn't re-thrown to make it non-blocking, and let the monitoring do its work.
         }
@@ -125,13 +124,13 @@ export default class ConnectionManager
 
             this.#state = States.DISCONNECTED;
 
-            this.#logger?.info(this.#logPrefix, 'disconnected successfully');
+            this.#logger?.info('Disconnected successfully');
         }
         catch (error)
         {
             this.#state = States.CONNECTED;
 
-            this.#logger?.error(this.#logPrefix, 'disconnection failure', error);
+            this.#logger?.error('Disconnection failure', error);
 
             throw error;
         }
@@ -145,14 +144,14 @@ export default class ConnectionManager
     {
         if (this.#monitorTimeout !== undefined)
         {
-            this.#logger?.warn(this.#logPrefix, 'monitoring already started');
+            this.#logger?.warn('Monitoring already started');
 
             return;
         }
 
         this.#scheduleMonitoring();
 
-        this.#logger?.info(this.#logPrefix, 'monitoring started');
+        this.#logger?.info('Monitoring started');
     }
 
     #scheduleMonitoring(): void
@@ -172,7 +171,7 @@ export default class ConnectionManager
     {
         if (this.#monitorTimeout === undefined)
         {
-            this.#logger?.warn(this.#logPrefix, 'monitoring already stopped');
+            this.#logger?.warn('Monitoring already stopped');
 
             return;
         }
@@ -181,12 +180,12 @@ export default class ConnectionManager
 
         this.#monitorTimeout = undefined;
 
-        this.#logger?.info(this.#logPrefix, 'monitoring stopped');
+        this.#logger?.info('Monitoring stopped');
     }
 
     async #monitorConnection(): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'monitoring connection');
+        this.#logger?.debug('Monitoring connection');
 
         if (this.#connectable.connected)
         {
@@ -198,7 +197,7 @@ export default class ConnectionManager
             return this.#connectPromise;
         }
 
-        this.#logger?.warn(this.#logPrefix, 'connection lost');
+        this.#logger?.warn('Connection lost');
 
         this.#state = States.DISCONNECTED;
 

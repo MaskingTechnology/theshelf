@@ -61,9 +61,9 @@ describe('EventBroker', () =>
             await eventBroker.publish(EVENTS.FIRST_ERRORED);
 
             expect(logDriver.logs.length).toBe(3);
-            expect(logDriver.logs[0].message).toBe('Memory -> Subscribing to first -> errored');
-            expect(logDriver.logs[1].message).toBe('Memory -> Unsubscribing from first -> errored');
-            expect(logDriver.logs[2].message).toBe('Memory -> Publishing to first -> errored');
+            expect(logDriver.logs[0].message).toBe('Subscribing to first -> errored');
+            expect(logDriver.logs[1].message).toBe('Unsubscribing from first -> errored');
+            expect(logDriver.logs[2].message).toBe('Publishing to first -> errored');
         });
 
         it('should handle consumer errors', async () =>
@@ -74,9 +74,9 @@ describe('EventBroker', () =>
             await eventBroker.publish(PUBLICATIONS.FIRST_ERRORED);
 
             expect(logDriver.logs.length).toBe(3);
-            expect(logDriver.logs[0].message).toBe('Memory -> Subscribing to first -> errored');
-            expect(logDriver.logs[1].message).toBe('Memory -> Publishing to first -> errored');
-            expect(logDriver.logs[2].message).toContain('Memory -> Processing event from first -> errored failed with error Error: Error');
+            expect(logDriver.logs[0].message).toBe('Subscribing to first -> errored');
+            expect(logDriver.logs[1].message).toBe('Publishing to first -> errored');
+            expect(logDriver.logs[2].message).toContain('Processing event from first -> errored failed with error Error: Error');
         });
     });
 });

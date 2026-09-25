@@ -10,19 +10,18 @@ export default class Validator
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
 
-        this.#logger = logger?.for(Validator.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(Validator.name)
+                              .for(this.#driver.name);
     }
 
     validate<T>(data: T, schema: ValidationSchema<T>): ValidationResult
     {
-        this.#logger?.debug(this.#logPrefix, 'Validating schema', schema);
+        this.#logger?.debug('Validating schema', schema);
 
         try
         {
@@ -30,7 +29,7 @@ export default class Validator
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Validating schema', schema, 'failed with error', error);
+            this.#logger?.error('Validating schema', schema, 'failed with error', error);
 
             throw error;
         }

@@ -17,14 +17,13 @@ export default class Database
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
 
-        this.#logger = logger?.for(Database.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(Database.name)
+                              .for(this.#driver.name);
     }
 
     get connected(): boolean
@@ -39,7 +38,7 @@ export default class Database
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        this.#logger?.debug('Connecting');
         
         try
         {
@@ -47,7 +46,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+            this.#logger?.error('Connect failed with error', error);
 
             throw error;
         }
@@ -60,7 +59,7 @@ export default class Database
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        this.#logger?.debug('Disconnecting');
         
         try
         {
@@ -68,7 +67,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+            this.#logger?.error('Disconnect failed with error', error);
 
             throw error;
         }
@@ -76,7 +75,7 @@ export default class Database
 
     async createRecord<T extends RecordData>(type: RecordType, data: T): Promise<CreateResult>
     {
-        this.#logger?.debug(this.#logPrefix, 'Creating record for type', type);
+        this.#logger?.debug('Creating record for type', type);
 
         try
         {
@@ -90,7 +89,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Create record for type', type, 'failed with error', error);
+            this.#logger?.error('Create record for type', type, 'failed with error', error);
 
             throw error;
         }
@@ -98,7 +97,7 @@ export default class Database
 
     async readRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>): Promise<ReadResult<T>>
     {
-        this.#logger?.debug(this.#logPrefix, 'Reading record for type', type);
+        this.#logger?.debug('Reading record for type', type);
 
         try
         {
@@ -110,7 +109,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Read record for type', type, 'failed with error', error);
+            this.#logger?.error('Read record for type', type, 'failed with error', error);
 
             throw error;
         }
@@ -118,7 +117,7 @@ export default class Database
 
     async searchRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, fields?: RecordField[], sort?: RecordSort<T>, limit?: number, offset?: number): Promise<SearchResult<T>>
     {
-        this.#logger?.debug(this.#logPrefix, 'Searching record for type', type);
+        this.#logger?.debug('Searching record for type', type);
 
         try
         {
@@ -130,7 +129,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Search record for type', type, 'failed with error', error);
+            this.#logger?.error('Search record for type', type, 'failed with error', error);
 
             throw error;
         }
@@ -138,7 +137,7 @@ export default class Database
 
     async updateRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<UpdateResult>
     {
-        this.#logger?.debug(this.#logPrefix, 'Updating record for type', type);
+        this.#logger?.debug('Updating record for type', type);
 
         try
         {
@@ -152,7 +151,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Update record for type', type, 'failed with error', error);
+            this.#logger?.error('Update record for type', type, 'failed with error', error);
 
             throw error;
         }
@@ -160,7 +159,7 @@ export default class Database
 
     async updateRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>, data: RecordData): Promise<UpdateResult>
     {
-        this.#logger?.debug(this.#logPrefix, 'Updating records for type', type);
+        this.#logger?.debug('Updating records for type', type);
 
         try
         {
@@ -174,7 +173,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Update records for type', type, 'failed with error', error);
+            this.#logger?.error('Update records for type', type, 'failed with error', error);
 
             throw error;
         }
@@ -182,7 +181,7 @@ export default class Database
 
     async deleteRecord<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<DeleteResult>
     {
-        this.#logger?.debug(this.#logPrefix, 'Deleting record for type', type);
+        this.#logger?.debug('Deleting record for type', type);
 
         try
         {
@@ -194,7 +193,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Delete record for type', type, 'failed with error', error);
+            this.#logger?.error('Delete record for type', type, 'failed with error', error);
 
             throw error;
         }
@@ -202,7 +201,7 @@ export default class Database
 
     async deleteRecords<T extends RecordData>(type: RecordType, query: RecordQuery<T>): Promise<DeleteResult>
     {
-        this.#logger?.debug(this.#logPrefix, 'Deleting records for type', type);
+        this.#logger?.debug('Deleting records for type', type);
 
         try
         {
@@ -214,7 +213,7 @@ export default class Database
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Delete records for type', type, 'failed with error', error);
+            this.#logger?.error('Delete records for type', type, 'failed with error', error);
 
             throw error;
         }

@@ -9,14 +9,13 @@ export default class FileStore
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
         
-        this.#logger = logger?.for(FileStore.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(FileStore.name)
+                              .for(this.#driver.name);
     }
 
     get connected(): boolean
@@ -31,7 +30,7 @@ export default class FileStore
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        this.#logger?.debug('Connecting');
         
         try
         {
@@ -39,7 +38,7 @@ export default class FileStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+            this.#logger?.error('Connect failed with error', error);
 
             throw error;
         }
@@ -52,7 +51,7 @@ export default class FileStore
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        this.#logger?.debug('Disconnecting');
         
         try
         {
@@ -60,7 +59,7 @@ export default class FileStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+            this.#logger?.error('Disconnect failed with error', error);
 
             throw error;
         }
@@ -68,7 +67,7 @@ export default class FileStore
 
     async hasFile(path: string): Promise<boolean>
     {
-        this.#logger?.debug(this.#logPrefix, 'Checking has file', path);
+        this.#logger?.debug('Checking has file', path);
 
         try
         {
@@ -78,7 +77,7 @@ export default class FileStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Check has file', path, 'failed with error', error);
+            this.#logger?.error('Check has file', path, 'failed with error', error);
 
             throw error;
         }
@@ -86,7 +85,7 @@ export default class FileStore
 
     async writeFile(path: string, data: Buffer): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Writing file', path);
+        this.#logger?.debug('Writing file', path);
 
         try
         {
@@ -96,7 +95,7 @@ export default class FileStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Write file', path, 'failed with error', error);
+            this.#logger?.error('Write file', path, 'failed with error', error);
 
             throw error;
         }
@@ -104,7 +103,7 @@ export default class FileStore
 
     async readFile(path: string): Promise<Buffer>
     {
-        this.#logger?.debug(this.#logPrefix, 'Reading file', path);
+        this.#logger?.debug('Reading file', path);
 
         try
         {
@@ -114,7 +113,7 @@ export default class FileStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Read file', path, 'failed with error', error);
+            this.#logger?.error('Read file', path, 'failed with error', error);
 
             throw error;
         }
@@ -122,7 +121,7 @@ export default class FileStore
 
     async deleteFile(path: string): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Deleting file', path);
+        this.#logger?.debug('Deleting file', path);
 
         try
         {
@@ -132,7 +131,7 @@ export default class FileStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Delete file', path, 'failed with error', error);
+            this.#logger?.error('Delete file', path, 'failed with error', error);
 
             throw error;
         }

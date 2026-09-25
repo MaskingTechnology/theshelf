@@ -9,14 +9,13 @@ export default class NotificationService
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
 
-        this.#logger = logger?.for(NotificationService.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(NotificationService.name)
+                              .for(this.#driver.name);
     }
 
     get connected(): boolean
@@ -36,7 +35,7 @@ export default class NotificationService
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        this.#logger?.debug('Connecting');
         
         try
         {
@@ -44,7 +43,7 @@ export default class NotificationService
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+            this.#logger?.error('Connect failed with error', error);
 
             throw error;
         }
@@ -57,7 +56,7 @@ export default class NotificationService
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        this.#logger?.debug('Disconnecting');
         
         try
         {
@@ -65,7 +64,7 @@ export default class NotificationService
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+            this.#logger?.error('Disconnect failed with error', error);
 
             throw error;
         }
@@ -73,7 +72,7 @@ export default class NotificationService
 
     async subscribe(recipientId: string, subscription: unknown): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Subscribing with id', recipientId);
+        this.#logger?.debug('Subscribing with id', recipientId);
 
         try
         {
@@ -83,7 +82,7 @@ export default class NotificationService
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Subscribe with id', recipientId, 'failed with error', error);
+            this.#logger?.error('Subscribe with id', recipientId, 'failed with error', error);
 
             throw error;
         }
@@ -91,7 +90,7 @@ export default class NotificationService
 
     async unsubscribe(recipientId: string): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Unsubscribing with id', recipientId);
+        this.#logger?.debug('Unsubscribing with id', recipientId);
 
         try
         {
@@ -101,7 +100,7 @@ export default class NotificationService
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Unsubscribe with id', recipientId, 'failed with error', error);
+            this.#logger?.error('Unsubscribe with id', recipientId, 'failed with error', error);
 
             throw error;
         }
@@ -109,7 +108,7 @@ export default class NotificationService
 
     async sendNotification(recipientId: string, title: string, message: string): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Sending notification to id', recipientId);
+        this.#logger?.debug('Sending notification to id', recipientId);
 
         try
         {
@@ -119,7 +118,7 @@ export default class NotificationService
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Send notification to id', recipientId, 'failed with error', error);
+            this.#logger?.error('Send notification to id', recipientId, 'failed with error', error);
 
             throw error;
         }
