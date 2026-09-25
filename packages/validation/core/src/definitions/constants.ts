@@ -11,6 +11,7 @@ const FieldTypes = {
     EMAIL: 'email',
     ARRAY: 'array',
     URL: 'url',
+    URL_STRING: 'url_string',
     ENUM: 'enum'
 } as const;
 

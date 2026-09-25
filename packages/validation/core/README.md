@@ -91,6 +91,8 @@ The following types are supported:
   * (no additional properties)
 * **URL**
   * (no additional properties)
+* **URL_STRING**
+  * `protocols?: string[]`
 
 ## Validation result
 

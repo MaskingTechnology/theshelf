@@ -30,6 +30,7 @@ export default class Zod implements Driver
         this.#validators.set(FieldTypes.EMAIL, (constraints: Constraints<'EMAIL'>, required: boolean) => this.#validateEmail(constraints, required));
         this.#validators.set(FieldTypes.ARRAY, (constraints: Constraints<'ARRAY'>, required: boolean) => this.#validateArray(constraints, required));
         this.#validators.set(FieldTypes.URL, (constraints: Constraints<'URL'>, required: boolean) => this.#validateUrl(constraints, required));
+        this.#validators.set(FieldTypes.URL_STRING, (constraints: Constraints<'URL_STRING'>, required: boolean) => this.#validateUrlString(constraints, required));
         this.#validators.set(FieldTypes.ENUM, (constraints: Constraints<'ENUM'>, required: boolean) => this.#validateEnum(constraints, required));
     }
 
@@ -169,6 +170,13 @@ export default class Zod implements Driver
     }
 
     #validateUrl(constraints: Constraints<'URL'>, required: boolean)
+    {
+        const validation = z.instanceof(URL);
+
+        return this.#checkRequired(validation, required);
+    }
+
+    #validateUrlString(constraints: Constraints<'URL_STRING'>, required: boolean)
     {
         let validation = z.url().max(MAX_URL_LENGTH);
 

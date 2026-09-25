@@ -321,27 +321,44 @@ describe('validator', () =>
         });
     });
 
-    describe('Url values', () =>
+    describe('Url object values', () =>
+    {
+        it('should reject an invalid url', () =>
+        {
+            const input = { url: new Date() };
+
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL, VALUES.MESSAGES.INVALID_URL);
+        });
+
+        it('should accept a valid url', () =>
+        {
+            const input = { url: new URL('https://example.com') };
+
+            performValidResultCheck(input, VALIDATION_SCHEMES.URL);
+        });
+    });
+
+    describe('Url string values', () =>
     {
         it('should reject an invalid url with protocol', () =>
         {
             const input = { url: 'https://this is an invalid url' };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_STRING_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL_STRING);
         });
 
         it('should reject an url without protocol', () =>
         {
             const input = { url: 'example.com/folder/file.ext' };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_STRING_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL_STRING);
         });
 
         it('should accept a valid url when no protocols are configured', () =>
         {
             const input = { url: 'someprotocol://example.com/folder/file.ext' };
 
-            performValidResultCheck(input, VALIDATION_SCHEMES.URL_NO_PROTOCOL);
+            performValidResultCheck(input, VALIDATION_SCHEMES.URL_STRING_NO_PROTOCOL);
         });
 
         it('should accept valid urls with configured protocols', () =>
@@ -349,22 +366,22 @@ describe('validator', () =>
             const httpsInput = { url: 'https://example.com/folder/file.ext' };
             const ftpInput = { url: 'ftp://example.com/folder/file.ext' };
 
-            performValidResultCheck(httpsInput, VALIDATION_SCHEMES.URL_HTTPS_FTP);
-            performValidResultCheck(ftpInput, VALIDATION_SCHEMES.URL_HTTPS_FTP);
+            performValidResultCheck(httpsInput, VALIDATION_SCHEMES.URL_STRING_HTTPS_FTP);
+            performValidResultCheck(ftpInput, VALIDATION_SCHEMES.URL_STRING_HTTPS_FTP);
         });
 
         it('should reject an url with a protocol that is not configured', () =>
         {
             const input = { url: 'http://example.com/folder/file.ext' };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_STRING_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL_STRING);
         });
 
         it('should reject an url that is too long', () =>
         {
             const input = { url: VALUES.TOO_LONG_URL };
 
-            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL);
+            performInvalidResultCheck(input, VALIDATION_SCHEMES.URL_STRING_HTTPS_FTP, VALUES.MESSAGES.INVALID_URL_STRING);
         });
     });
 
