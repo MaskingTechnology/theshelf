@@ -1,7 +1,7 @@
 {
   "name": "@theshelf/files-driver-s3",
   "private": false,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/MaskingTechnology/theshelf.git"
@@ -25,6 +25,6 @@
     "@aws-sdk/client-s3": "^3.1124.0"
   },
   "peerDependencies": {
-    "@theshelf/files": "^0.5.0"
+    "@theshelf/files": "^0.6.0"
   }
 }
