@@ -8,19 +8,18 @@ export default class Http
     readonly #driver: Driver;
     
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
         
-        this.#logger = logger?.for(Http.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(Http.name)
+                              .for(this.#driver.name);
     }
 
     async get(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
-        this.#logger?.debug(this.#logPrefix, 'Getting', url);
+        this.#logger?.debug('Getting', url);
 
         try
         {
@@ -28,7 +27,7 @@ export default class Http
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Get', url, 'failed with error', error);
+            this.#logger?.error('Get', url, 'failed with error', error);
 
             throw error;
         }
@@ -36,7 +35,7 @@ export default class Http
 
     async post(url: string, body: unknown, headers?: Record<string, string> | undefined): Promise<Response>
     {
-        this.#logger?.debug(this.#logPrefix, 'Posting', url);
+        this.#logger?.debug('Posting', url);
 
         try
         {
@@ -44,7 +43,7 @@ export default class Http
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Post', url, 'failed with error', error);
+            this.#logger?.error('Post', url, 'failed with error', error);
 
             throw error;
         }
@@ -52,7 +51,7 @@ export default class Http
 
     async put(url: string, body: unknown, headers?: Record<string, string> | undefined): Promise<Response>
     {
-        this.#logger?.debug(this.#logPrefix, 'Putting', url);
+        this.#logger?.debug('Putting', url);
 
         try
         {
@@ -60,7 +59,7 @@ export default class Http
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Put', url, 'failed with error', error);
+            this.#logger?.error('Put', url, 'failed with error', error);
 
             throw error;
         }
@@ -68,7 +67,7 @@ export default class Http
 
     async patch(url: string, body: unknown, headers?: Record<string, string> | undefined): Promise<Response>
     {
-        this.#logger?.debug(this.#logPrefix, 'Patching', url);
+        this.#logger?.debug('Patching', url);
 
         try
         {
@@ -76,7 +75,7 @@ export default class Http
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Patch', url, 'failed with error', error);
+            this.#logger?.error('Patch', url, 'failed with error', error);
 
             throw error;
         }
@@ -84,7 +83,7 @@ export default class Http
 
     async delete(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
-        this.#logger?.debug(this.#logPrefix, 'Deleting', url);
+        this.#logger?.debug('Deleting', url);
 
         try
         {
@@ -92,7 +91,7 @@ export default class Http
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Delete', url, 'failed with error', error);
+            this.#logger?.error('Delete', url, 'failed with error', error);
 
             throw error;
         }
@@ -100,7 +99,7 @@ export default class Http
 
     async head(url: string, headers?: Record<string, string> | undefined): Promise<Response>
     {
-        this.#logger?.debug(this.#logPrefix, 'Heading', url);
+        this.#logger?.debug('Heading', url);
 
         try
         {
@@ -108,7 +107,7 @@ export default class Http
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Head', url, 'failed with error', error);
+            this.#logger?.error('Head', url, 'failed with error', error);
 
             throw error;
         }

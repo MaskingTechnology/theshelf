@@ -10,14 +10,13 @@ export default class EventBroker
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
 
-        this.#logger = logger?.for(EventBroker.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(EventBroker.name)
+                              .for(this.#driver.name);
     }
 
     get connected(): boolean
@@ -32,7 +31,7 @@ export default class EventBroker
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        this.#logger?.debug('Connecting');
         
         const errorHandler: ErrorHandler = (event, error) => this.#handleError(event, error);
 
@@ -42,7 +41,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+            this.#logger?.error('Connect failed with error', error);
 
             throw error;
         }
@@ -55,7 +54,7 @@ export default class EventBroker
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        this.#logger?.debug('Disconnecting');
         
         try
         {
@@ -63,7 +62,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+            this.#logger?.error('Disconnect failed with error', error);
 
             throw error;
         }
@@ -71,7 +70,7 @@ export default class EventBroker
 
     async publish<T>(publication: Publication<T>): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Publishing to', publication.topic, '->', publication.name);
+        this.#logger?.debug('Publishing to', publication.topic, '->', publication.name);
 
         try
         {
@@ -81,7 +80,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Publish to', publication.topic, '->', publication.name, 'failed with error', error);
+            this.#logger?.error('Publish to', publication.topic, '->', publication.name, 'failed with error', error);
 
             throw error;
         }
@@ -89,7 +88,7 @@ export default class EventBroker
 
     async subscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Subscribing to', subscription.topic, '->', subscription.name);
+        this.#logger?.debug('Subscribing to', subscription.topic, '->', subscription.name);
 
         try
         {
@@ -99,7 +98,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Subscribe to', subscription.topic, '->', subscription.name, 'failed with error', error);
+            this.#logger?.error('Subscribe to', subscription.topic, '->', subscription.name, 'failed with error', error);
 
             throw error;
         }
@@ -107,7 +106,7 @@ export default class EventBroker
 
     async unsubscribe<T>(subscription: Subscription<T>): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Unsubscribing from', subscription.topic, '->', subscription.name);
+        this.#logger?.debug('Unsubscribing from', subscription.topic, '->', subscription.name);
 
         try
         {
@@ -117,7 +116,7 @@ export default class EventBroker
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Unsubscribe from', subscription.topic, '->', subscription.name, 'failed with error', error);
+            this.#logger?.error('Unsubscribe from', subscription.topic, '->', subscription.name, 'failed with error', error);
 
             throw error;
         }
@@ -125,7 +124,7 @@ export default class EventBroker
 
     async #handleError(event: Event, error: unknown): Promise<void>
     {
-        this.#logger?.error(this.#logPrefix, 'Processing event from', event.topic, '->', event.name, 'failed with error', error);
+        this.#logger?.error('Processing event from', event.topic, '->', event.name, 'failed with error', error);
     }
 
     #validateConnection(): void

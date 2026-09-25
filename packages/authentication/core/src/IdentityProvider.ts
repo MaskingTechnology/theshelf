@@ -10,14 +10,13 @@ export default class IdentityProvider
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
 
-        this.#logger = logger?.for(IdentityProvider.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(IdentityProvider.name)
+                              .for(this.#driver.name);
     }
 
     get connected(): boolean
@@ -32,7 +31,7 @@ export default class IdentityProvider
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        this.#logger?.debug('Connecting');
         
         try
         {
@@ -40,7 +39,7 @@ export default class IdentityProvider
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+            this.#logger?.error('Connect failed with error', error);
 
             throw error;
         }
@@ -53,7 +52,7 @@ export default class IdentityProvider
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        this.#logger?.debug('Disconnecting');
         
         try
         {
@@ -61,7 +60,7 @@ export default class IdentityProvider
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+            this.#logger?.error('Disconnect failed with error', error);
 
             throw error;
         }
@@ -69,7 +68,7 @@ export default class IdentityProvider
 
     async getLoginUrl(origin: string): Promise<string>
     {
-        this.#logger?.debug(this.#logPrefix, 'Getting login URL for origin', origin);
+        this.#logger?.debug('Getting login URL for origin', origin);
 
         try
         {
@@ -79,7 +78,7 @@ export default class IdentityProvider
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Get login URL for origin', origin, 'failed with error', error);
+            this.#logger?.error('Get login URL for origin', origin, 'failed with error', error);
 
             throw error;
         }
@@ -87,7 +86,7 @@ export default class IdentityProvider
 
     async login(origin: string, data: Record<string, unknown>): Promise<Session>
     {
-        this.#logger?.debug(this.#logPrefix, 'Logging in');
+        this.#logger?.debug('Logging in');
 
         try
         {
@@ -99,7 +98,7 @@ export default class IdentityProvider
         {
             // Do NOT log data, as it might contain sensitive information
 
-            this.#logger?.error(this.#logPrefix, 'Login for origin', origin, 'failed with error', error);
+            this.#logger?.error('Login for origin', origin, 'failed with error', error);
 
             throw error;
         }
@@ -107,7 +106,7 @@ export default class IdentityProvider
 
     async refresh(session: Session): Promise<Session>
     {
-        this.#logger?.debug(this.#logPrefix, 'Refreshing session');
+        this.#logger?.debug('Refreshing session');
 
         try
         {
@@ -117,7 +116,7 @@ export default class IdentityProvider
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Refresh session for', session.id, 'failed with error', error);
+            this.#logger?.error('Refresh session for', session.id, 'failed with error', error);
 
             throw error;
         }
@@ -125,7 +124,7 @@ export default class IdentityProvider
 
     async logout(session: Session): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Logging out');
+        this.#logger?.debug('Logging out');
 
         try
         {
@@ -135,7 +134,7 @@ export default class IdentityProvider
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Logout session for', session.id, 'failed with error', error);
+            this.#logger?.error('Logout session for', session.id, 'failed with error', error);
 
             throw error;
         }

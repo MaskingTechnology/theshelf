@@ -11,14 +11,13 @@ export default class CacheStore
     readonly #driver: Driver;
 
     readonly #logger?: Logger;
-    readonly #logPrefix: string;
 
     constructor(driver: Driver, logger?: Logger)
     {
         this.#driver = driver;
 
-        this.#logger = logger?.for(this.constructor.name);
-        this.#logPrefix = `${this.#driver.name} ->`;
+        this.#logger = logger?.for(this.constructor.name)
+                              .for(this.#driver.name);
     }
 
     get connected(): boolean
@@ -33,17 +32,17 @@ export default class CacheStore
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Connecting');
+        this.#logger?.debug('Connecting');
         
         try
         {
             await this.#driver.connect();
 
-            this.#logger?.debug(this.#logPrefix, 'Connected');
+            this.#logger?.debug('Connected');
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Connect failed with error', error);
+            this.#logger?.error('Connect failed with error', error);
 
             throw error;
         }
@@ -56,17 +55,17 @@ export default class CacheStore
             return;
         }
 
-        this.#logger?.debug(this.#logPrefix, 'Disconnecting');
+        this.#logger?.debug('Disconnecting');
         
         try
         {
             await this.#driver.disconnect();
 
-            this.#logger?.debug(this.#logPrefix, 'Disconnected');
+            this.#logger?.debug('Disconnected');
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Disconnect failed with error', error);
+            this.#logger?.error('Disconnect failed with error', error);
 
             throw error;
         }
@@ -74,7 +73,7 @@ export default class CacheStore
 
     async get<T>(key: string): Promise<T | undefined>
     {
-        this.#logger?.debug(this.#logPrefix, 'Getting cache for key', key);
+        this.#logger?.debug('Getting cache for key', key);
 
         try
         {
@@ -84,18 +83,18 @@ export default class CacheStore
 
             if (item === undefined)
             {
-                this.#logger?.debug(this.#logPrefix, 'Cache miss for key', key);
+                this.#logger?.debug('Cache miss for key', key);
 
                 return;
             }
 
-            this.#logger?.debug(this.#logPrefix, 'Cache found for key', key);
+            this.#logger?.debug('Cache found for key', key);
 
             return item.value;
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Get cache for key', key, 'failed with error', error);
+            this.#logger?.error('Get cache for key', key, 'failed with error', error);
 
             throw error;
         }
@@ -103,7 +102,7 @@ export default class CacheStore
 
     async set<T>(key: string, value: T, ttl?: number): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Setting cache for key', key);
+        this.#logger?.debug('Setting cache for key', key);
 
         try
         {
@@ -120,7 +119,7 @@ export default class CacheStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Set cache for key', key, 'failed with error', error);
+            this.#logger?.error('Set cache for key', key, 'failed with error', error);
 
             throw error;
         }
@@ -128,7 +127,7 @@ export default class CacheStore
 
     async delete(key: string): Promise<void>
     {
-        this.#logger?.debug(this.#logPrefix, 'Deleting cache for key', key);
+        this.#logger?.debug('Deleting cache for key', key);
 
         try
         {
@@ -138,7 +137,7 @@ export default class CacheStore
         }
         catch (error)
         {
-            this.#logger?.error(this.#logPrefix, 'Delete cache for key', key, 'failed with error', error);
+            this.#logger?.error('Delete cache for key', key, 'failed with error', error);
 
             throw error;
         }
