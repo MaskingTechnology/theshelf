@@ -21,8 +21,9 @@ export type DateTimeStringConstraints = {};
 export type TimeStringConstraints = {};
 export type UUIDConstraints = {};
 export type EmailConstraints = {};
+export type URLConstraints = {};
 
-export type URLConstraints = {
+export type URLStringConstraints = {
     protocols?: string[];
 };
 
@@ -52,6 +53,7 @@ export type ValidationTypes = {
     EMAIL: EmailConstraints;
     ARRAY: ArrayConstraints;
     URL: URLConstraints;
+    URL_STRING: URLStringConstraints;
     ENUM: EnumConstraints;
 };
 

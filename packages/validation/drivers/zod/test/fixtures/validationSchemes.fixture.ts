@@ -100,7 +100,7 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
         }
     },
 
-    URL_NO_PROTOCOL: {
+    URL: {
         url: {
             message: VALUES.MESSAGES.INVALID_URL,
             required: true,
@@ -108,11 +108,19 @@ export const VALIDATION_SCHEMES: Record<string, ValidationSchema<unknown>> =
         }
     },
 
-    URL_HTTPS_FTP: {
+    URL_STRING_NO_PROTOCOL: {
         url: {
-            message: VALUES.MESSAGES.INVALID_URL,
+            message: VALUES.MESSAGES.INVALID_URL_STRING,
             required: true,
-            URL: {
+            URL_STRING: { }
+        }
+    },
+
+    URL_STRING_HTTPS_FTP: {
+        url: {
+            message: VALUES.MESSAGES.INVALID_URL_STRING,
+            required: true,
+            URL_STRING: {
                 protocols: ['https', 'ftp']
             }
         }
