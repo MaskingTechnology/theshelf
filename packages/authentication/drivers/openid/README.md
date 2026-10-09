@@ -31,7 +31,9 @@ type OpenIDConfiguration = {
     clientId: string; // provided by the provider
     clientSecret: string; // provided by the provider
     redirectPath: string; // e.g. "https://application.com/login"
-    secretKey: string; // a high entropy string for hmac
+    signingSecret: string; // a high entropy string for hmac
+    responseMode?: 'query' | 'form_post'; // defaults to 'form_post'
     allowInsecureRequests: boolean; // only set to false in development
+    ttl?: number;
 };
 ```
