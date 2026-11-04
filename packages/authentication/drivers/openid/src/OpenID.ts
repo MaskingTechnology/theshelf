@@ -9,16 +9,24 @@ import { LoginFailed, NotConnected, RefreshFailed, generateId } from '@theshelf/
 
 import SecretManager from './SecretManager.js';
 
+type ResponseType = 'code';
+type ResponseMode = 'query' | 'form_post';
+
 type OpenIDConfiguration = {
     issuer: string;
     clientId: string;
     clientSecret: string;
     redirectPath: string;
     signingSecret: string;
-    ttl?: number;
+    responseType?: ResponseType;
+    responseMode?: ResponseMode;
     allowInsecureRequests: boolean;
+    ttl?: number;
 };
 
+const CODE_CHALLENGE_METHOD = 'S256';
+const DEFAULT_RESPONSE_TYPE = 'code';
+const DEFAULT_RESPONSE_MODE: ResponseMode = 'form_post';
 const HMAC_ALGORITHM = 'sha512';
 const URL_ENCODING = 'base64url';
 
@@ -70,7 +78,9 @@ export default class OpenID implements Driver
         const nonce = randomNonce();
         const codeVerifier = randomPKCECodeVerifier();
         const code_challenge = await calculatePKCECodeChallenge(codeVerifier);
-        const code_challenge_method = 'S256';
+        const code_challenge_method = CODE_CHALLENGE_METHOD;
+        const response_type = this.#configuration.responseType ?? DEFAULT_RESPONSE_TYPE;
+        const response_mode = this.#configuration.responseMode ?? DEFAULT_RESPONSE_MODE;
         
         const payload = this.#createPayload();
         const state = this.#calculateState(payload);
@@ -80,6 +90,8 @@ export default class OpenID implements Driver
             scope,
             code_challenge,
             code_challenge_method,
+            response_type,
+            response_mode,
             state,
             nonce
         };
