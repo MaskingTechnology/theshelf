@@ -1,7 +1,7 @@
 {
   "name": "theshelf",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.6.1",
   "type": "module",
   "scripts": {
     "build": "npm run build --workspaces",
@@ -35,7 +35,7 @@
   ],
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^24.10.4",
+    "@types/node": "^22",
     "@vitest/coverage-v8": "^4.1.6",
     "eslint": "^10.7.0",
     "rimraf": "^6.1.3",
